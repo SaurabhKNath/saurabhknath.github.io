@@ -1,70 +1,146 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Blog</title>
-    <link href="css/styles.css" rel="stylesheet" />
-  <!-- Add your CSS file or styles here -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Saurabh K Nath - Blog</title>
+    <!-- Bootstrap core CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom styles for this template -->
+    <link href="css/blog.css" rel="stylesheet">
 </head>
+
 <body>
-  <nav>
-    <a href="index.html">Home</a>
-    <a href="about.html">About</a>
-    <a href="blog.html">Blog</a>
-    <!-- Add the drop-down menu for sorting blog posts -->
-    <div class="dropdown">
-      <button>Sort by</button>
-      <div class="dropdown-content">
-        <a href="#" id="sort-newest">Newest</a>
-        <a href="#" id="sort-oldest">Oldest</a>
-      </div>
+<!-- Navigation -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
+    <div class="container">
+        <a class="navbar-brand" href="#">Saurabh K Nath - Blog</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="index.html">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">About</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Contact</a>
+                </li>
+            </ul>
+        </div>
     </div>
-  </nav>
+</nav>
 
-  <section id="blog-posts">
-    <!-- Add your blog posts here -->
-  </section>
+<!-- Page Content -->
+<div class="container">
+    <div class="row">
+        <!-- Blog Entries Column -->
+        <div class="col-md-8">
+            <h1 class="my-4">Saurabh K Nath
+                <small>Blog</small>
+            </h1>
 
-  <script>
-    // Sample blog post data
-    const blogPosts = [
-      { title: "Blog Post 1", date: "2023-05-01", content: "This is blog post 1." },
-      { title: "Blog Post 2", date: "2023-04-30", content: "This is blog post 2." },
-      // Add more blog posts here
-    ];
+            <!-- Blog Post -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h2 class="card-title">Blog Post Title</h2>
+                    <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Reiciendis aliquid atque, nulla? Quos cum ex quis soluta, a laboriosam. Dicta expedita corporis animi vero voluptate voluptatibus possimus, veniam magni quis!</p>
+                    <a href="#" class="btn btn-primary">Read More &rarr;</a>
+                </div>
+                <div class="card-footer text-muted">
+                    Posted on January 1, 2023 by
+                    <a href="#">Saurabh K Nath</a>
+                </div>
+            </div>
+            <!-- Pagination -->
+            <ul class="pagination justify-content-center mb-4">
+                <li class="page-item">
+                    <a class="page-link" href="#">&larr; Older</a>
+                </li>
+                <li class="page-item disabled">
+                    <a class="page-link" href="#">Newer &rarr;</a>
+                </li>
+            </ul>
+        </div>
 
-    const blogPostsContainer = document.getElementById("blog-posts");
+        <!-- Sidebar Widgets Column -->
+        <div class="col-md-4">
+            <!-- Search Widget -->
+            <div class="card my-4">
+                <h5 class="card-header">Search</h5>
+                <div class="card-body">
+                    <div class="input-group">
+                        <input type="text" class="form-control"
+                                                       <input type="text" class="form-control" placeholder="Search for...">
+                        <span class="input-group-btn">
+                            <button class="btn btn-secondary" type="button">Go!</button>
+                        </span>
+                    </div>
+                </div>
+            </div>
 
-    function displayBlogPosts(posts) {
-      blogPostsContainer.innerHTML = "";
+            <!-- Categories Widget -->
+            <div class="card my-4">
+                <h5 class="card-header">Categories</h5>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <ul class="list-unstyled mb-0">
+                                <li>
+                                    <a href="#">Web Design</a>
+                                </li>
+                                <li>
+                                    <a href="#">HTML</a>
+                                </li>
+                                <li>
+                                    <a href="#">Freebies</a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="col-lg-6">
+                            <ul class="list-unstyled mb-0">
+                                <li>
+                                    <a href="#">JavaScript</a>
+                                </li>
+                                <li>
+                                    <a href="#">CSS</a>
+                                </li>
+                                <li>
+                                    <a href="#">Tutorials</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-      posts.forEach((post) => {
-        const postElement = document.createElement("div");
-        postElement.classList.add("blog-post");
+            <!-- Side Widget -->
+            <div class="card my-4">
+                <h5 class="card-header">Side Widget</h5>
+                <div class="card-body">
+                    You can put anything you want inside of these side widgets. They are easy to use and customize to fit your needs.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
-        postElement.innerHTML = `
-          <h2>${post.title}</h2>
-          <p><em>${post.date}</em></p>
-          <p>${post.content}</p>
-        `;
+<!-- Footer -->
+<footer class="py-5 bg-primary">
+    <div class="container">
+        <p class="m-0 text-center text-white">Copyright &copy; Saurabh K Nath - Blog 2023</p>
+    </div>
+</footer>
 
-        blogPostsContainer.appendChild(postElement);
-      });
-    }
-
-    document.getElementById("sort-newest").addEventListener("click", () => {
-      const sortedPosts = [...blogPosts].sort((a, b) => new Date(b.date) - new Date(a.date));
-      displayBlogPosts(sortedPosts);
-    });
-
-    document.getElementById("sort-oldest").addEventListener("click", () => {
-      const sortedPosts = [...blogPosts].sort((a, b) => new Date(a.date) - new Date(b.date));
-      displayBlogPosts(sortedPosts);
-    });
-
-    // Display blog posts by default
-    displayBlogPosts(blogPosts);
-  </script>
+<!-- Bootstrap core JavaScript -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"></script>
 </body>
 </html>
+
