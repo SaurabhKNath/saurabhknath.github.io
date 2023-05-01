@@ -1,45 +1,70 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <meta name="description" content="" />
-    <meta name="author" content="" />
-    <title>Saurabh K Nath - Blog</title>
-    <link rel="icon" type="image/x-icon" href="assets/img/favicon.ico" />
-    <!-- Font Awesome icons (free version)-->
-    <script src="https://use.fontawesome.com/releases/v6.1.0/js/all.js" crossorigin="anonymous"></script>
-    <!-- Google fonts-->
-    <link href="https://fonts.googleapis.com/css?family=Saira+Extra+Condensed:500,700" rel="stylesheet" type="text/css" />
-    <link href="https://fonts.googleapis.com/css?family=Muli:400,400i,800,800i" rel="stylesheet" type="text/css" />
-    <!-- Core theme CSS (includes Bootstrap)-->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blog</title>
     <link href="css/styles.css" rel="stylesheet" />
+  <!-- Add your CSS file or styles here -->
 </head>
 <body>
-    <!-- Navigation-->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top" id="sideNav">
-        <!-- Add the same navigation menu as in your "index.html" -->
-    </nav>
-    <!-- Page Content-->
-    <div class="container-fluid p-0">
-        <!-- Blog-->
-        <section class="resume-section">
-            <div class="resume-section-content">
-                <h1 class="mb-5">Blog</h1>
-                <!-- Add your blog posts here -->
-                <article>
-                    <h2 class="mb-3">Blog Post Title</h2>
-                    <span class="text-muted">Published on Month Day, Year</span>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam. Sed nisi. Nulla quis sem at nibh elementum imperdiet. Duis sagittis ipsum. Praesent mauris. Fusce nec tellus sed augue semper porta. Mauris massa. Vestibulum lacinia arcu eget nulla. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos.</p>
-                    <a href="single-post.html">Read More</a>
-                </article>
-                <!-- Add more blog posts following the same structure -->
-            </div>
-        </section>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="about.html">About</a>
+    <a href="blog.html">Blog</a>
+    <!-- Add the drop-down menu for sorting blog posts -->
+    <div class="dropdown">
+      <button>Sort by</button>
+      <div class="dropdown-content">
+        <a href="#" id="sort-newest">Newest</a>
+        <a href="#" id="sort-oldest">Oldest</a>
+      </div>
     </div>
-    <!-- Bootstrap core JS-->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- Core theme JS-->
-    <script src="js/scripts.js"></script>
+  </nav>
+
+  <section id="blog-posts">
+    <!-- Add your blog posts here -->
+  </section>
+
+  <script>
+    // Sample blog post data
+    const blogPosts = [
+      { title: "Blog Post 1", date: "2023-05-01", content: "This is blog post 1." },
+      { title: "Blog Post 2", date: "2023-04-30", content: "This is blog post 2." },
+      // Add more blog posts here
+    ];
+
+    const blogPostsContainer = document.getElementById("blog-posts");
+
+    function displayBlogPosts(posts) {
+      blogPostsContainer.innerHTML = "";
+
+      posts.forEach((post) => {
+        const postElement = document.createElement("div");
+        postElement.classList.add("blog-post");
+
+        postElement.innerHTML = `
+          <h2>${post.title}</h2>
+          <p><em>${post.date}</em></p>
+          <p>${post.content}</p>
+        `;
+
+        blogPostsContainer.appendChild(postElement);
+      });
+    }
+
+    document.getElementById("sort-newest").addEventListener("click", () => {
+      const sortedPosts = [...blogPosts].sort((a, b) => new Date(b.date) - new Date(a.date));
+      displayBlogPosts(sortedPosts);
+    });
+
+    document.getElementById("sort-oldest").addEventListener("click", () => {
+      const sortedPosts = [...blogPosts].sort((a, b) => new Date(a.date) - new Date(b.date));
+      displayBlogPosts(sortedPosts);
+    });
+
+    // Display blog posts by default
+    displayBlogPosts(blogPosts);
+  </script>
 </body>
 </html>
