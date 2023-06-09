@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Professional Project Page</title>
+  <title>Assamese Speech Corpus</title>
   <style>
     /* CSS Styles */
     body {
@@ -57,17 +57,12 @@
 </head>
 <body>
   <header>
-    <h1>Professional Project Page</h1>
+    <h1>Assamese Speech Corpus</h1>
   </header>
 
   <section>
     <h2>Project Overview</h2>
-    <p>This is a professional project page that demonstrates the integration of HTML, CSS, and JavaScript. It showcases various features and elements.</p>
-  </section>
-
-  <section>
-    <h2>Project Details</h2>
-    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin vitae scelerisque ligula. Nullam fringilla fringilla lectus. Integer mollis feugiat diam, sit amet ultrices lectus sodales sed. Phasellus blandit semper leo at porta. Integer varius augue at fringilla.</p>
+    <p><To be updated! Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin vitae scelerisque ligula. Nullam fringilla fringilla lectus. Integer mollis feugiat diam, sit amet ultrices lectus sodales sed. Phasellus blandit semper leo at porta. Integer varius augue at fringilla.</p>
     <p>Sed ullamcorper, mi vel semper viverra, lectus turpis gravida turpis, nec volutpat libero risus sit amet dolor. Quisque lacinia massa sed felis scelerisque, non bibendum ligula feugiat. Aenean id ex a mi consectetur placerat sed at purus. Etiam a nunc vitae purus egestas laoreet ut id ex. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.</p>
   </section>
 
@@ -76,8 +71,8 @@
     <div class="profile-card">
       <img class="profile-image" src="participant1.jpg" alt="Participant 1">
       <div>
-        <h3>Participant 1</h3>
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae finibus velit.</p>
+        <h3>Nabajyoti Gayari</h3>
+        <p>Barpeta, Assam</p>
       </div>
     </div>
     
@@ -85,7 +80,7 @@
       <img class="profile-image" src="participant2.jpg" alt="Participant 2">
       <div>
         <h3>Participant 2</h3>
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae finibus velit.</p>
+        <p>Goalpara, Assamp>
       </div>
     </div>
   </section>
