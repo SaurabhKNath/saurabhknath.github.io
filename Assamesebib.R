@@ -36,9 +36,10 @@ ui <- fluidPage(
 server <- function(input, output, session) {
   
   data <- reactive({
-    read.csv("books.csv", stringsAsFactors = FALSE)
+    # Update the URL to point to the hosted CSV file
+    url <- "https://saurabhknath.github.io/books.csv"
+    read.csv(url, stringsAsFactors = FALSE)
   })
-  
   # Reactive expression for selected row
   selected_row <- reactiveVal(NULL)
   
