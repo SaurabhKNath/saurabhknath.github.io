@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Keyword Search Engine</title>
+  <style>
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: sans-serif;
+      background: #f9f9f9;
+    }
+    .wrapper {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+    .container {
+      background: white;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      max-width: 800px;
+      width: 100%;
+      text-align: center;
+    }
+    textarea {
+      width: 100%;
+      height: 150px;
+      margin-bottom: 15px;
+      padding: 10px;
+      font-size: 1em;
+    }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin-top: 20px;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 6px;
+      text-align: left;
+    }
+    b { color: #d90000; }
+    .footer {
+      text-align: center;
+      margin-top: 30px;
+      font-size: 0.9em;
+      color: gray;
+    }
+    input[type="text"], input[type="number"] {
+      padding: 6px;
+      font-size: 1em;
+      width: 100px;
+      margin: 5px;
+    }
+    button {
+      padding: 8px 16px;
+      margin: 10px 5px;
+      font-size: 1em;
+      cursor: pointer;
+    }
+    .controls {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .sub-controls {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="wrapper">
+  <div class="container">
+    <h2>🔍 Keyword Search Engine</h2>
+
+    <textarea id="inputText" placeholder="Paste your text here (supports any script)"></textarea>
+
+    <div class="controls">
+      <label>Enter keyword/substring:
+        <input type="text" id="keyword">
+      </label>
+
+      <div class="sub-controls">
+        <label>Preceding words:
+          <input type="number" id="before" value="10" min="0">
+        </label>
+
+        <label>Following words:
+          <input type="number" id="after" value="10" min="0">
+        </label>
+      </div>
+    </div>
+
+    <div>
+      <button onclick="runSearch()">Search</button>
+    </div>
+
+    <div id="results"></div>
+
+    <div id="downloadArea" style="display: none;">
+      <button onclick="downloadCSV()">Download CSV</button>
+    </div>
+
+    <div class="footer">
+      &copy; <a href="https://saurabhknath.github.io/" target="_blank">Saurabh</a>. Licensed under 
+      <a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a>. 
+      Contact: <a href="mailto:saurabh.nath@anu.edu.au">saurabh.nath@anu.edu.au</a>
+    </div>
+  </div>
+</div>
+
+<script>
+  function runSearch() {
+    const rawText = document.getElementById("inputText").value;
+    const keyword = document.getElementById("keyword").value.trim();
+    const before = parseInt(document.getElementById("before").value);
+    const after = parseInt(document.getElementById("after").value);
+
+    if (!rawText || !keyword) {
+      alert("Please provide both text and keyword.");
+      return;
+    }
+
+    const words = rawText.replace(/[.,!?;:()\[\]{}"“”‘’]/g, ' ').split(/\s+/).filter(w => w !== "");
+    const results = [];
+    const lowerKeyword = keyword.toLowerCase();
+
+    words.forEach((word, index) => {
+      if (word.toLowerCase().includes(lowerKeyword)) {
+        const start = Math.max(0, index - before);
+        const end = Math.min(words.length, index + after + 1);
+
+        const contextWords = words.slice(start, end);
+        const contextHTML = contextWords.map(w =>
+          w.toLowerCase().includes(lowerKeyword)
+            ? w.replace(new RegExp(keyword, 'gi'), match => `<b>${match}</b>`)
+            : w
+        ).join(" ");
+
+        results.push({
+          match: word,
+          contextHTML: contextHTML,
+          contextPlain: contextWords.join(" ")
+        });
+      }
+    });
+
+    const resultDiv = document.getElementById("results");
+    const downloadArea = document.getElementById("downloadArea");
+
+    if (results.length === 0) {
+      resultDiv.innerHTML = "<p><i>No matches found.</i></p>";
+      downloadArea.style.display = "none";
+      window.currentCSV = [];
+      return;
+    }
+
+    let table = "<table><tr><th>Match #</th><th>Matched Word</th><th>Context</th></tr>";
+    results.forEach((r, i) => {
+      table += `<tr><td>${i + 1}</td><td>${r.match}</td><td>${r.contextHTML}</td></tr>`;
+    });
+    table += "</table>";
+    resultDiv.innerHTML = table;
+
+    window.currentCSV = results.map((r, i) => [i + 1, r.match, r.contextPlain]);
+    downloadArea.style.display = "block";
+  }
+
+  function downloadCSV() {
+    if (!window.currentCSV || window.currentCSV.length === 0) {
+      alert("No results to download.");
+      return;
+    }
+    const rows = [["Match #", "Matched Word", "Context"], ...window.currentCSV];
+    const csvContent = rows.map(row => row.map(v => `"${v}"`).join(",")).join("\n");
+
+    const BOM = "\uFEFF";
+    const blob = new Blob([BOM + csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "keyword_results.csv";
+    a.style.display = "none";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  }
+</script>
+
+</body>
+</html>
