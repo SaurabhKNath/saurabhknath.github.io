@@ -4,48 +4,16 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Tweet Corpus Search</title>
+  <title>Tweet Corpus Search (Debug Mode)</title>
 
-  <!-- Google Sign-In + Decode -->
-  <script src="https://accounts.google.com/gsi/client" async defer></script>
-  <script src="https://cdn.jsdelivr.net/npm/jwt-decode@4.0.0/build/jwt-decode.min.js"></script>
-
-  <!-- Global login logic -->
-  <script>
-    let userEmail = "";
-    let tweetData = [];
-
-    window.onLogin = function(response) {
-      const userData = jwt_decode(response.credential);
-      userEmail = userData.email;
-      document.getElementById('login-area').style.display = 'none';
-      document.getElementById('app-area').style.display = 'block';
-      document.getElementById('profile-info').innerHTML = `Logged in as: <b>${userEmail}</b> <button onclick="hideApp()">Logout</button>`;
-    };
-
-    function hideApp() {
-      userEmail = "";
-      document.getElementById('login-area').style.display = 'block';
-      document.getElementById('app-area').style.display = 'none';
-    }
-
-    function logSearch(type, keywords) {
-      fetch("https://script.google.com/macros/s/AKfycbxmnqaCw__1EW8YvB6ur14_yl8f_Yo6pZzw23j_x0gfU32A43hXUdUTs7coWS7KgV3hwg/exec", {
-        method: "POST",
-        body: JSON.stringify({ email: userEmail, type, keywords }),
-        headers: { "Content-Type": "application/json" }
-      }).then(res => res.text()).then(console.log);
-    }
-  </script>
-
-  <!-- Chart & WordCloud -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/wordcloud@1.1.0/src/wordcloud2.min.js"></script>
 
-  <!-- Firebase Module -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
     import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+    console.log("📡 Initializing Firebase app...");
 
     const firebaseConfig = {
       apiKey: "AIzaSyD1YFolMT2aq9Olhx9tOJo2XObeKBHK3IM",
@@ -60,22 +28,31 @@
     const db = getFirestore(app);
 
     let tweetData = [];
-    const userFilter = document.getElementById('user-filter');
 
-    async function loadFirestoreTweets() {
+    window.loadFirestoreTweets = async function () {
+      console.log("🔍 Fetching tweets from Firestore...");
       const snapshot = await getDocs(collection(db, "tweets"));
       tweetData = snapshot.docs.map(doc => doc.data());
+      console.log("✅ Tweets loaded:", tweetData.length);
+
+      const userFilter = document.getElementById('user-filter');
+      const cloudUserFilter = document.getElementById('cloud-user-filter');
 
       const usernames = [...new Set(tweetData.map(row => row.username))];
       usernames.forEach(u => {
-        const opt = document.createElement('option');
-        opt.value = u;
-        opt.text = u;
-        userFilter.appendChild(opt);
-      });
-    }
+        const opt1 = document.createElement('option');
+        opt1.value = u;
+        opt1.text = u;
+        userFilter.appendChild(opt1);
 
-    window.loadFirestoreTweets = loadFirestoreTweets;
+        const opt2 = document.createElement('option');
+        opt2.value = u;
+        opt2.text = u;
+        cloudUserFilter.appendChild(opt2);
+      });
+
+      document.getElementById('app-area').style.display = 'block';
+    };
   </script>
 
   <style>
@@ -86,15 +63,6 @@
       margin: auto;
       position: relative;
       text-align: center;
-    }
-    #profile-info {
-      position: absolute;
-      top: 1.5em;
-      right: 2em;
-      background: #f5f5f5;
-      padding: 0.5em 1em;
-      border-radius: 5px;
-      font-size: 0.9em;
     }
     section {
       border: 1px solid #ccc;
@@ -129,19 +97,9 @@
   </style>
 </head>
 <body onload="loadFirestoreTweets()">
-  <h2>Tweet Corpus Search</h2>
-  <div id="login-area">
-    <div id="g_id_onload"
-         data-client_id="307940595541-817nkchbe1u0jhp3k37574l9gl1vd5im.apps.googleusercontent.com"
-         data-callback="onLogin"
-         data-auto_prompt="false">
-    </div>
-    <div class="g_id_signin" data-type="standard"></div>
-  </div>
+  <h2>Tweet Corpus Search (Debug Mode)</h2>
 
   <div id="app-area" style="display:none;">
-    <div id="profile-info"></div>
-
     <section>
       <h3>N-gram Search & Chart</h3>
       <textarea id="keyword" placeholder="Enter keywords separated by comma (e.g. hello, hi, love)"></textarea><br>
@@ -167,6 +125,15 @@
       <button onclick="concordanceView()">Show Concordance</button>
       <div id="concordance-output"></div>
     </section>
+
+    <section>
+      <h3>Top Words & Word Cloud</h3>
+      <label>Select user (or leave empty for all):</label><br>
+      <select id="cloud-user-filter"></select><br>
+      <button onclick="showTopWords()">Generate</button>
+      <div id="top-words"></div>
+      <div id="wordcloud"></div>
+    </section>
   </div>
 
   <script>
@@ -174,7 +141,6 @@
       const tokens = document.getElementById('keyword').value.trim().toLowerCase().split(',').map(t => t.trim()).filter(t => t);
       const users = Array.from(document.getElementById('user-filter').selectedOptions).map(opt => opt.value);
       const results = tweetData.filter(row => users.includes(row.username) && tokens.some(t => row.text.toLowerCase().includes(t)));
-      logSearch("ngram", tokens);
       document.getElementById('results').innerHTML = results.map(r => `<p><b>${r.username}</b>: ${r.text}</p>`).join('');
     }
 
@@ -192,8 +158,31 @@
         }
         return null;
       }).filter(Boolean);
-      logSearch("kwic", [keyword]);
       document.getElementById('concordance-output').innerHTML = output.length ? output.join('') : '<p>No matches found.</p>';
+    }
+
+    function showTopWords() {
+      const user = document.getElementById('cloud-user-filter').value;
+      const filtered = user ? tweetData.filter(t => t.username === user) : tweetData;
+
+      const allText = filtered.map(t => t.text).join(' ').toLowerCase();
+      const words = allText.match(/\b\w{3,}\b/g) || [];
+
+      const freq = {};
+      words.forEach(w => { freq[w] = (freq[w] || 0) + 1; });
+
+      const sorted = Object.entries(freq).sort((a, b) => b[1] - a[1]).slice(0, 50);
+      document.getElementById('top-words').innerHTML =
+        '<h4>Top Words</h4>' +
+        sorted.map(([word, count]) => `<p>${word}: ${count}</p>`).join('');
+
+      WordCloud(document.getElementById('wordcloud'), {
+        list: sorted,
+        gridSize: 8,
+        weightFactor: 3,
+        color: 'random-dark',
+        backgroundColor: '#fff'
+      });
     }
   </script>
 
