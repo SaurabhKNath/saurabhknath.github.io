@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -137,13 +138,13 @@
     let userEmail = "";
     let tweetData = [];
 
-    function onLogin(response) {
+    window.onLogin = function (response) {
       const userData = jwt_decode(response.credential);
       userEmail = userData.email;
       document.getElementById('login-area').style.display = 'none';
       document.getElementById('app-area').style.display = 'block';
       document.getElementById('profile-info').innerHTML = `Logged in as: <b>${userEmail}</b> <button onclick="hideApp()">Logout</button>`;
-    }
+    };
 
     function hideApp() {
       userEmail = "";
