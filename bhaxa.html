@@ -1,38 +1,19 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Tweet Corpus Search (Debug Mode)</title>
+  <title>Tweet Corpus Search (Public)</title>
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/wordcloud@1.1.0/src/wordcloud2.min.js"></script>
 
   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-
-    console.log("📡 Initializing Firebase app...");
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyD1YFolMT2aq9Olhx9tOJo2XObeKBHK3IM",
-      authDomain: "tweet-corpus-e0416.firebaseapp.com",
-      projectId: "tweet-corpus-e0416",
-      storageBucket: "tweet-corpus-e0416.firebasestorage.app",
-      messagingSenderId: "507715111975",
-      appId: "1:507715111975:web:455f96994dc9123da95202"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-
     let tweetData = [];
 
-    window.loadFirestoreTweets = async function () {
-      console.log("🔍 Fetching tweets from Firestore...");
-      const snapshot = await getDocs(collection(db, "tweets"));
-      tweetData = snapshot.docs.map(doc => doc.data());
+    async function loadTweets() {
+      const response = await fetch('https://saurabhknath.github.io/data/tweets.json');
+      tweetData = await response.json();
       console.log("✅ Tweets loaded:", tweetData.length);
 
       const userFilter = document.getElementById('user-filter');
@@ -52,7 +33,9 @@
       });
 
       document.getElementById('app-area').style.display = 'block';
-    };
+    }
+
+    window.loadTweets = loadTweets;
   </script>
 
   <style>
@@ -96,8 +79,8 @@
     }
   </style>
 </head>
-<body onload="loadFirestoreTweets()">
-  <h2>Tweet Corpus Search (Debug Mode)</h2>
+<body onload="loadTweets()">
+  <h2>Tweet Corpus Search</h2>
 
   <div id="app-area" style="display:none;">
     <section>
