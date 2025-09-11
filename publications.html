@@ -3,90 +3,97 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Publications</title>
+    <title>Publications & Conferences</title>
     <style>
         body {
-            font-family: 'Merriweather', serif; /* Applying Merriweather font */
+            font-family: 'Merriweather', serif;
             margin: 0;
-            padding: 0;
+            padding: 20px;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
+            min-height: 100vh;
+            justify-content: space-between;
             text-align: justify;
         }
 
         .container {
             max-width: 1000px;
-            padding: 0 0px;
-            display: flex;
-            flex-direction: column;
+            width: 100%;
+            margin: 0 auto;
         }
 
         .paragraph {
-            padding:0px;
-            border-radius: 0px;
+            padding: 0;
+            border-radius: 0;
             position: relative;
             text-align: justify;
         }
 
-        .circle-picture {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            background-image: url('https://saurabhknath.github.io/assets/img/profile.jpg');
-            background-size: cover;
-            background-position: center;
-            margin-bottom: 0px; /* Adjusted margin */
-        }
-
-        .welcome-line {
-            font-size: 20px;
+        .section-title {
+            font-size: 22px;
+            font-weight: bold;
+            margin-top: 30px;
+            margin-bottom: 10px;
             text-align: left;
-            margin-bottom: 0px; /* Adjusted margin */
         }
 
         .blog-link {
-            padding-right: 20px; /* Added padding to the right */
+            padding-right: 20px;
             border-radius: 5px;
-            text-align: left; /* Aligning the blog link text to the left */
-            margin-bottom: 0; /* No margin between blog link paragraphs */
+            text-align: left;
+            margin-bottom: 0;
         }
 
-        .date {
-            float: right; /* Aligning the date to the right */
-        }
-      
-      .final-line {
-            font-size: 10px;
+        .final-line {
+            font-size: 15px;
             text-align: center;
-            margin-bottom: px; /* Adjusted margin */
+            margin-top: 30px;
+        }
+
+        .final-line a {
+            text-decoration: none;
         }
     </style>
-    <!-- Link to Merriweather font -->
     <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="container">
-        <div class="circle-picture"></div>
-        <p class="welcome-line">Nath's publications</p>
-       <div class="paragraph">
-  <p class="blog-link">
-    <span class="year">2025</span> – 
-    <span class="title">English-based acoustic models perform well in the forced alignment of two English-based Pacific Creoles</span> 
-    [<a href="https://aclanthology.org/2025.acl-long.1505.pdf" target="_blank">Download</a>]
-  </p>
+        <!-- Publications -->
+        <p class="section-title">Publications</p>
+        <div class="paragraph">
+            <p class="blog-link">
+                <span class="year">2025</span> – 
+                <span class="title">English-based acoustic models perform well in the forced alignment of two English-based Pacific Creoles</span> 
+                [<a href="https://aclanthology.org/2025.acl-long.1505.pdf" target="_blank">Download</a>]
+            </p>
 
-  <p class="blog-link">
-    <span class="year">(Under review)</span> – 
-    <span class="title">Contrast, Context, and Contact: Phonetic variation in Assamese mid front vowel space</span> 
-    [<a href="" target="_blank">Download</a>]
-  </p>
-</div>
+            <p class="blog-link">
+                <span class="year">(Under review)</span> – 
+                <span class="title">Contrast, Context, and Contact: Phonetic variation in Assamese mid front vowel space</span> 
+                [<a href="" target="_blank">Download</a>]
+            </p>
+        </div>
 
-  <p class="final-line">
-    <a href="https://saurabhknath.github.io/">back to home
-  </p>
+        <!-- Conferences -->
+        <p class="section-title">Conferences</p>
+        <div class="paragraph">
+            <p class="blog-link">
+                <span class="year">2025</span> – 
+                <span class="title">Story of /o/: A Sociophonetic Investigation on Assamese Back Vowels (NWAV-AP 8, NUS, Singapore)</span> 
+                [<a href="" target="_blank">Download</a>]
+            </p>
+
+            <p class="blog-link">
+                <span class="year">2024</span> – 
+                <span class="title">Investigating variation of mid-front vowels in Assamese (Methods in Dialectology XVIII. La Trobe University, Melbourne)</span> 
+                [<a href="" target="_blank">Download</a>]
+            </p>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <p class="final-line">
+        © Saurabh Nath | <a href="https://saurabhknath.github.io/">Home</a>
+    </p>
 </body>
 </html>
