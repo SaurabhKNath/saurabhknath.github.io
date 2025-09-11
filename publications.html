@@ -1,163 +1,196 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Publications & Conferences</title>
-    <style>
-        body {
-            font-family: 'Merriweather', serif;
-            margin: 0;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-            justify-content: space-between;
-            text-align: justify;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Publications & Conferences</title>
+  <style>
+    :root {
+      --color-primary: #b15532;      /* Terracotta */
+      --color-secondary: #444444;    /* Warm gray text */
+      --color-bg: #fdfdfc;           /* Light background */
+      --color-link: #3b4d63;         /* Default link */
+      --color-link-hover: #b15532;   /* Link hover = terracotta */
+      --color-warning: #ffc107;      /* Gold */
+      --color-muted: #cccccc;        /* Divider gray */
+    }
 
-        .container {
-            max-width: 1000px;
-            width: 100%;
-            margin: 0 auto;
-        }
+    body {
+      font-family: 'Merriweather', serif;
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      justify-content: space-between;
+      text-align: justify;
+      background-color: var(--color-bg);
+      color: var(--color-secondary);
+    }
 
-        .paragraph {
-            padding: 0;
-            border-radius: 0;
-            position: relative;
-            text-align: justify;
-        }
+    .container {
+      max-width: 1000px;
+      width: 100%;
+      margin: 0 auto;
+    }
 
-        .section-title {
-            font-size: 22px;
-            font-weight: bold;
-            margin-top: 30px;
-            margin-bottom: 10px;
-            text-align: left;
-        }
+    .paragraph {
+      padding: 0;
+      border-radius: 0;
+      position: relative;
+      text-align: justify;
+    }
 
-        .blog-link {
-            padding-right: 20px;
-            border-radius: 5px;
-            text-align: left;
-            margin-bottom: 0;
-        }
+    .section-title {
+      font-size: 22px;
+      font-weight: bold;
+      margin-top: 30px;
+      margin-bottom: 10px;
+      text-align: left;
+      color: var(--color-primary);
+    }
 
-        .final-line {
-            font-size: 15px;
-            text-align: center;
-            margin-top: 30px;
-        }
+    .blog-link {
+      padding-right: 20px;
+      border-radius: 5px;
+      text-align: left;
+      margin-bottom: 0;
+    }
 
-        .final-line a {
-            text-decoration: none;
-        }
+    .blog-link a {
+      color: var(--color-link);
+      text-decoration: none;
+    }
 
-        /* Slideshow styles */
-        .slideshow-container {
-            max-width: 800px;
-            margin: 30px auto;
-            position: relative;
-        }
+    .blog-link a:hover {
+      color: var(--color-link-hover);
+    }
 
-        .slide {
-            display: none;
-            position: relative;
-            width: 100%;
-            padding-top: 56.25%; /* 16:9 ratio (9/16 = 0.5625) */
-            overflow: hidden;
-            border-radius: 8px;
-        }
+    .final-line {
+      font-size: 15px;
+      text-align: center;
+      margin-top: 30px;
+      color: var(--color-secondary);
+    }
 
-        .slide img {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;     /* fills frame, crops edges */
-            object-position: center;
-        }
+    .final-line a {
+      color: var(--color-link);
+      text-decoration: none;
+    }
 
-        .fade {
-            animation: fadeEffect 1.5s;
-        }
+    .final-line a:hover {
+      color: var(--color-link-hover);
+    }
 
-        @keyframes fadeEffect {
-            from {opacity: 0.4;}
-            to {opacity: 1;}
-        }
-    </style>
-    <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&display=swap" rel="stylesheet">
+    hr {
+      border: 0;
+      border-top: 1px solid var(--color-muted);
+    }
+
+    /* Slideshow styles */
+    .slideshow-container {
+      max-width: 800px;
+      margin: 30px auto;
+      position: relative;
+    }
+
+    .slide {
+      display: none;
+      position: relative;
+      width: 100%;
+      padding-top: 56.25%; /* 16:9 ratio */
+      overflow: hidden;
+      border-radius: 8px;
+    }
+
+    .slide img {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover; 
+      object-position: center;
+    }
+
+    .fade {
+      animation: fadeEffect 1.5s;
+    }
+
+    @keyframes fadeEffect {
+      from {opacity: 0.4;}
+      to {opacity: 1;}
+    }
+  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="container">
-        <!-- Publications -->
-        <p class="section-title">Publications</p>
-        <div class="paragraph">
-            <p class="blog-link">
-                <span class="year">2025</span> – 
-                <span class="title">English-based acoustic models perform well in the forced alignment of two English-based Pacific Creoles</span> 
-                [<a href="https://aclanthology.org/2025.acl-long.1505.pdf" target="_blank">Download</a>]
-            </p>
+  <div class="container">
+    <!-- Publications -->
+    <p class="section-title">Publications</p>
+    <div class="paragraph">
+      <p class="blog-link">
+        <span class="year">2025</span> – 
+        <span class="title">English-based acoustic models perform well in the forced alignment of two English-based Pacific Creoles</span> 
+        [<a href="https://aclanthology.org/2025.acl-long.1505.pdf" target="_blank">Download</a>]
+      </p>
 
-            <p class="blog-link">
-                <span class="year">(Under review)</span> – 
-                <span class="title">Contrast, Context, and Contact: Phonetic variation in Assamese mid front vowel space</span> 
-                [<a href="" target="_blank">Download</a>]
-            </p>
-        </div>
-
-        <!-- Conferences -->
-        <p class="section-title">Conferences</p>
-        <div class="paragraph">
-            <p class="blog-link">
-                <span class="year">2025</span> – 
-                <span class="title">Story of /o/: A Sociophonetic Investigation on Assamese Back Vowels (NWAV-AP 8, NUS, Singapore)</span> 
-                [<a href="" target="_blank">Download</a>]
-            </p>
-
-            <p class="blog-link">
-                <span class="year">2024</span> – 
-                <span class="title">Investigating variation of mid-front vowels in Assamese (Methods in Dialectology XVIII. La Trobe University, Melbourne)</span> 
-                [<a href="" target="_blank">Download</a>]
-            </p>
-        </div>
-
-        <!-- Slideshow -->
-        <div class="slideshow-container">
-            <div class="slide fade">
-                <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjX9o1piCUiwCBZ7HeWejL_iOwkIQMEwNSoqdVsCFbWtCsKcpdiUMp9QTFaEC0IreeLd64k0ESxPYYsqUfn6VeZuro2YSeVzbov028Muy4lKc30eaaLfdriffio_o3NAea0vNwrN3DpbCfKiumwX3pNjTUoDGMJ5kdzcHcuNRXok3JZ8sGF9wO7rhKq9sg/s2066/Screenshot%202025-09-11%20at%206.38.16%E2%80%AFPM.png" alt="Slide 1">
-            </div>
-            <div class="slide fade">
-                <img src="https://blogger.googleusercontent.com/img/a/AVvXsEjkHmeEZOrl_xAf4QaYPrM9Y-EFg2H1Or7i2VYvPFw1xz0zoppRhdLvUbJElImMCsWP81Wtb7gz6MUsJ6PMNMz_KR-Q4j0a83WlTvniN83EkTqO47Ry0yTa16h4N4I4-BOaHEUNHRftEdJ8A7bUQBsMfQyIAb7AbMCYACAjkh5DnxBaRUrrUxXwGWR3aq8" alt="Slide 2">
-            </div>
-            <div class="slide fade">
-                <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjYf6-YLPLB55lCn72HxxJlMzKlSI_eXorjIejs0Ivh9XvPVVvwcuvpf8oRuHpE-Z9atcYegDC8FK1Ei97N7lCqZdUTsven864QzW4vvW-Or3wQ1V6KQXyhnEXjaQkGuYuzZ_oQinigPKSjrP_pUJl40VQCytYo59grmTiUvBRPZfmG_QHe6O5slrDmqMs/s1772/Screenshot%202025-09-11%20at%206.35.56%E2%80%AFPM.png" alt="Slide 3">
-            </div>
-        </div>
+      <p class="blog-link">
+        <span class="year">(Under review)</span> – 
+        <span class="title">Contrast, Context, and Contact: Phonetic variation in Assamese mid front vowel space</span> 
+        [<a href="" target="_blank">Download</a>]
+      </p>
     </div>
 
-    <!-- Footer -->
-    <p class="final-line">
-        © Saurabh Nath | <a href="https://saurabhknath.github.io/">Home</a>
-    </p>
+    <!-- Conferences -->
+    <p class="section-title">Conferences</p>
+    <div class="paragraph">
+      <p class="blog-link">
+        <span class="year">2025</span> – 
+        <span class="title">Story of /o/: A Sociophonetic Investigation on Assamese Back Vowels (NWAV-AP 8, NUS, Singapore)</span> 
+        [<a href="" target="_blank">Download</a>]
+      </p>
 
-    <script>
-        let slideIndex = 0;
-        showSlides();
+      <p class="blog-link">
+        <span class="year">2024</span> – 
+        <span class="title">Investigating variation of mid-front vowels in Assamese (Methods in Dialectology XVIII. La Trobe University, Melbourne)</span> 
+        [<a href="" target="_blank">Download</a>]
+      </p>
+    </div>
 
-        function showSlides() {
-            let slides = document.getElementsByClassName("slide");
-            for (let i = 0; i < slides.length; i++) {
-                slides[i].style.display = "none";  
-            }
-            slideIndex++;
-            if (slideIndex > slides.length) {slideIndex = 1}    
-            slides[slideIndex-1].style.display = "block";  
-            setTimeout(showSlides, 3000); // Change slide every 3 seconds
-        }
-    </script>
+    <!-- Slideshow -->
+    <div class="slideshow-container">
+      <div class="slide fade">
+        <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjX9o1piCUiwCBZ7HeWejL_iOwkIQMEwNSoqdVsCFbWtCsKcpdiUMp9QTFaEC0IreeLd64k0ESxPYYsqUfn6VeZuro2YSeVzbov028Muy4lKc30eaaLfdriffio_o3NAea0vNwrN3DpbCfKiumwX3pNjTUoDGMJ5kdzcHcuNRXok3JZ8sGF9wO7rhKq9sg/s2066/Screenshot%202025-09-11%20at%206.38.16%E2%80%AFPM.png" alt="Slide 1">
+      </div>
+      <div class="slide fade">
+        <img src="https://blogger.googleusercontent.com/img/a/AVvXsEjkHmeEZOrl_xAf4QaYPrM9Y-EFg2H1Or7i2VYvPFw1xz0zoppRhdLvUbJElImMCsWP81Wtb7gz6MUsJ6PMNMz_KR-Q4j0a83WlTvniN83EkTqO47Ry0yTa16h4N4I4-BOaHEUNHRftEdJ8A7bUQBsMfQyIAb7AbMCYACAjkh5DnxBaRUrrUxXwGWR3aq8" alt="Slide 2">
+      </div>
+      <div class="slide fade">
+        <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjYf6-YLPLB55lCn72HxxJlMzKlSI_eXorjIejs0Ivh9XvPVVvwcuvpf8oRuHpE-Z9atcYegDC8FK1Ei97N7lCqZdUTsven864QzW4vvW-Or3wQ1V6KQXyhnEXjaQkGuYuzZ_oQinigPKSjrP_pUJl40VQCytYo59grmTiUvBRPZfmG_QHe6O5slrDmqMs/s1772/Screenshot%202025-09-11%20at%206.35.56%E2%80%AFPM.png" alt="Slide 3">
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <p class="final-line">
+    © Saurabh Nath | <a href="https://saurabhknath.github.io/">Home</a>
+  </p>
+
+  <script>
+    let slideIndex = 0;
+    showSlides();
+
+    function showSlides() {
+      let slides = document.getElementsByClassName("slide");
+      for (let i = 0; i < slides.length; i++) {
+        slides[i].style.display = "none";  
+      }
+      slideIndex++;
+      if (slideIndex > slides.length) {slideIndex = 1}    
+      slides[slideIndex-1].style.display = "block";  
+      setTimeout(showSlides, 3000); // Change slide every 3 seconds
+    }
+  </script>
 </body>
 </html>
