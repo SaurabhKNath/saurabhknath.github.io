@@ -53,6 +53,31 @@
         .final-line a {
             text-decoration: none;
         }
+
+        /* Slideshow styles */
+        .slideshow-container {
+            max-width: 800px;
+            margin: 30px auto; /* spacing above and below */
+            position: relative;
+        }
+
+        .slide {
+            display: none;
+        }
+
+        .slide img {
+            width: 100%;
+            border-radius: 8px;
+        }
+
+        .fade {
+            animation: fadeEffect 1.5s;
+        }
+
+        @keyframes fadeEffect {
+            from {opacity: 0.4;}
+            to {opacity: 1;}
+        }
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&display=swap" rel="stylesheet">
 </head>
@@ -89,11 +114,37 @@
                 [<a href="" target="_blank">Download</a>]
             </p>
         </div>
+
+        <!-- Slideshow -->
+        <div class="slideshow-container">
+            <div class="slide fade">
+                <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjX9o1piCUiwCBZ7HeWejL_iOwkIQMEwNSoqdVsCFbWtCsKcpdiUMp9QTFaEC0IreeLd64k0ESxPYYsqUfn6VeZuro2YSeVzbov028Muy4lKc30eaaLfdriffio_o3NAea0vNwrN3DpbCfKiumwX3pNjTUoDGMJ5kdzcHcuNRXok3JZ8sGF9wO7rhKq9sg/s2066/Screenshot%202025-09-11%20at%206.38.16%E2%80%AFPM.png" alt="Slide 1">
+            </div>
+            <div class="slide fade">
+                <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjYf6-YLPLB55lCn72HxxJlMzKlSI_eXorjIejs0Ivh9XvPVVvwcuvpf8oRuHpE-Z9atcYegDC8FK1Ei97N7lCqZdUTsven864QzW4vvW-Or3wQ1V6KQXyhnEXjaQkGuYuzZ_oQinigPKSjrP_pUJl40VQCytYo59grmTiUvBRPZfmG_QHe6O5slrDmqMs/s1772/Screenshot%202025-09-11%20at%206.35.56%E2%80%AFPM.png" alt="Slide 2">
+            </div>
+        </div>
     </div>
 
     <!-- Footer -->
     <p class="final-line">
         © Saurabh Nath | <a href="https://saurabhknath.github.io/">Home</a>
     </p>
+
+    <script>
+        let slideIndex = 0;
+        showSlides();
+
+        function showSlides() {
+            let slides = document.getElementsByClassName("slide");
+            for (let i = 0; i < slides.length; i++) {
+                slides[i].style.display = "none";  
+            }
+            slideIndex++;
+            if (slideIndex > slides.length) {slideIndex = 1}    
+            slides[slideIndex-1].style.display = "block";  
+            setTimeout(showSlides, 3000); // Change slide every 3 seconds
+        }
+    </script>
 </body>
 </html>
