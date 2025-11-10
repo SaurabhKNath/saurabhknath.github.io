@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Acknowledgements</title>
+  <style>
+    :root{
+      --bg:#0b0f14;
+      --fg:#e8f1f8;
+      --muted:#9fb3c8;
+      --card:#131a22;
+      --accent:#5ec2ff;
+      --shadow:0 6px 18px rgba(0,0,0,.4);
+      --radius:16px;
+    }
+    *{box-sizing:border-box;}
+    body{
+      margin:0;
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica Neue,Arial;
+      background:linear-gradient(180deg,#0b0f14 0%,#0d1218 100%);
+      color:var(--fg);
+    }
+    header{
+      max-width:1100px;margin:40px auto 10px;padding:0 16px;text-align:center;
+    }
+    header h1{margin:0 0 6px;font-size:clamp(1.6rem,2.4vw + 1rem,3rem);}
+    header p{margin:0;color:var(--muted);}
+    .gallery{
+      max-width:1100px;margin:22px auto 80px;padding:0 16px;column-gap:16px;
+    }
+    @media (min-width:1024px){.gallery{column-count:4}}
+    @media (min-width:720px) and (max-width:1023px){.gallery{column-count:3}}
+    @media (min-width:480px) and (max-width:719px){.gallery{column-count:2}}
+    @media (max-width:479px){.gallery{column-count:1}}
+    figure{
+      break-inside:avoid;margin:0 0 16px;background:var(--card);
+      border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);
+      border:1px solid rgba(255,255,255,.08);
+    }
+    figure img{width:100%;height:auto;display:block;}
+    figure figcaption{padding:10px 12px;font-size:.9rem;color:var(--muted);}
+    .lightbox{
+      position:fixed;inset:0;background:rgba(0,0,0,.75);
+      display:none;align-items:center;justify-content:center;z-index:9999;
+    }
+    .lightbox.open{display:flex;}
+    .lightbox-inner{
+      max-width:min(95vw,1100px);max-height:90vh;background:var(--card);
+      border-radius:var(--radius);box-shadow:var(--shadow);
+      overflow:hidden;border:1px solid rgba(255,255,255,.12);
+    }
+    .lightbox img{max-width:100%;max-height:75vh;display:block;}
+    .lightbox .lb-caption{
+      padding:12px 14px;color:var(--muted);font-size:.95rem;
+      display:flex;justify-content:space-between;gap:12px;align-items:center;
+    }
+    .lightbox .lb-caption a{color:var(--accent);text-decoration:none;}
+    .lb-close{
+      position:absolute;top:20px;right:20px;font-size:0;width:44px;height:44px;
+      border-radius:999px;border:1px solid rgba(255,255,255,.18);
+      display:grid;place-items:center;
+    }
+    .lb-close::before{content:"✕";font-size:18px;}
+    footer{text-align:center;color:var(--muted);padding:30px 16px;}
+    .credits{max-width:900px;margin:0 auto;line-height:1.6;}
+  </style>
+</head>
+<body>
+  <header>
+    <h1>ADIP (2023–) fieldwork moments</h1>
+    <p> Click any image to view larger.</p>
+  </header>
+
+  <main id="gallery" class="gallery" aria-live="polite"></main>
+
+  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Image viewer">
+    <button class="lb-close" id="lbClose" aria-label="Close"></button>
+    <div class="lightbox-inner">
+      <img id="lbImg" alt="" />
+      <div class="lb-caption">
+        <div id="lbText"></div>
+        <a id="lbOpen" href="#" target="_blank" rel="noopener">Open original ↗</a>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="credits">
+      This page is dedicated to the friends, families, and communities who supported ADIP fieldwork.
+      Thank you for your generosity, time, and trust.
+    </div>
+  </footer>
+
+  <script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const images = [
+      { src: "https://blogger.googleusercontent.com/img/a/AVvXsEjYVmrV9zZ5IQMScED8rs2hPCqN6xYwZ8XXDMbyLj14xRSQiPYi-icUg5tLcYcw113HtQKn489RRG6r_ycEUMzzpl6ohiWL211tOeJxd1CZratloGlhEL95eZUwdx0uBT8Dy6tGDCpocAnpYSu_o_6yiXyVTW42eGCi_qjOKHu30XCQkXG-chb8V6_QplI"},
+      { src: "https://blogger.googleusercontent.com/img/a/AVvXsEjxjcT3d_x4AfeI__vk2PEajOwRuTicHwO-gCdMMXKpT9BHL3Qe_pEebGyeWy1dKELxQ5uKfLHaT3JPlvxBhoyua_JR6DkUXsChsKSgZP0vyfiJHRQqZhepdgMNHoC3ZC3xLNdsSeWbf8HJ9NWZ_JTLp4ioUk6Fr-h9V4JighqB7DhbUdpQgRhzk1-ALUU"},
+      { src: "https://blogger.googleusercontent.com/img/a/AVvXsEi69vJxYLKUpP0CgqlEnFZN1BM4Td0RDG1Pqc2l3evrsFR2mX4_dbtAKsIzcr0KFvXQt6Q0eI0_EdxBrA9ZhQ0s-9Fcm_1Z9sG8rOzySjR2WbcLhdjv99dzcA6kACVwHW1ZM9przUhiYWUxcXdGcqVZNf6IxYqrKCZZYYcmFbkx7fnpfMJq1fOtIN3IfTQ"},
+      { src: "https://blogger.googleusercontent.com/img/a/AVvXsEg6Y4DqHw2RMjswG0xMgHK4Zy1Qcgjtm7SzgOfXenLI2P-Kfij04iSI1nsNQ2ZrhgWskvYpXEYKv6I5YnMGyf7UZTkZdpRdZkHnVHS4Uz773fYngVQ4vJeHb_YJIcLPujcUTUeQtHr7yGmhWz3JC_6miPEt98ID7j3m6Uq2UhDS3J7HVE-_y6HdSOzGvJQ"},
+      { src: "https://blogger.googleusercontent.com/img/a/AVvXsEhhCiOvY5kINoknv-ty4rXTQm3f6ycfnjHZIRQBovvcRIbw8w8nGaRhdWv1h5SaJ2JiPkbiGGhDqhxVfZZ_aRPrtNQJNzVZIAJM8LYa3gPVUnmQJIvdORbE7u6VhMEtvcW51p6VKsBUGsi6DC4OfmP_6Mdh3rFIqiZ-ROaf9_BvEElQZVHKIOIa63SJTKI"},
+      { src: "https://blogger.googleusercontent.com/img/a/AVvXsEgWg9C1zvAECBX9TimB9LIkPT0fFYpYckicSXNk_cf3ktukBwYa_eeDSgBGzJug1M6rPinqAImatynivnEkA6zNQr2KCCNSfaYnf7KqkQnL7JTMGb5ya-JY2niSlJ7D4nSxwcvpY2O-eVomIyAzWRIN_Fzsa7nO3GKZgVNTQI9c5eI7KzedRrdshXHleNs"},
+      { src: "https://blogger.googleusercontent.com/img/a/AVvXsEgkTqPxJZp-uRApw4Ud2S8kxjaeo719Pu4jlyuS548jN3kiQrW3D1aLx2wYq79xatLL6mjS_T2lYzrrxVaB1Bc1W6Qo5nzo7_Jk9qg4CwXX1sVILWYytXlBv7bL6THHeuSPNLi7pxiM5Xlv3JvT0PEUAcRm03OujR2RX611oCBpytUd0tJho0zfZLUlhv0"},
+      { src: "https://blogger.googleusercontent.com/img/a/AVvXsEhvJabCUTr0D2IjEcw9SKTjaloYd1_SkNiOTpTqrRu4tMaFcsPr2Gf6ZnKZvlDWEt3MAmYBOlXlqNoX1swFvrwMa24UdECxQsypOepJ5FalBwy1lf76eTAI5-zFGwfYn8S3uRqhPSYjYP5L3HWtM2-WxHB0RgjKv6NDwtePIDZg7JZov8Cw4PYV2aqE0SI"},
+      { src: "https://blogger.googleusercontent.com/img/a/AVvXsEj8tWPDslsiuw8ORYxyPe7Ec73qX0YwXE1mIR3ahiJuPdui99qDkaUhVLCeM-twhTnujdpRob5Sap7nrvowtl1eRjUAW0ew-lZgHVrW9dg-0hJdgJRvZitygbFEM6NWcZWFx41J6_q3I31pr3OJ6DnUoy7Cyzr4kxW0rbeSfRJFm2aED7G6Il7DJ7l2bd8"},
+      { src: "https://blogger.googleusercontent.com/img/a/AVvXsEgTYxozPS8aIj3ZII3SfZzTl1TK084GbYNxdt8x1UtnQhzUHe6fXehSeKfvlEpD498aqXE7y67C1N7dilzYZUUR6HHjJii_g-7XcuZPuiRTiwQ-fl1IfhJvttT5iKi_QFzO0hEiWGvt89WSttOOCqmPLv9G6bI0NzJXpQ61WayBfe3-SwhVRsh-GrMiNdg"},
+      { src: "https://blogger.googleusercontent.com/img/a/AVvXsEgGz5MsfAbvGPl8Rzhy68C-8ROcHsuk4yKY47Zgks8n8_qW4uTtlg1uLC2wOZd7Tr__zHZOwUQiA0SgZcP7mg7ZHFO0o7mYJ5kzcWM4GUMGRWX8M6ITtn52crcsHlSN3ePgi8-cOIaLPIfQSvdI_X_YuaWoGl02EbMYo_lt8tmD0mBHi2ffAvtWjWiER6U=w400-h300"},
+      { src: "https://blogger.googleusercontent.com/img/a/AVvXsEhaqVqTer9TRvl2fzWkJVnXLMQ8pO7AfBRqhYpFEvI--xqmin5R_kdvLd_JcTp8vAr5QfBWUDAGzUerVLSmzilFCPvhEpEuE5E6WYCldkY8UT7nvzCIyKOlI3iPLns7e42CccJeVvxYzU_9CzRG-lXZ6RdzoFpAoBNyqrrA_KIvBgjWURe9JpYnEDd7r00"},
+      { src: "https://blogger.googleusercontent.com/img/a/AVvXsEivQ22NyDKlR-sR6k6rdfa8L6RfcoUK0Jl8say07vkbqyX7iBcThKjVEZHIXl3G3UdJfaIyguvkMTJU1P4eYT7VKd3WgcXv6glfSKB7_Ym0IauQkPeFgDGuGPrAem1hu9DwpLT6xsbCHqYOdGmnQmICwzS2wwCWQz-its2tnvNWgLdZZIKQbzxWUPDF7BY"},
+      { src: "https://blogger.googleusercontent.com/img/a/AVvXsEjGIPFWqK2fW49LLAgHUivGPji9IdEXuD8mxLzsyvWCd6rOnPP68HKrOklzK3XVsHHYG93TexCrM8eHRuBs8EkYon58Rxny2yFVFKtwzC6rsKHPWGMnwEnaf6dJMrXSf10GdE_Z1fpq1w81vrzjZ4vAxsSH7MucHthkuvHggEpiutJ6ttakH5i33_7wHQ8"},
+      { src: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjYaEM8AuSADKqeAxXxKl50ctKCd02c9q9VByxG3PF6XS9MIGHABBbJQppjHDLwmwBZqLsIBxHKHDOjmqszHeusHkbtXUb7UYTjzs0nxQlgXWwVROmcEvsH1FibzKTSX_ou0nrNw_Z0BkoIi-IT8qypc2vt1qow6gIC-MDzNAyYXsdOR-OX7Xpb8osdZD8/w188-h334/WhatsApp%20Image%202024-11-02%20at%208.29.24%20PM.jpeg"},
+      { src: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgk8x3hJ0MoGKbn9SR0gaEzwuM3h9aeUn7bS9DkZPPauhEcXPiZ36h2AilmuRWKMoePax2NPAm8O90ahjf4_k4GhGmfs5v_NCr9MfuYZ811jQFgl4xcIHNSwLkJVVZQABYq5gv_80JfS4VbJzyLXr4evK1awEBD8diJXf50n8hPW4hXirXaz6mRz07GUT4/s4032/WhatsApp%20Image%202024-11-02%20at%208.29.22%20PM.jpeg"},
+      { src: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEheULWWn6PVAn0M_452E0E2aMP_F0iqd9Nv1e6bBFKJhqDCKRbeizUA4_6PH3kQFiqhKb9oF7VxgHnB8-jmD1lQqNNPZ5OU6ctMp1u93qxWuxFVNNW7q_fIB0iejyT91j5DBit2vDohOAe-gRRMbTh_XrUy5NBNetGj8bbjisiH01W_Xs3cYyA0rNtg00g/s320/WhatsApp%20Image%202024-11-02%20at%208.29.19%20PM%20(2).jpeg"},
+      { src: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEifL3184hbKf1weIlHfQr6cwnrLE3l8tc_M2B7bqIUzvQFrEVrBjvSTaNzQpRrVd_cxznXwBBXM45za99dEwZjDxuy-ntFEfzj0HB_4Xutg6tPKfwi63NrNjPPF1MdnxlhPN136BgF6lTWxORKmzqiBJ47LtNGmn7Je-ue6cvj5oaucTk73aG_609yi75w/s4032/WhatsApp%20Image%202024-11-02%20at%208.29.18%20PM.jpeg"},
+      { src: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgaUZKX46F0O2ncq6jI6CS4V2Y4WmWbpnIulf0OcFTh7MM58VPUMQPqp-ySVbjJSlq51Tb-K_k46fkw8t0-_IXaheRJOjgfekwuzubHbzQxdvF2BvHGYiXW-hcdnr_aaVw-NmwBHJiJTkLGUkfG0KEfjYDN_CoiPAfXNUHUoggT-qn1dkAHrxTLz3EK0N8/s4032/WhatsApp%20Image%202024-11-02%20at%208.29.14%20PM.jpeg"},
+      { src: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjjHUMwIl85SNpM8KMeR6PXKZ01URO_udiTM0t3w0dUWejbPUJk7aAmALBP6DUF8qxDVVFNbSmJ6ibWXhPk767Zi_jsHpE-4a6DiYWfFlNkp8qfnAPmRDb2ODBzt6At3dYlvnb-wWaFAatIC2Xh9Apm2TVgpce20R7eTyfu_xvdwVYAQpYvqtr2MHxuSNQ/s4032/WhatsApp%20Image%202024-11-02%20at%208.29.18%20PM%20(1).jpeg"},
+      { src: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEguQsaDZO-4xR-QtOa6gzAjSxiwqL0tV5pUx3qdL4T0I2-mVYnC4xlm65igQwZwl4UkmmojQio6D8cCYIQe73KKb0vYzgvpyE2JAg0etxeOJSlBjOffl2LyV3fkxwn_fCsNPN2nRdXdRisLJG5uM2rbj0g_2XHVRx2MgFXiYaeNULRoZZHA9ZAHKXpoask/s4032/IMG_3360%202.jpg"},
+      { src: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgxhKPRP0hGOudRgYy9JjtObAJmCzeP9u2AEakLYmOljOn7Y4fQAStXS9JRWvua07c4NW9r0dY6APavtW3xoDCtvpiAOCtHIIWOG6j6kgBRtLI2IinbFxzNImN2lWGiUq4QYLgDQpeLdQkvCLwqtrXwDZ-r-wR3gZx_5-NA29wjqY4nqFrXyFL3WXC0DQ0/s4032/IMG_2271%202.png"},
+      { src: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhd9wzUShhvUXrrRbTxkjzBpon43H1gwR7-69e0WnFF3-dJsuNh_DI2wvNEr4GLL9QL-yQVamDWtr_o9-uAeX9hNYEU8S7TKwCFHjRzx4bsPMMt6Js_jvCu6nlm9bskcezOlogi4jAHBFyRYvPHKoV8rcM7hlessi7AR3wr4kR_bP4-pgx1X-0fXomNA24/s4032/IMG_3108.jpg"},
+      { src: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiNv5_CAcIPv8Cy4S-wf_kj44c7fAQ-8FM3CMUBWOsnU9758Wiizxii_Vk833xsiNpiPQgxraxasm1PdBiqeKatVlwNoxEjkklzgIraH-JEfzZ3WefteLxkQXc73KAzxSKrSyHvUqtOQn3TtsxKfxawitJVx0A8Vl2Ixj-eRvd6O9BfDGtrt-p_-SPDwPE/s4032/IMG_2849.jpg"},
+      { src: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiRB99x9ucDmSzCsWOR24bDmMPepOCts-ej3ef6z5pZU3hEuSBlWQ68LPdjvc87kuvHWzOX_qmQRpDcfe9-Hp6-Zd2Ij5zSzaNpnmo33Qsg2ywGW4o-xo-GmNx9ZuJZiOsvAAkSg5yxgJglZw3MNuLs3FST3hNbChv6RA_E5eFEXL91CDam9I8SrQdOr_o/s4032/IMG_2821.jpg"}
+      
+    ];
+
+    const gallery = document.getElementById('gallery');
+    const lb = document.getElementById('lightbox');
+    const lbImg = document.getElementById('lbImg');
+    const lbText = document.getElementById('lbText');
+    const lbOpen = document.getElementById('lbOpen');
+    const lbClose = document.getElementById('lbClose');
+
+    function shuffleArray(arr){
+      const out = arr.slice();
+      for(let i = out.length - 1; i > 0; i--){
+        const j = Math.floor(Math.random() * (i + 1));
+        [out[i], out[j]] = [out[j], out[i]];
+      }
+      return out;
+    }
+
+    function render(list){
+      gallery.innerHTML = '';
+      list.forEach((item, idx) => {
+        const fig = document.createElement('figure');
+        const a = document.createElement('a');
+        a.href = item.src; a.target = '_blank'; a.rel = 'noopener';
+        const img = document.createElement('img');
+        img.src = item.src; img.alt = item.alt || `Photo ${idx+1}`;
+        img.loading = 'lazy';
+        a.appendChild(img);
+        fig.appendChild(a);
+        const cap = document.createElement('figcaption');
+        cap.textContent = item.alt;
+        fig.appendChild(cap);
+        fig.addEventListener('click', (e) => { e.preventDefault(); openLightbox(item); });
+        gallery.appendChild(fig);
+      });
+    }
+
+    function openLightbox(item){
+      lbImg.src = item.src; lbImg.alt = item.alt || '';
+      lbText.textContent = item.alt || '';
+      lbOpen.href = item.src;
+      lb.classList.add('open');
+    }
+
+    function closeLightbox(){
+      lb.classList.remove('open');
+      lbImg.src = '';
+    }
+
+    lb.addEventListener('click', (e) => { if(e.target === lb) closeLightbox(); });
+    lbClose.addEventListener('click', closeLightbox);
+    document.addEventListener('keydown', (e) => {
+      if(e.key === 'Escape' && lb.classList.contains('open')) closeLightbox();
+    });
+
+    render(shuffleArray(images));
+  });
+  </script>
+</body>
+</html>
