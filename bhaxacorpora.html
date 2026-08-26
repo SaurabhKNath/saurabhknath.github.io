@@ -563,6 +563,132 @@
     display:none;
   }
 
+
+  /* Permanent page structure: search always occupies the same slot */
+  .app-shell{
+    display:grid;
+    grid-template-areas:
+      "stats"
+      "search"
+      "results"
+      "dashboard"
+      "footer";
+    grid-template-columns:minmax(0,1fr);
+    row-gap:0;
+  }
+
+  .corpus-stats{
+    grid-area:stats;
+  }
+
+  #searchZone{
+    grid-area:search;
+    position:relative;
+    z-index:5;
+    background:#fff;
+  }
+
+  #searchResultsZone{
+    grid-area:results;
+  }
+
+  #idleDashboard{
+    grid-area:dashboard;
+  }
+
+  footer{
+    grid-area:footer;
+  }
+
+  /* Authentication UI is always out of document flow */
+  #loginPanel,
+  #profilePanel{
+    position:fixed !important;
+    left:50% !important;
+    top:50% !important;
+    transform:translate(-50%,-50%) !important;
+    width:min(560px,calc(100vw - 32px)) !important;
+    max-height:calc(100vh - 40px);
+    overflow:auto;
+    z-index:2000 !important;
+    margin:0 !important;
+    background:#fff;
+    box-shadow:0 18px 60px rgba(0,0,0,.16);
+  }
+
+  #loginPanel.hidden,
+  #profilePanel.hidden{
+    display:none !important;
+  }
+
+
+  /* Refined login-required popup */
+  #loginPanel{
+    padding:2rem 2rem 1.8rem;
+    border:1px solid #e8e8e5;
+    border-radius:18px;
+    text-align:center;
+  }
+
+  #loginPanel::before{
+    content:"↗";
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    width:42px;
+    height:42px;
+    margin:0 auto 1rem;
+    border:1px solid #d8d8d3;
+    border-radius:50%;
+    font-size:1.15rem;
+    font-weight:400;
+    color:#111;
+  }
+
+  #loginPanel .auth-title{
+    margin-bottom:.55rem;
+    font-size:1.05rem;
+    font-weight:600;
+    letter-spacing:-.01em;
+  }
+
+  #loginPanel .auth-copy{
+    max-width:390px;
+    margin:0 auto 1.25rem;
+    color:#73736d;
+    font-size:.78rem;
+    line-height:1.65;
+  }
+
+  #loginPanel .auth-button{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    min-width:190px;
+    padding:.72rem 1.15rem;
+    border:1px solid #111;
+    border-radius:999px;
+    background:#111;
+    color:#fff;
+    font-family:"Poppins",sans-serif;
+    font-size:.78rem;
+    font-weight:500;
+    text-decoration:none;
+    transition:
+      transform .15s ease,
+      opacity .15s ease;
+  }
+
+  #loginPanel .auth-button:hover{
+    transform:translateY(-1px);
+    opacity:.86;
+  }
+
+  #loginPanel .auth-button::after{
+    content:" →";
+    margin-left:.45rem;
+  }
+
 </style>
 </head>
 
@@ -653,9 +779,11 @@
     </span>
   </div>
 
-  <div id="searchAccessNote" class="auth-copy" style="margin-bottom:.5rem;">
-    Search requires login.
-  </div>
+
+  <section id="searchZone">
+    <div id="searchAccessNote" class="auth-copy" style="margin-bottom:.5rem;">
+      Search requires login.
+    </div>
 
   <form id="searchForm">
 
@@ -804,7 +932,9 @@
     </div>
 
   </form>
+  </section>
 
+  <section id="searchResultsZone">
   <div id="searchSummary" class="search-summary"></div>
   <div id="status" class="status"></div>
 
@@ -815,8 +945,8 @@
   </div>
 
   <section id="results"></section>
-
-  <section id="idleDashboard" class="idle-dashboard">
+  </section>
+<section id="idleDashboard" class="idle-dashboard">
 
     <div class="pulse-label">
       Latest corpus update
@@ -1184,6 +1314,21 @@ function setLoggedInUI(data) {
 
 async function loadIdentity() {
   setLoggedOutUI();
+
+  /*
+    After logout, deliberately skip one identity check so the page
+    always returns to the public pre-login UI immediately.
+  */
+  if (
+    sessionStorage.getItem(
+      "bhaxaJustLoggedOut"
+    ) === "1"
+  ) {
+    sessionStorage.removeItem(
+      "bhaxaJustLoggedOut"
+    );
+    return;
+  }
 
   try {
     const response =
@@ -1630,30 +1775,35 @@ accountButton.addEventListener(
     accountButton.textContent =
       "Logging out…";
 
+    /*
+      Make the next page load render the public state first,
+      regardless of any short Access token propagation delay.
+    */
+    sessionStorage.setItem(
+      "bhaxaJustLoggedOut",
+      "1"
+    );
+
     try {
       await fetch(
         `${API}/cdn-cgi/access/logout`,
         {
           method: "GET",
           credentials: "include",
-          mode: "no-cors"
+          mode: "no-cors",
+          cache: "no-store"
         }
       );
     } catch {}
 
-    setLoggedOutUI();
-
-    summary.innerHTML = "";
-    status.textContent = "";
-    results.innerHTML = "";
-
-    query.value = "";
-    idleDashboard.classList.remove(
-      "hidden"
+    /*
+      Return to the public Bhaxa page.
+      The one-time sessionStorage flag prevents loadIdentity()
+      from immediately restoring the old logged-in UI.
+    */
+    window.location.replace(
+      "https://www.saurabhkumarnath.com/bhaxacorpora.html"
     );
-
-    await loadStats();
-    await loadDashboard();
   }
 );
 
