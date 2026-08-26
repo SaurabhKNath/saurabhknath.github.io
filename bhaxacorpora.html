@@ -7,9 +7,13 @@
 
 <title>Bhaxa Corpora</title>
 
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
 <style>
   :root{
-    --bg:#f5f5f2;
+    --bg:#ffffff;
     --fg:#0b0b0b;
     --muted:#777772;
     --line:#d5d5cf;
@@ -50,8 +54,25 @@
     margin-bottom:4rem;
   }
 
-  .brand strong{font-weight:650}
-  .brand span{font-weight:300;color:var(--muted)}
+  .brand strong{
+    font-weight:600;
+    color:var(--fg);
+  }
+
+  .brand span{
+    font-weight:300;
+    color:var(--muted);
+  }
+
+  .brand-trial{
+    position:relative;
+    top:-.55em;
+    margin-left:.28rem;
+    font-size:.38em;
+    font-weight:500;
+    color:var(--muted);
+    letter-spacing:.02em;
+  }
 
   .account-control{
     position:fixed;
@@ -520,6 +541,28 @@
       flex-wrap:wrap;
     }
   }
+
+  /* Login/profile overlays: do not move the search interface */
+  #loginPanel,
+  #profilePanel{
+    position:fixed;
+    z-index:1100;
+    left:50%;
+    top:50%;
+    transform:translate(-50%,-50%);
+    width:min(560px,calc(100vw - 32px));
+    max-height:calc(100vh - 40px);
+    overflow:auto;
+    margin:0;
+    background:#fff;
+    box-shadow:0 18px 60px rgba(0,0,0,.14);
+  }
+
+  #loginPanel.hidden,
+  #profilePanel.hidden{
+    display:none;
+  }
+
 </style>
 </head>
 
@@ -535,14 +578,12 @@
 <main>
 
   <div class="brand">
-    <strong>Bhaxa</strong><span>Corpora</span>
+    <strong>Bhaxa</strong><span>Corpora</span><sup class="brand-trial">trial</sup>
   </div>
 
   <section id="loginPanel" class="auth-panel hidden">
     <div class="auth-title">Log in required to search</div>
     <div class="auth-copy">
-      Corpus statistics, token frequencies and recent updates are public.
-      To search concordance results, sign in with Google and create a Bhaxa profile.
     </div>
     <a id="loginButton" class="auth-button" href="#">
       Continue with Google
@@ -554,7 +595,7 @@
     <div class="auth-copy">
       Complete these details once before searching the corpus.
       Search activity is recorded and associated with your Bhaxa profile
-      for administration, usage analysis and abuse prevention.
+      for administration, usage analysis, and abuse prevention.
     </div>
     <div id="profileEmail" class="profile-email"></div>
 
@@ -611,38 +652,6 @@
       <strong id="lastUpdated">—</strong>
     </span>
   </div>
-
-  <section id="idleDashboard" class="idle-dashboard">
-
-    <div class="pulse-label">
-      Latest corpus update
-    </div>
-
-    <div id="ticker" class="ticker">
-      <div id="tickerTrack" class="ticker-track">
-        <span class="ticker-item">Loading latest additions…</span>
-      </div>
-    </div>
-
-    <div class="freq-grid">
-
-      <div>
-        <div class="pulse-label">
-          Top 20 tokens
-        </div>
-        <ol id="topTokens" class="freq-list"></ol>
-      </div>
-
-      <div>
-        <div class="pulse-label">
-          New tokens · latest update
-        </div>
-        <ol id="newTokens" class="freq-list"></ol>
-      </div>
-
-    </div>
-
-  </section>
 
   <div id="searchAccessNote" class="auth-copy" style="margin-bottom:.5rem;">
     Search requires login.
@@ -806,6 +815,39 @@
   </div>
 
   <section id="results"></section>
+
+  <section id="idleDashboard" class="idle-dashboard">
+
+    <div class="pulse-label">
+      Latest corpus update
+    </div>
+
+    <div id="ticker" class="ticker">
+      <div id="tickerTrack" class="ticker-track">
+        <span class="ticker-item">Loading latest additions…</span>
+      </div>
+    </div>
+
+    <div class="freq-grid">
+
+      <div>
+        <div class="pulse-label">
+          Top 20 tokens
+        </div>
+        <ol id="topTokens" class="freq-list"></ol>
+      </div>
+
+      <div>
+        <div class="pulse-label">
+          New tokens · latest update
+        </div>
+        <ol id="newTokens" class="freq-list"></ol>
+      </div>
+
+    </div>
+
+  </section>
+
 
   <footer>Bhaxa Corpora</footer>
 
@@ -1114,6 +1156,7 @@ function setLoggedOutUI() {
   searchAccessNote.textContent =
     "Search requires login.";
 
+  loginPanel.classList.add("hidden");
   profilePanel.classList.add("hidden");
 }
 
@@ -1131,9 +1174,6 @@ function setLoggedInUI(data) {
 
   accountButton.textContent =
     "Log out";
-
-  accountButton.href =
-    `${API}/cdn-cgi/access/logout`;
 
   searchAccessNote.textContent =
     profileIsComplete
@@ -1184,10 +1224,6 @@ async function loadIdentity() {
     }
 
   } catch {
-    /*
-      Normal when a public visitor has no Access session.
-      Public corpus information remains visible.
-    */
     setLoggedOutUI();
   }
 }
@@ -1578,10 +1614,10 @@ form.addEventListener(
   }
 );
 
-
 accountButton.addEventListener(
   "click",
-  event => {
+  async event => {
+
     if (
       accountButton.textContent.trim() !==
       "Log out"
@@ -1591,8 +1627,33 @@ accountButton.addEventListener(
 
     event.preventDefault();
 
-    window.location.href =
-      `${API}/cdn-cgi/access/logout`;
+    accountButton.textContent =
+      "Logging out…";
+
+    try {
+      await fetch(
+        `${API}/cdn-cgi/access/logout`,
+        {
+          method: "GET",
+          credentials: "include",
+          mode: "no-cors"
+        }
+      );
+    } catch {}
+
+    setLoggedOutUI();
+
+    summary.innerHTML = "";
+    status.textContent = "";
+    results.innerHTML = "";
+
+    query.value = "";
+    idleDashboard.classList.remove(
+      "hidden"
+    );
+
+    await loadStats();
+    await loadDashboard();
   }
 );
 
