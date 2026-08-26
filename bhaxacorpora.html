@@ -1,0 +1,1441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#f5f5f2">
+
+<title>Bhaxa Corpora</title>
+
+<style>
+  :root{
+    --bg:#f5f5f2;
+    --fg:#0b0b0b;
+    --muted:#777772;
+    --line:#d5d5cf;
+    --key:#ecece7;
+  }
+
+  *{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+  }
+
+  body{
+    background:var(--bg);
+    color:var(--fg);
+    font-family:
+      Inter,
+      ui-sans-serif,
+      -apple-system,
+      BlinkMacSystemFont,
+      "Segoe UI",
+      Helvetica,
+      Arial,
+      sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  main{
+    width:min(1180px,calc(100% - 36px));
+    margin:0 auto;
+    padding:8vh 0 7vh;
+  }
+
+  .brand{
+    font-size:clamp(3.5rem,8vw,7rem);
+    line-height:.9;
+    letter-spacing:-.075em;
+    margin-bottom:4rem;
+  }
+
+  .brand strong{font-weight:650}
+  .brand span{font-weight:300;color:var(--muted)}
+
+  .corpus-stats{
+    display:flex;
+    flex-wrap:wrap;
+    gap:.5rem 1.5rem;
+    padding:1rem 0;
+    margin-bottom:3rem;
+    border-top:1px solid var(--line);
+    border-bottom:1px solid var(--line);
+    color:var(--muted);
+    font-size:.78rem;
+  }
+
+  .corpus-stats strong{
+    color:var(--fg);
+    font-weight:550;
+  }
+
+  .updated{
+    margin-left:auto;
+  }
+
+  .auth-panel{
+    margin-bottom:3rem;
+    padding:1.2rem 0;
+    border-top:1px solid var(--line);
+    border-bottom:1px solid var(--line);
+  }
+
+  .auth-panel.hidden{
+    display:none;
+  }
+
+  .auth-title{
+    font-size:1rem;
+    margin-bottom:.4rem;
+  }
+
+  .auth-copy{
+    color:var(--muted);
+    font-size:.82rem;
+    line-height:1.6;
+    margin-bottom:1rem;
+  }
+
+  .auth-button{
+    display:inline-block;
+    padding:.7rem 1rem;
+    border:1px solid var(--fg);
+    color:var(--fg);
+    text-decoration:none;
+    font-size:.84rem;
+  }
+
+  .profile-form{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:1rem;
+    margin-top:1rem;
+  }
+
+  .profile-form label{
+    display:flex;
+    flex-direction:column;
+    gap:.35rem;
+    color:var(--muted);
+    font-size:.76rem;
+  }
+
+  .profile-form label.full{
+    grid-column:1 / -1;
+  }
+
+  .profile-form input,
+  .profile-form select,
+  .profile-form textarea{
+    width:100%;
+    border:0;
+    border-bottom:1px solid var(--line);
+    background:transparent;
+    color:var(--fg);
+    font:inherit;
+    font-size:1rem;
+    padding:.6rem 0;
+    outline:none;
+  }
+
+  .profile-form textarea{
+    min-height:5rem;
+    resize:vertical;
+  }
+
+  .profile-email{
+    color:var(--muted);
+    font-size:.78rem;
+    margin:.4rem 0;
+  }
+
+  .app-shell.hidden{
+    display:none;
+  }
+
+  .search-row{
+    display:grid;
+    grid-template-columns:1fr auto auto;
+    border-bottom:1px solid var(--fg);
+    align-items:end;
+  }
+
+  input{
+    border:0;
+    outline:0;
+    background:transparent;
+    width:100%;
+    padding:1rem 0;
+    font:inherit;
+    font-size:clamp(1.35rem,3vw,2rem);
+    color:var(--fg);
+  }
+
+  input::placeholder{
+    color:#aaa9a3;
+  }
+
+  button{
+    border:0;
+    background:none;
+    cursor:pointer;
+    color:var(--fg);
+    font:inherit;
+  }
+
+  .keyboard-toggle{
+    padding:0 1.1rem 1rem;
+    color:var(--muted);
+    font-size:.82rem;
+    white-space:nowrap;
+  }
+
+  .search-button{
+    padding:0 0 1rem 1rem;
+    font-size:.9rem;
+  }
+
+  .keyboard{
+    display:none;
+    margin-top:1rem;
+    padding:1rem 0;
+    border-bottom:1px solid var(--line);
+  }
+
+  .keyboard.open{
+    display:block;
+  }
+
+  .keyboard-row{
+    display:flex;
+    flex-wrap:wrap;
+    gap:.4rem;
+    margin-bottom:.4rem;
+  }
+
+  .key{
+    min-width:2.25rem;
+    padding:.55rem .65rem;
+    background:var(--key);
+    border:1px solid var(--line);
+    border-radius:6px;
+    font-family:
+      Georgia,
+      "Noto Serif Bengali",
+      serif;
+    font-size:1rem;
+  }
+
+  .key.wide{
+    min-width:4rem;
+    font-family:inherit;
+    font-size:.75rem;
+  }
+
+  .controls{
+    display:flex;
+    gap:1rem 1.4rem;
+    flex-wrap:wrap;
+    align-items:center;
+    margin:1rem 0 2.2rem;
+    color:var(--muted);
+    font-size:.8rem;
+  }
+
+  select{
+    border:0;
+    border-bottom:1px solid var(--line);
+    background:transparent;
+    color:inherit;
+    font:inherit;
+    padding:.2rem;
+  }
+
+  .idle-dashboard{
+    margin:0 0 3rem;
+  }
+
+  .idle-dashboard.hidden{
+    display:none;
+  }
+
+  .pulse-label{
+    margin-bottom:.85rem;
+    color:var(--muted);
+    font-size:.7rem;
+    text-transform:uppercase;
+    letter-spacing:.12em;
+  }
+
+  .ticker{
+    overflow:hidden;
+    border-top:1px solid var(--line);
+    border-bottom:1px solid var(--line);
+    padding:.8rem 0;
+    margin-bottom:2rem;
+    white-space:nowrap;
+  }
+
+  .ticker-track{
+    display:inline-flex;
+    gap:3rem;
+    min-width:max-content;
+    animation:bhaxaTicker 32s linear infinite;
+    font-family:
+      Georgia,
+      "Noto Serif Bengali",
+      serif;
+    font-size:.92rem;
+  }
+
+  .ticker:hover .ticker-track{
+    animation-play-state:paused;
+  }
+
+  .ticker-item{
+    color:var(--muted);
+  }
+
+  @keyframes bhaxaTicker{
+    from{transform:translateX(0)}
+    to{transform:translateX(-50%)}
+  }
+
+  .freq-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:2.5rem;
+  }
+
+  .freq-list{
+    list-style:none;
+    border-top:1px solid var(--line);
+  }
+
+  .freq-list li{
+    display:flex;
+    justify-content:space-between;
+    gap:1rem;
+    padding:.46rem 0;
+    border-bottom:1px solid var(--line);
+    font-size:.86rem;
+  }
+
+  .freq-token{
+    font-family:
+      Georgia,
+      "Noto Serif Bengali",
+      serif;
+  }
+
+  .freq-count{
+    color:var(--muted);
+    font-variant-numeric:tabular-nums;
+  }
+
+  .search-summary{
+    min-height:2.8rem;
+    margin-bottom:1.1rem;
+  }
+
+  .summary-main{
+    font-size:1rem;
+    margin-bottom:.25rem;
+  }
+
+  .summary-sub{
+    color:var(--muted);
+    font-size:.78rem;
+  }
+
+  .status{
+    min-height:1rem;
+    color:var(--muted);
+    font-size:.78rem;
+    margin-bottom:.8rem;
+  }
+
+  .kwic-head,
+  .kwic{
+    display:grid;
+    grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);
+    gap:1rem;
+  }
+
+  .kwic-head{
+    padding:.7rem 0;
+    border-top:1px solid var(--line);
+    border-bottom:1px solid var(--line);
+    color:var(--muted);
+    font-size:.7rem;
+    text-transform:uppercase;
+    letter-spacing:.11em;
+  }
+
+  .kwic-head .left,
+  .left-context{
+    text-align:right;
+  }
+
+  .kwic-head .keyword,
+  .keyword{
+    text-align:center;
+  }
+
+  .result{
+    padding:1rem 0;
+    border-bottom:1px solid var(--line);
+  }
+
+  .kwic{
+    align-items:baseline;
+    font-family:
+      Georgia,
+      "Noto Serif Bengali",
+      serif;
+    font-size:1.08rem;
+    line-height:1.65;
+  }
+
+  .keyword{
+    font-weight:700;
+    white-space:nowrap;
+  }
+
+  .message{
+    padding:2rem 0;
+    color:var(--muted);
+  }
+
+  footer{
+    padding-top:5rem;
+    color:var(--muted);
+    font-size:.72rem;
+  }
+
+  @media(max-width:720px){
+    main{padding-top:6vh}
+    .brand{margin-bottom:2.8rem}
+
+    .updated{
+      width:100%;
+      margin-left:0;
+    }
+
+    .profile-form{
+      grid-template-columns:1fr;
+    }
+
+    .profile-form label.full{
+      grid-column:auto;
+    }
+
+    .search-row{
+      grid-template-columns:1fr auto;
+    }
+
+    .keyboard-toggle{
+      grid-column:1/2;
+      padding:.7rem 0 0;
+      text-align:left;
+    }
+
+    .search-button{
+      grid-column:2/3;
+      grid-row:1/2;
+    }
+
+    .freq-grid{
+      grid-template-columns:1fr;
+      gap:1.8rem;
+    }
+
+    .ticker-track{
+      animation-duration:26s;
+    }
+
+    .kwic-head{
+      display:none;
+    }
+
+    .kwic{
+      grid-template-columns:1fr;
+      gap:.12rem;
+    }
+
+    .left-context,
+    .keyword,
+    .right-context{
+      text-align:left;
+    }
+  }
+  @media (prefers-reduced-motion: reduce){
+    .ticker-track{
+      animation:none;
+      white-space:normal;
+      flex-wrap:wrap;
+    }
+  }
+</style>
+</head>
+
+<body>
+<main>
+
+  <div class="brand">
+    <strong>Bhaxa</strong><span>Corpora</span>
+  </div>
+
+  <section id="loginPanel" class="auth-panel hidden">
+    <div class="auth-title">Sign in to Bhaxa Corpora</div>
+    <div class="auth-copy">
+      Search access requires a Google-authenticated Gmail account.
+      Bhaxa does not receive or store your Google password.
+    </div>
+    <a id="loginButton" class="auth-button" href="#">
+      Continue with Google
+    </a>
+  </section>
+
+  <section id="profilePanel" class="auth-panel hidden">
+    <div class="auth-title">Create your Bhaxa profile</div>
+    <div class="auth-copy">
+      Complete these details once before searching the corpus.
+    </div>
+    <div id="profileEmail" class="profile-email"></div>
+
+    <form id="profileForm" class="profile-form">
+      <label>
+        Name
+        <input id="profileName" type="text" maxlength="100" required>
+      </label>
+
+      <label>
+        Institution / affiliation
+        <input id="profileInstitution" type="text" maxlength="160" required>
+      </label>
+
+      <label>
+        Country
+        <input id="profileCountry" type="text" maxlength="80" required>
+      </label>
+
+      <label>
+        Role
+        <select id="profileRole" required>
+          <option value="">Select</option>
+          <option>Student</option>
+          <option>Researcher</option>
+          <option>Teacher</option>
+          <option>Independent researcher</option>
+          <option>Other</option>
+        </select>
+      </label>
+
+      <label class="full">
+        Research interests (optional)
+        <textarea id="profileResearch" maxlength="300"></textarea>
+      </label>
+
+      <div class="full">
+        <button class="auth-button" type="submit">
+          Create profile
+        </button>
+        <span id="profileStatus" class="auth-copy"></span>
+      </div>
+    </form>
+  </section>
+
+  <div id="appShell" class="app-shell hidden">
+
+  <div class="corpus-stats">
+    <span><strong id="articleCount">—</strong> articles</span>
+    <span><strong id="sentenceCount">—</strong> sentences</span>
+    <span><strong id="wordCount">—</strong> words</span>
+    <span class="updated">
+      Last updated
+      <strong id="lastUpdated">—</strong>
+    </span>
+  </div>
+
+  <section id="idleDashboard" class="idle-dashboard">
+
+    <div class="pulse-label">
+      Latest corpus update
+    </div>
+
+    <div id="ticker" class="ticker">
+      <div id="tickerTrack" class="ticker-track">
+        <span class="ticker-item">Loading latest additions…</span>
+      </div>
+    </div>
+
+    <div class="freq-grid">
+
+      <div>
+        <div class="pulse-label">
+          Top 20 tokens
+        </div>
+        <ol id="topTokens" class="freq-list"></ol>
+      </div>
+
+      <div>
+        <div class="pulse-label">
+          New tokens · latest update
+        </div>
+        <ol id="newTokens" class="freq-list"></ol>
+      </div>
+
+    </div>
+
+  </section>
+
+  <form id="searchForm">
+
+    <div class="search-row">
+
+      <input
+        id="query"
+        type="search"
+        placeholder="Search anything, like কৰি"
+        autocomplete="off"
+        spellcheck="false"
+      >
+
+      <button
+        type="button"
+        id="keyboardToggle"
+        class="keyboard-toggle"
+      >
+        অসমীয়া keyboard
+      </button>
+
+      <button
+        type="submit"
+        class="search-button"
+      >
+        Search
+      </button>
+
+    </div>
+
+    <div id="keyboard" class="keyboard">
+
+      <div class="keyboard-row">
+        <button type="button" class="key" data-key="অ">অ</button>
+        <button type="button" class="key" data-key="আ">আ</button>
+        <button type="button" class="key" data-key="ই">ই</button>
+        <button type="button" class="key" data-key="ঈ">ঈ</button>
+        <button type="button" class="key" data-key="উ">উ</button>
+        <button type="button" class="key" data-key="ঊ">ঊ</button>
+        <button type="button" class="key" data-key="ঋ">ঋ</button>
+        <button type="button" class="key" data-key="এ">এ</button>
+        <button type="button" class="key" data-key="ঐ">ঐ</button>
+        <button type="button" class="key" data-key="ও">ও</button>
+        <button type="button" class="key" data-key="ঔ">ঔ</button>
+      </div>
+
+      <div class="keyboard-row">
+        <button type="button" class="key" data-key="ক">ক</button>
+        <button type="button" class="key" data-key="খ">খ</button>
+        <button type="button" class="key" data-key="গ">গ</button>
+        <button type="button" class="key" data-key="ঘ">ঘ</button>
+        <button type="button" class="key" data-key="ঙ">ঙ</button>
+        <button type="button" class="key" data-key="চ">চ</button>
+        <button type="button" class="key" data-key="ছ">ছ</button>
+        <button type="button" class="key" data-key="জ">জ</button>
+        <button type="button" class="key" data-key="ঝ">ঝ</button>
+        <button type="button" class="key" data-key="ঞ">ঞ</button>
+      </div>
+
+      <div class="keyboard-row">
+        <button type="button" class="key" data-key="ট">ট</button>
+        <button type="button" class="key" data-key="ঠ">ঠ</button>
+        <button type="button" class="key" data-key="ড">ড</button>
+        <button type="button" class="key" data-key="ঢ">ঢ</button>
+        <button type="button" class="key" data-key="ণ">ণ</button>
+        <button type="button" class="key" data-key="ত">ত</button>
+        <button type="button" class="key" data-key="থ">থ</button>
+        <button type="button" class="key" data-key="দ">দ</button>
+        <button type="button" class="key" data-key="ধ">ধ</button>
+        <button type="button" class="key" data-key="ন">ন</button>
+      </div>
+
+      <div class="keyboard-row">
+        <button type="button" class="key" data-key="প">প</button>
+        <button type="button" class="key" data-key="ফ">ফ</button>
+        <button type="button" class="key" data-key="ব">ব</button>
+        <button type="button" class="key" data-key="ভ">ভ</button>
+        <button type="button" class="key" data-key="ম">ম</button>
+        <button type="button" class="key" data-key="য">য</button>
+        <button type="button" class="key" data-key="ৰ">ৰ</button>
+        <button type="button" class="key" data-key="ল">ল</button>
+        <button type="button" class="key" data-key="ৱ">ৱ</button>
+        <button type="button" class="key" data-key="শ">শ</button>
+        <button type="button" class="key" data-key="ষ">ষ</button>
+        <button type="button" class="key" data-key="স">স</button>
+        <button type="button" class="key" data-key="হ">হ</button>
+      </div>
+
+      <div class="keyboard-row">
+        <button type="button" class="key" data-key="া">া</button>
+        <button type="button" class="key" data-key="ি">ি</button>
+        <button type="button" class="key" data-key="ী">ী</button>
+        <button type="button" class="key" data-key="ু">ু</button>
+        <button type="button" class="key" data-key="ূ">ূ</button>
+        <button type="button" class="key" data-key="ৃ">ৃ</button>
+        <button type="button" class="key" data-key="ে">ে</button>
+        <button type="button" class="key" data-key="ৈ">ৈ</button>
+        <button type="button" class="key" data-key="ো">ো</button>
+        <button type="button" class="key" data-key="ৌ">ৌ</button>
+        <button type="button" class="key" data-key="ং">ং</button>
+        <button type="button" class="key" data-key="ঃ">ঃ</button>
+        <button type="button" class="key" data-key="ঁ">ঁ</button>
+        <button type="button" class="key" data-key="্">্</button>
+      </div>
+
+      <div class="keyboard-row">
+        <button type="button" class="key wide" data-key=" ">Space</button>
+        <button type="button" class="key wide" id="backspaceKey">⌫ Delete</button>
+        <button type="button" class="key wide" id="clearKey">Clear</button>
+      </div>
+
+    </div>
+
+    <div class="controls">
+
+      <label>
+        Search type
+        <select id="mode">
+          <option value="token">
+            Word / token
+          </option>
+
+          <option value="phrase">
+            Exact phrase
+          </option>
+
+          <option value="all">
+            All words in same sentence
+          </option>
+
+          <option value="ordered">
+            Ordered words with gaps
+          </option>
+        </select>
+      </label>
+
+      <label>
+        Results
+        <select id="limit">
+          <option value="20">20</option>
+          <option value="50" selected>50</option>
+          <option value="100">100</option>
+        </select>
+      </label>
+
+    </div>
+
+  </form>
+
+  <div id="searchSummary" class="search-summary"></div>
+  <div id="status" class="status"></div>
+
+  <div class="kwic-head">
+    <div class="left">Previous 7 words</div>
+    <div class="keyword">Match</div>
+    <div>Following 7 words</div>
+  </div>
+
+  <section id="results"></section>
+
+  <footer>Bhaxa Corpora</footer>
+
+  </div>
+
+</main>
+
+<script>
+const API =
+  "https://bhaxa-corpora-test.s-kumar-sorbhog.workers.dev";
+
+const loginPanel =
+  document.getElementById("loginPanel");
+
+const loginButton =
+  document.getElementById("loginButton");
+
+const profilePanel =
+  document.getElementById("profilePanel");
+
+const profileForm =
+  document.getElementById("profileForm");
+
+const profileEmail =
+  document.getElementById("profileEmail");
+
+const profileStatus =
+  document.getElementById("profileStatus");
+
+const appShell =
+  document.getElementById("appShell");
+
+loginButton.href =
+  `${API}/auth/start`;
+
+function apiFetch(
+  path,
+  options = {}
+) {
+  return fetch(
+    `${API}${path}`,
+    {
+      ...options,
+      credentials: "include"
+    }
+  );
+}
+
+const form =
+  document.getElementById("searchForm");
+
+const query =
+  document.getElementById("query");
+
+const mode =
+  document.getElementById("mode");
+
+const limit =
+  document.getElementById("limit");
+
+const summary =
+  document.getElementById("searchSummary");
+
+const status =
+  document.getElementById("status");
+
+const results =
+  document.getElementById("results");
+
+const keyboard =
+  document.getElementById("keyboard");
+
+const idleDashboard =
+  document.getElementById("idleDashboard");
+
+const tickerTrack =
+  document.getElementById("tickerTrack");
+
+const topTokens =
+  document.getElementById("topTokens");
+
+const newTokens =
+  document.getElementById("newTokens");
+
+
+document
+  .getElementById("keyboardToggle")
+  .addEventListener(
+    "click",
+    () => {
+      keyboard.classList.toggle("open");
+      query.focus();
+    }
+  );
+
+
+document
+  .querySelectorAll(".key[data-key]")
+  .forEach(button => {
+    button.addEventListener(
+      "click",
+      () => {
+        insertAtCursor(
+          button.dataset.key
+        );
+      }
+    );
+  });
+
+
+document
+  .getElementById("backspaceKey")
+  .addEventListener(
+    "click",
+    () => {
+      const start =
+        query.selectionStart ??
+        query.value.length;
+
+      const end =
+        query.selectionEnd ??
+        query.value.length;
+
+      if (start !== end) {
+        query.value =
+          query.value.slice(0,start) +
+          query.value.slice(end);
+
+        query.setSelectionRange(
+          start,
+          start
+        );
+
+      } else if (start > 0) {
+        const chars =
+          [...query.value.slice(0,start)];
+
+        chars.pop();
+
+        const left =
+          chars.join("");
+
+        query.value =
+          left +
+          query.value.slice(end);
+
+        query.setSelectionRange(
+          left.length,
+          left.length
+        );
+      }
+
+      query.focus();
+    }
+  );
+
+
+document
+  .getElementById("clearKey")
+  .addEventListener(
+    "click",
+    () => {
+      query.value = "";
+      query.focus();
+
+      summary.innerHTML = "";
+      status.textContent = "";
+      results.innerHTML = "";
+
+      idleDashboard.classList.remove(
+        "hidden"
+      );
+
+      loadDashboard();
+    }
+  );
+
+
+function insertAtCursor(char) {
+  const start =
+    query.selectionStart ??
+    query.value.length;
+
+  const end =
+    query.selectionEnd ??
+    query.value.length;
+
+  query.value =
+    query.value.slice(0,start) +
+    char +
+    query.value.slice(end);
+
+  const next =
+    start + char.length;
+
+  query.setSelectionRange(
+    next,
+    next
+  );
+
+  query.focus();
+}
+
+
+function escapeHTML(value="") {
+  return String(value).replace(
+    /[&<>"']/g,
+    c => ({
+      "&":"&amp;",
+      "<":"&lt;",
+      ">":"&gt;",
+      '"':"&quot;",
+      "'":"&#39;"
+    }[c])
+  );
+}
+
+
+function formatTimestamp(value) {
+  if (!value) return "—";
+
+  try {
+    return new Intl.DateTimeFormat(
+      "en-AU",
+      {
+        day:"numeric",
+        month:"short",
+        year:"numeric",
+        hour:"2-digit",
+        minute:"2-digit"
+      }
+    ).format(
+      new Date(value + "Z")
+    );
+
+  } catch {
+    return value;
+  }
+}
+
+
+async function loadStats() {
+  try {
+    const response =
+      await apiFetch("/api/stats");
+
+    const data =
+      await response.json();
+
+    document.getElementById(
+      "articleCount"
+    ).textContent =
+      Number(data.articles)
+        .toLocaleString();
+
+    document.getElementById(
+      "sentenceCount"
+    ).textContent =
+      Number(data.sentences)
+        .toLocaleString();
+
+    document.getElementById(
+      "wordCount"
+    ).textContent =
+      Number(data.words)
+        .toLocaleString();
+
+    document.getElementById(
+      "lastUpdated"
+    ).textContent =
+      formatTimestamp(
+        data.last_updated
+      );
+
+  } catch {}
+}
+
+
+
+async function loadIdentity() {
+  loginPanel.classList.add("hidden");
+  profilePanel.classList.add("hidden");
+  appShell.classList.add("hidden");
+
+  try {
+    const response =
+      await apiFetch(
+        "/api/me"
+      );
+
+    if (!response.ok) {
+      loginPanel.classList.remove(
+        "hidden"
+      );
+      return;
+    }
+
+    const data =
+      await response.json();
+
+    if (
+      !data.authenticated ||
+      !data.allowed
+    ) {
+      loginPanel.classList.remove(
+        "hidden"
+      );
+      return;
+    }
+
+    if (!data.profile_complete) {
+      profilePanel.classList.remove(
+        "hidden"
+      );
+
+      profileEmail.textContent =
+        data.email || "";
+
+      document.getElementById(
+        "profileName"
+      ).value =
+        data.google_name || "";
+
+      return;
+    }
+
+    appShell.classList.remove(
+      "hidden"
+    );
+
+    await loadStats();
+    await loadDashboard();
+
+  } catch {
+    loginPanel.classList.remove(
+      "hidden"
+    );
+  }
+}
+
+
+profileForm.addEventListener(
+  "submit",
+  async event => {
+    event.preventDefault();
+
+    profileStatus.textContent =
+      "Saving…";
+
+    const payload = {
+      display_name:
+        document.getElementById(
+          "profileName"
+        ).value,
+
+      institution:
+        document.getElementById(
+          "profileInstitution"
+        ).value,
+
+      country:
+        document.getElementById(
+          "profileCountry"
+        ).value,
+
+      role:
+        document.getElementById(
+          "profileRole"
+        ).value,
+
+      research_area:
+        document.getElementById(
+          "profileResearch"
+        ).value
+    };
+
+    try {
+      const response =
+        await apiFetch(
+          "/api/profile",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type":
+                "application/json"
+            },
+            body:
+              JSON.stringify(payload)
+          }
+        );
+
+      const data =
+        await response.json();
+
+      if (!response.ok) {
+        throw new Error(
+          data.error ||
+          "Could not save profile"
+        );
+      }
+
+      profileStatus.textContent =
+        "Profile created.";
+
+      profilePanel.classList.add(
+        "hidden"
+      );
+
+      appShell.classList.remove(
+        "hidden"
+      );
+
+      await loadStats();
+      await loadDashboard();
+
+    } catch(error) {
+      profileStatus.textContent =
+        error.message;
+    }
+  }
+);
+
+
+loadIdentity();
+
+
+
+function renderTokenList(
+  element,
+  rows
+) {
+  element.innerHTML =
+    (rows || [])
+      .map(row => `
+        <li>
+          <span class="freq-token">
+            ${escapeHTML(row.token)}
+          </span>
+          <span class="freq-count">
+            ${Number(row.frequency).toLocaleString()}
+          </span>
+        </li>
+      `)
+      .join("");
+}
+
+
+function renderTicker(previews) {
+  const items =
+    (previews || [])
+      .filter(Boolean);
+
+  if (!items.length) {
+    tickerTrack.innerHTML =
+      `<span class="ticker-item">No new article preview yet.</span>`;
+    return;
+  }
+
+  /*
+    Duplicate the sequence so the CSS loop can move continuously.
+  */
+  const doubled =
+    [...items, ...items];
+
+  tickerTrack.innerHTML =
+    doubled
+      .map(
+        text =>
+          `<span class="ticker-item">${escapeHTML(text)}</span>`
+      )
+      .join("");
+}
+
+
+async function loadDashboard() {
+  try {
+    const response =
+      await apiFetch("/api/dashboard");
+
+    const data =
+      await response.json();
+
+    if (!response.ok) {
+      throw new Error(
+        data.error ||
+        "Dashboard unavailable"
+      );
+    }
+
+    renderTokenList(
+      topTokens,
+      data.top_tokens
+    );
+
+    if (
+      data.latest_new_tokens?.length
+    ) {
+      renderTokenList(
+        newTokens,
+        data.latest_new_tokens
+      );
+    } else {
+      newTokens.innerHTML =
+        `<li>
+          <span class="freq-token">
+            No new token types in the latest update
+          </span>
+          <span class="freq-count"></span>
+        </li>`;
+    }
+
+    renderTicker(
+      data.recent_previews
+    );
+
+  } catch(error) {
+    tickerTrack.innerHTML =
+      `<span class="ticker-item">${escapeHTML(error.message)}</span>`;
+  }
+}
+
+
+loadDashboard();
+
+
+function showIdleDashboard() {
+  if (
+    query.value.trim() === ""
+  ) {
+    idleDashboard.classList.remove(
+      "hidden"
+    );
+  } else {
+    idleDashboard.classList.add(
+      "hidden"
+    );
+  }
+}
+
+
+query.addEventListener(
+  "input",
+  showIdleDashboard
+);
+
+
+showIdleDashboard();
+
+
+function renderSummary(data) {
+  if (data.mode === "token") {
+    summary.innerHTML = `
+      <div class="summary-main">
+        <strong>${escapeHTML(data.query)}</strong>
+        · ${Number(data.occurrence_frequency).toLocaleString()} tokens
+        · ${Number(data.sentence_frequency).toLocaleString()} sentences
+      </div>
+      <div class="summary-sub">
+        Showing ${Number(data.shown).toLocaleString()} concordance result${data.shown === 1 ? "" : "s"} · maximum 100
+      </div>
+    `;
+
+    return;
+  }
+
+
+  if (data.mode === "phrase") {
+    summary.innerHTML = `
+      <div class="summary-main">
+        <strong>${escapeHTML(data.query)}</strong>
+        · ${Number(data.occurrence_frequency).toLocaleString()} phrase occurrence${data.occurrence_frequency === 1 ? "" : "s"}
+        · ${Number(data.sentence_frequency).toLocaleString()} sentences
+      </div>
+      <div class="summary-sub">
+        Showing ${Number(data.shown).toLocaleString()} concordance result${data.shown === 1 ? "" : "s"} · maximum 100
+      </div>
+    `;
+
+    return;
+  }
+
+
+  summary.innerHTML = `
+    <div class="summary-main">
+      <strong>${escapeHTML(data.query)}</strong>
+      · ${Number(data.matching_sentences).toLocaleString()} matching sentence${data.matching_sentences === 1 ? "" : "s"}
+    </div>
+    <div class="summary-sub">
+      Showing ${Number(data.shown).toLocaleString()} concordance result${data.shown === 1 ? "" : "s"} · maximum 100
+    </div>
+  `;
+}
+
+
+form.addEventListener(
+  "submit",
+  async event => {
+    event.preventDefault();
+
+    const q =
+      query.value.trim();
+
+    if (!q) {
+      summary.innerHTML = "";
+      status.textContent = "";
+      results.innerHTML = "";
+
+      idleDashboard.classList.remove(
+        "hidden"
+      );
+
+      await loadDashboard();
+
+      return;
+    }
+
+    idleDashboard.classList.add(
+      "hidden"
+    );
+
+    summary.innerHTML = "";
+    status.textContent =
+      "Searching…";
+
+    results.innerHTML = "";
+
+    try {
+      const response =
+        await apiFetch(
+          `/api/search` +
+          `?q=${encodeURIComponent(q)}` +
+          `&mode=${encodeURIComponent(mode.value)}` +
+          `&limit=${encodeURIComponent(limit.value)}`
+        );
+
+      const data =
+        await response.json();
+
+      if (!response.ok) {
+        throw new Error(
+          data.error ||
+          "Search failed"
+        );
+      }
+
+      status.textContent = "";
+
+      renderSummary(data);
+
+      if (!data.results.length) {
+        results.innerHTML =
+          `<div class="message">No matches found.</div>`;
+
+        return;
+      }
+
+      results.innerHTML =
+        data.results.map(item => `
+          <article class="result">
+            <div class="kwic">
+              <div class="left-context">
+                ${escapeHTML(item.left)}
+              </div>
+
+              <div class="keyword">
+                ${escapeHTML(item.match)}
+              </div>
+
+              <div class="right-context">
+                ${escapeHTML(item.right)}
+              </div>
+            </div>
+          </article>
+        `).join("");
+
+    } catch(error) {
+      summary.innerHTML = "";
+      status.textContent = "";
+
+      results.innerHTML =
+        `<div class="message">
+          ${escapeHTML(error.message)}
+        </div>`;
+    }
+  }
+);
+</script>
+
+</body>
+</html>
