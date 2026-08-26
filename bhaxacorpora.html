@@ -719,9 +719,7 @@
   <section id="profilePanel" class="auth-panel hidden">
     <div class="auth-title">Create your Bhaxa profile</div>
     <div class="auth-copy">
-      Complete these details once before searching the corpus.
-      Search activity is recorded and associated with your Bhaxa profile
-      for administration, usage analysis, and abuse prevention.
+      Complete your profile before searching the corpus.
     </div>
     <div id="profileEmail" class="profile-email"></div>
 
@@ -782,7 +780,7 @@
 
   <section id="searchZone">
     <div id="searchAccessNote" class="auth-copy" style="margin-bottom:.5rem;">
-      Search requires login.
+      
     </div>
 
   <form id="searchForm">
@@ -1283,8 +1281,7 @@ function setLoggedOutUI() {
   accountButton.href =
     `${API}/private/auth/start`;
 
-  searchAccessNote.textContent =
-    "Search requires login.";
+  searchAccessNote.textContent = "";
 
   loginPanel.classList.add("hidden");
   profilePanel.classList.add("hidden");
@@ -1308,7 +1305,7 @@ function setLoggedInUI(data) {
   searchAccessNote.textContent =
     profileIsComplete
       ? "Signed in · you can search the corpus."
-      : "Complete your Bhaxa profile to search.";
+      : "Complete your profile before searching the corpus.";
 }
 
 
