@@ -848,6 +848,236 @@
       }
     }
 
+  
+    /* Icon navigation */
+    .icon-nav-link{
+      position:relative;
+      width:38px;
+      height:38px;
+      padding:0;
+      display:inline-flex !important;
+      align-items:center;
+      justify-content:center;
+      border-radius:50%;
+      color:#111;
+      transition:background .18s ease, transform .18s ease;
+    }
+    .icon-nav-link:hover{
+      background:rgba(0,0,0,.06);
+      transform:translateY(-1px);
+    }
+    .icon-nav-link svg{
+      width:19px;
+      height:19px;
+      fill:none;
+      stroke:currentColor;
+      stroke-width:1.65;
+      stroke-linecap:round;
+      stroke-linejoin:round;
+    }
+    .icon-nav-link .nav-label{
+      position:absolute;
+      width:1px;
+      height:1px;
+      padding:0;
+      margin:-1px;
+      overflow:hidden;
+      clip:rect(0,0,0,0);
+      white-space:nowrap;
+      border:0;
+    }
+
+    /* Slow centre-out entrance */
+    @keyframes navRiseIn{
+      from{opacity:0;transform:translateY(26px) scale(.94)}
+      to{opacity:1;transform:translateY(0) scale(1)}
+    }
+    @keyframes iconSpreadIn{
+      from{
+        opacity:0;
+        transform:translateX(var(--nav-start-x,0px)) translateY(16px) scale(.72);
+      }
+      to{
+        opacity:1;
+        transform:translateX(0) translateY(0) scale(1);
+      }
+    }
+    @keyframes navPhotoIn{
+      from{opacity:0;transform:translateY(14px) scale(.82)}
+      to{opacity:1;transform:translateY(0) scale(1)}
+    }
+
+    .site-header .nav{
+      animation:navRiseIn 1.25s cubic-bezier(.22,.8,.22,1) both;
+    }
+    .photo-brand{
+      animation:navPhotoIn 1.15s .10s cubic-bezier(.22,.8,.22,1) both;
+    }
+    .nav-links .icon-nav-link{
+      opacity:0;
+      animation:iconSpreadIn 1.35s cubic-bezier(.22,.8,.22,1) both;
+    }
+    .nav-links .icon-nav-link:nth-child(1){--nav-start-x:120px;animation-delay:.12s}
+    .nav-links .icon-nav-link:nth-child(2){--nav-start-x:80px;animation-delay:.20s}
+    .nav-links .icon-nav-link:nth-child(3){--nav-start-x:40px;animation-delay:.30s}
+    .nav-links .icon-nav-link:nth-child(4){--nav-start-x:0px;animation-delay:.36s}
+    .nav-links .icon-nav-link:nth-child(5){--nav-start-x:-40px;animation-delay:.30s}
+    .nav-links .icon-nav-link:nth-child(6){--nav-start-x:-80px;animation-delay:.20s}
+    .nav-links .icon-nav-link:nth-child(7){--nav-start-x:-120px;animation-delay:.12s}
+
+    /* Hover/touch labels */
+    .icon-nav-link::after{
+      content:attr(aria-label);
+      position:absolute;
+      left:50%;
+      bottom:-34px;
+      transform:translateX(-50%) translateY(-4px);
+      padding:5px 8px;
+      border-radius:8px;
+      background:rgba(17,17,17,.92);
+      color:#fff;
+      font-size:.68rem;
+      font-weight:500;
+      line-height:1;
+      white-space:nowrap;
+      opacity:0;
+      visibility:hidden;
+      pointer-events:none;
+      transition:opacity .18s ease, transform .18s ease, visibility .18s ease;
+      z-index:100;
+      box-shadow:0 5px 16px rgba(0,0,0,.12);
+    }
+    .icon-nav-link:hover::after,
+    .icon-nav-link:focus-visible::after,
+    .icon-nav-link.show-label::after{
+      opacity:1;
+      visibility:visible;
+      transform:translateX(-50%) translateY(0);
+    }
+
+    /* Phone: no Menu button; keep all icons in one floating row */
+    @media (max-width:900px){
+      .site-header{top:8px}
+
+      .nav{
+        width:max-content;
+        max-width:calc(100vw - 14px);
+        padding:6px 8px 6px 6px;
+        gap:8px;
+        overflow:visible;
+      }
+
+      .menu-btn{display:none !important}
+
+      .nav-links{
+        display:flex !important;
+        position:static !important;
+        left:auto !important;
+        top:auto !important;
+        transform:none !important;
+        min-width:0 !important;
+        max-height:none !important;
+        overflow:visible !important;
+        padding:0 !important;
+        background:transparent !important;
+        border:0 !important;
+        border-radius:0 !important;
+        box-shadow:none !important;
+        backdrop-filter:none !important;
+        -webkit-backdrop-filter:none !important;
+        flex-direction:row !important;
+        align-items:center !important;
+        gap:5px !important;
+      }
+
+      .nav-profile-photo{
+        width:36px !important;
+        height:36px !important;
+      }
+
+      .nav-links .icon-nav-link{
+        width:32px !important;
+        height:32px !important;
+        min-height:32px !important;
+        padding:0 !important;
+        justify-content:center !important;
+        opacity:0;
+        animation:iconSpreadIn 1.6s cubic-bezier(.22,.8,.22,1) both !important;
+      }
+
+      .nav-links .icon-nav-link svg{
+        width:16px;
+        height:16px;
+      }
+
+      .nav-links .icon-nav-link:nth-child(1){--nav-start-x:64px;animation-delay:.18s !important}
+      .nav-links .icon-nav-link:nth-child(2){--nav-start-x:42px;animation-delay:.24s !important}
+      .nav-links .icon-nav-link:nth-child(3){--nav-start-x:22px;animation-delay:.30s !important}
+      .nav-links .icon-nav-link:nth-child(4){--nav-start-x:0px;animation-delay:.36s !important}
+      .nav-links .icon-nav-link:nth-child(5){--nav-start-x:-22px;animation-delay:.30s !important}
+      .nav-links .icon-nav-link:nth-child(6){--nav-start-x:-42px;animation-delay:.24s !important}
+      .nav-links .icon-nav-link:nth-child(7){--nav-start-x:-64px;animation-delay:.18s !important}
+
+      .icon-nav-link::after{
+        bottom:-31px;
+        font-size:.64rem;
+        padding:5px 7px;
+      }
+    }
+
+    @media (max-width:430px){
+      .nav{gap:6px}
+      .nav-profile-photo{
+        width:34px !important;
+        height:34px !important;
+      }
+      .nav-links{gap:3px !important}
+      .nav-links .icon-nav-link{
+        width:29px !important;
+        height:29px !important;
+        min-height:29px !important;
+      }
+      .nav-links .icon-nav-link svg{
+        width:15px;
+        height:15px;
+      }
+    }
+
+    @media (prefers-reduced-motion:reduce){
+      .site-header .nav,
+      .photo-brand,
+      .nav-links .icon-nav-link{
+        animation:none !important;
+        opacity:1 !important;
+        transform:none !important;
+      }
+    }
+
+  
+    .assamese{
+      font-size:1.32rem;
+    }
+    .assamese .namaste{
+      font-size:1.28em;
+      vertical-align:-.10em;
+    }
+
+    @media (max-width:700px){
+      .assamese{
+        font-size:1.22rem;
+      }
+      .assamese .namaste{
+        font-size:1.25em;
+      }
+    }
+
+  
+    @media (hover:none) and (pointer:coarse){
+      .icon-nav-link:active{
+        transform:scale(.90);
+      }
+    }
+
   </style>
 </head>
 
@@ -858,16 +1088,14 @@
         <img class="nav-profile-photo" src="https://saurabhknath.github.io/profile.jpg" alt="Saurabh Kumar Nath" />
       </a>
 
-      <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="navLinks">Menu</button>
-
       <nav class="nav-links" id="navLinks" aria-label="Primary navigation">
-        <a href="#top">Home</a>
-        <a href="#projects">Projects</a>
-        <a href="#publications">Publications</a>
-        <a href="#conferences">Conferences</a>
-        <a href="#education">Education</a>
-        <a href="#experience">Experience</a>
-        <a href="#contact">Contact</a>
+        <a href="#top" class="icon-nav-link" aria-label="Home" title="Home"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10v10h13V10"/><path d="M9.5 20v-6h5v6"/></svg><span class="nav-label">Home</span></a>
+        <a href="#projects" class="icon-nav-link" aria-label="Projects" title="Projects"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7.5h7l2 2h9v10.5H3z"/><path d="M3 7.5V5h7l2 2"/></svg><span class="nav-label">Projects</span></a>
+        <a href="#publications" class="icon-nav-link" aria-label="Publications" title="Publications"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4.5h9a3 3 0 0 1 3 3V20H8a3 3 0 0 1-3-3z"/><path d="M8 7.5h6M8 11h6M8 14.5h4"/></svg><span class="nav-label">Publications</span></a>
+        <a href="#conferences" class="icon-nav-link" aria-label="Conferences" title="Conferences"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v10"/><path d="M8 7h8"/><path d="M7 21h10"/><path d="M9 13h6l1 8H8z"/><path d="M5 10a7 7 0 0 1 14 0"/></svg><span class="nav-label">Conferences</span></a>
+        <a href="#education" class="icon-nav-link" aria-label="Education" title="Education"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m2.5 9 9.5-5 9.5 5-9.5 5z"/><path d="M6 11.2V16c3.8 2.8 8.2 2.8 12 0v-4.8"/><path d="M21.5 9v6"/></svg><span class="nav-label">Education</span></a>
+        <a href="#experience" class="icon-nav-link" aria-label="Experience" title="Experience"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V4h8v3M3 12h18M10 12v2h4v-2"/></svg><span class="nav-label">Experience</span></a>
+        <a href="#contact" class="icon-nav-link" aria-label="Contact" title="Contact"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m4 7 8 6 8-6"/></svg><span class="nav-label">Contact</span></a>
       </nav>
     </div>
   </header>
@@ -1283,25 +1511,42 @@
   </footer>
 
   <script>
-    const menuBtn = document.getElementById('menuBtn');
-    const navLinks = document.getElementById('navLinks');
+    document.getElementById('year').textContent = new Date().getFullYear();
 
-    menuBtn.addEventListener('click', () => {
-      const open = navLinks.classList.toggle('open');
-      menuBtn.setAttribute('aria-expanded', open);
-      menuBtn.textContent = open ? 'Close' : 'Menu';
-    });
+    document.querySelectorAll('.icon-nav-link').forEach(link => {
+      let labelTimer;
 
-    navLinks.querySelectorAll('a').forEach(link => {
-      link.addEventListener('click', () => {
-        navLinks.classList.remove('open');
-        menuBtn.setAttribute('aria-expanded', 'false');
-        menuBtn.textContent = 'Menu';
+      const showLabel = () => {
+        document.querySelectorAll('.icon-nav-link.show-label').forEach(other => {
+          if (other !== link) other.classList.remove('show-label');
+        });
+
+        link.classList.add('show-label');
+        clearTimeout(labelTimer);
+        labelTimer = setTimeout(() => {
+          link.classList.remove('show-label');
+        }, 1400);
+      };
+
+      link.addEventListener('touchstart', showLabel, { passive: true });
+      link.addEventListener('pointerdown', event => {
+        if (event.pointerType === 'touch') showLabel();
       });
     });
-
-    document.getElementById('year').textContent = new Date().getFullYear();
   </script>
+
+<script>
+  // Subtle haptic feedback on touch-capable devices.
+  // Works only in browsers/devices that expose the Vibration API.
+  document.querySelectorAll('.icon-nav-link').forEach(link => {
+    link.addEventListener('touchstart', () => {
+      if ('vibrate' in navigator) {
+        navigator.vibrate(18);
+      }
+    }, { passive: true });
+  });
+</script>
+
 </body>
 </html>
 
