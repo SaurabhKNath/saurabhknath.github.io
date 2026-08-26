@@ -53,6 +53,42 @@
   .brand strong{font-weight:650}
   .brand span{font-weight:300;color:var(--muted)}
 
+  .account-control{
+    position:fixed;
+    top:18px;
+    right:22px;
+    z-index:1000;
+    display:flex;
+    align-items:center;
+    gap:.75rem;
+  }
+
+  .account-name{
+    color:var(--muted);
+    font-size:.76rem;
+    max-width:220px;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
+
+  .account-button{
+    display:inline-block;
+    padding:.5rem .78rem;
+    border:1px solid var(--line);
+    border-radius:999px;
+    background:rgba(245,245,242,.94);
+    color:var(--fg);
+    text-decoration:none;
+    font:inherit;
+    font-size:.75rem;
+    cursor:pointer;
+  }
+
+  .account-button:hover{
+    border-color:var(--fg);
+  }
+
   .corpus-stats{
     display:flex;
     flex-wrap:wrap;
@@ -418,6 +454,20 @@
     main{padding-top:6vh}
     .brand{margin-bottom:2.8rem}
 
+    .account-control{
+      top:12px;
+      right:12px;
+    }
+
+    .account-name{
+      display:none;
+    }
+
+    .account-button{
+      padding:.45rem .68rem;
+      font-size:.7rem;
+    }
+
     .updated{
       width:100%;
       margin-left:0;
@@ -481,6 +531,14 @@
 </head>
 
 <body>
+
+<div class="account-control">
+  <span id="accountName" class="account-name"></span>
+  <a id="accountButton" class="account-button" href="#">
+    Log in
+  </a>
+</div>
+
 <main>
 
   <div class="brand">
@@ -488,10 +546,10 @@
   </div>
 
   <section id="loginPanel" class="auth-panel hidden">
-    <div class="auth-title">Sign in to Bhaxa Corpora</div>
+    <div class="auth-title">Search requires sign in</div>
     <div class="auth-copy">
-      Search access requires a Google-authenticated Gmail account.
-      Bhaxa does not receive or store your Google password.
+      Corpus statistics and frequency information are public.
+      Sign in with Google only when you want to search the corpus.
     </div>
     <a id="loginButton" class="auth-button" href="#">
       Continue with Google
@@ -502,6 +560,8 @@
     <div class="auth-title">Create your Bhaxa profile</div>
     <div class="auth-copy">
       Complete these details once before searching the corpus.
+      Search activity is recorded and associated with your Bhaxa profile
+      for administration, usage analysis, and abuse prevention.
     </div>
     <div id="profileEmail" class="profile-email"></div>
 
@@ -547,7 +607,7 @@
     </form>
   </section>
 
-  <div id="appShell" class="app-shell hidden">
+  <div id="appShell" class="app-shell">
 
   <div class="corpus-stats">
     <span><strong id="articleCount">—</strong> articles</span>
@@ -590,6 +650,10 @@
     </div>
 
   </section>
+
+  <div id="searchAccessNote" class="auth-copy" style="margin-bottom:.5rem;">
+    Search requires a Bhaxa account.
+  </div>
 
   <form id="searchForm">
 
@@ -781,7 +845,22 @@ const profileStatus =
 const appShell =
   document.getElementById("appShell");
 
+const accountButton =
+  document.getElementById("accountButton");
+
+const accountName =
+  document.getElementById("accountName");
+
+const searchAccessNote =
+  document.getElementById("searchAccessNote");
+
+let currentUser = null;
+let profileIsComplete = false;
+
 loginButton.href =
+  `${API}/auth/start`;
+
+accountButton.href =
   `${API}/auth/start`;
 
 function apiFetch(
@@ -795,6 +874,47 @@ function apiFetch(
       credentials: "include"
     }
   );
+}
+
+
+function setLoggedOutUI() {
+  currentUser = null;
+  profileIsComplete = false;
+
+  accountName.textContent = "";
+  accountButton.textContent = "Log in";
+  accountButton.href =
+    `${API}/auth/start`;
+
+  searchAccessNote.textContent =
+    "Search requires a Bhaxa account.";
+
+  loginPanel.classList.add("hidden");
+  profilePanel.classList.add("hidden");
+}
+
+
+function setLoggedInUI(data) {
+  currentUser = data;
+  profileIsComplete =
+    Boolean(data.profile_complete);
+
+  accountName.textContent =
+    data.profile?.display_name ||
+    data.google_name ||
+    data.email ||
+    "";
+
+  accountButton.textContent =
+    "Log out";
+
+  accountButton.href =
+    `${API}/cdn-cgi/access/logout`;
+
+  searchAccessNote.textContent =
+    profileIsComplete
+      ? "Signed in · search activity is associated with your Bhaxa profile."
+      : "Complete your Bhaxa profile to search.";
 }
 
 const form =
@@ -993,7 +1113,9 @@ function formatTimestamp(value) {
 async function loadStats() {
   try {
     const response =
-      await apiFetch("/api/stats");
+      await fetch(
+        `${API}/api/stats`
+      );
 
     const data =
       await response.json();
@@ -1029,9 +1151,11 @@ async function loadStats() {
 
 
 async function loadIdentity() {
-  loginPanel.classList.add("hidden");
-  profilePanel.classList.add("hidden");
-  appShell.classList.add("hidden");
+  /*
+    The dashboard itself is public and loads independently.
+    Identity only controls profile/search access.
+  */
+  setLoggedOutUI();
 
   try {
     const response =
@@ -1040,9 +1164,6 @@ async function loadIdentity() {
       );
 
     if (!response.ok) {
-      loginPanel.classList.remove(
-        "hidden"
-      );
       return;
     }
 
@@ -1053,11 +1174,10 @@ async function loadIdentity() {
       !data.authenticated ||
       !data.allowed
     ) {
-      loginPanel.classList.remove(
-        "hidden"
-      );
       return;
     }
+
+    setLoggedInUI(data);
 
     if (!data.profile_complete) {
       profilePanel.classList.remove(
@@ -1075,17 +1195,16 @@ async function loadIdentity() {
       return;
     }
 
-    appShell.classList.remove(
+    profilePanel.classList.add(
       "hidden"
     );
-
-    await loadStats();
-    await loadDashboard();
 
   } catch {
-    loginPanel.classList.remove(
-      "hidden"
-    );
+    /*
+      Public dashboard still works even if identity
+      cannot be established.
+    */
+    setLoggedOutUI();
   }
 }
 
@@ -1157,9 +1276,15 @@ profileForm.addEventListener(
         "hidden"
       );
 
-      appShell.classList.remove(
-        "hidden"
-      );
+      profileIsComplete = true;
+
+      accountName.textContent =
+        data.profile?.display_name ||
+        data.profile?.email ||
+        "";
+
+      searchAccessNote.textContent =
+        "Signed in · search activity is associated with your Bhaxa profile.";
 
       await loadStats();
       await loadDashboard();
@@ -1172,6 +1297,8 @@ profileForm.addEventListener(
 );
 
 
+loadStats();
+loadDashboard();
 loadIdentity();
 
 
@@ -1226,7 +1353,9 @@ function renderTicker(previews) {
 async function loadDashboard() {
   try {
     const response =
-      await apiFetch("/api/dashboard");
+      await fetch(
+        `${API}/api/dashboard`
+      );
 
     const data =
       await response.json();
@@ -1269,9 +1398,6 @@ async function loadDashboard() {
       `<span class="ticker-item">${escapeHTML(error.message)}</span>`;
   }
 }
-
-
-loadDashboard();
 
 
 function showIdleDashboard() {
@@ -1365,6 +1491,41 @@ form.addEventListener(
       return;
     }
 
+    /*
+      Search is the only gated corpus feature.
+    */
+    if (!currentUser) {
+      loginPanel.classList.remove(
+        "hidden"
+      );
+
+      loginPanel.scrollIntoView({
+        behavior: "smooth",
+        block: "center"
+      });
+
+      status.textContent =
+        "Sign in with Google to search the corpus.";
+
+      return;
+    }
+
+    if (!profileIsComplete) {
+      profilePanel.classList.remove(
+        "hidden"
+      );
+
+      profilePanel.scrollIntoView({
+        behavior: "smooth",
+        block: "center"
+      });
+
+      status.textContent =
+        "Complete your Bhaxa profile before searching.";
+
+      return;
+    }
+
     idleDashboard.classList.add(
       "hidden"
     );
@@ -1435,6 +1596,29 @@ form.addEventListener(
     }
   }
 );
+
+
+accountButton.addEventListener(
+  "click",
+  event => {
+    if (
+      accountButton.textContent.trim() !==
+      "Log out"
+    ) {
+      return;
+    }
+
+    event.preventDefault();
+
+    const returnUrl =
+      window.location.href;
+
+    window.location.href =
+      `${API}/cdn-cgi/access/logout` +
+      `?returnTo=${encodeURIComponent(returnUrl)}`;
+  }
+);
+
 </script>
 
 </body>
