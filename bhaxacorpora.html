@@ -60,12 +60,12 @@
     z-index:1000;
     display:flex;
     align-items:center;
-    gap:.75rem;
+    gap:.7rem;
   }
 
   .account-name{
     color:var(--muted);
-    font-size:.76rem;
+    font-size:.74rem;
     max-width:220px;
     overflow:hidden;
     text-overflow:ellipsis;
@@ -73,14 +73,12 @@
   }
 
   .account-button{
-    display:inline-block;
-    padding:.5rem .78rem;
+    padding:.5rem .8rem;
     border:1px solid var(--line);
     border-radius:999px;
-    background:rgba(245,245,242,.94);
+    background:rgba(245,245,242,.96);
     color:var(--fg);
     text-decoration:none;
-    font:inherit;
     font-size:.75rem;
     cursor:pointer;
   }
@@ -463,11 +461,6 @@
       display:none;
     }
 
-    .account-button{
-      padding:.45rem .68rem;
-      font-size:.7rem;
-    }
-
     .updated{
       width:100%;
       margin-left:0;
@@ -546,10 +539,10 @@
   </div>
 
   <section id="loginPanel" class="auth-panel hidden">
-    <div class="auth-title">Search requires sign in</div>
+    <div class="auth-title">Log in required to search</div>
     <div class="auth-copy">
-      Corpus statistics and frequency information are public.
-      Sign in with Google only when you want to search the corpus.
+      Corpus statistics, token frequencies and recent updates are public.
+      To search concordance results, sign in with Google and create a Bhaxa profile.
     </div>
     <a id="loginButton" class="auth-button" href="#">
       Continue with Google
@@ -561,7 +554,7 @@
     <div class="auth-copy">
       Complete these details once before searching the corpus.
       Search activity is recorded and associated with your Bhaxa profile
-      for administration, usage analysis, and abuse prevention.
+      for administration, usage analysis and abuse prevention.
     </div>
     <div id="profileEmail" class="profile-email"></div>
 
@@ -652,7 +645,7 @@
   </section>
 
   <div id="searchAccessNote" class="auth-copy" style="margin-bottom:.5rem;">
-    Search requires a Bhaxa account.
+    Search requires login.
   </div>
 
   <form id="searchForm">
@@ -858,10 +851,10 @@ let currentUser = null;
 let profileIsComplete = false;
 
 loginButton.href =
-  `${API}/auth/start`;
+  `${API}/private/auth/start`;
 
 accountButton.href =
-  `${API}/auth/start`;
+  `${API}/private/auth/start`;
 
 function apiFetch(
   path,
@@ -874,47 +867,6 @@ function apiFetch(
       credentials: "include"
     }
   );
-}
-
-
-function setLoggedOutUI() {
-  currentUser = null;
-  profileIsComplete = false;
-
-  accountName.textContent = "";
-  accountButton.textContent = "Log in";
-  accountButton.href =
-    `${API}/auth/start`;
-
-  searchAccessNote.textContent =
-    "Search requires a Bhaxa account.";
-
-  loginPanel.classList.add("hidden");
-  profilePanel.classList.add("hidden");
-}
-
-
-function setLoggedInUI(data) {
-  currentUser = data;
-  profileIsComplete =
-    Boolean(data.profile_complete);
-
-  accountName.textContent =
-    data.profile?.display_name ||
-    data.google_name ||
-    data.email ||
-    "";
-
-  accountButton.textContent =
-    "Log out";
-
-  accountButton.href =
-    `${API}/cdn-cgi/access/logout`;
-
-  searchAccessNote.textContent =
-    profileIsComplete
-      ? "Signed in · search activity is associated with your Bhaxa profile."
-      : "Complete your Bhaxa profile to search.";
 }
 
 const form =
@@ -1150,17 +1102,53 @@ async function loadStats() {
 
 
 
+function setLoggedOutUI() {
+  currentUser = null;
+  profileIsComplete = false;
+
+  accountName.textContent = "";
+  accountButton.textContent = "Log in";
+  accountButton.href =
+    `${API}/private/auth/start`;
+
+  searchAccessNote.textContent =
+    "Search requires login.";
+
+  profilePanel.classList.add("hidden");
+}
+
+
+function setLoggedInUI(data) {
+  currentUser = data;
+  profileIsComplete =
+    Boolean(data.profile_complete);
+
+  accountName.textContent =
+    data.profile?.display_name ||
+    data.google_name ||
+    data.email ||
+    "";
+
+  accountButton.textContent =
+    "Log out";
+
+  accountButton.href =
+    `${API}/cdn-cgi/access/logout`;
+
+  searchAccessNote.textContent =
+    profileIsComplete
+      ? "Signed in · you can search the corpus."
+      : "Complete your Bhaxa profile to search.";
+}
+
+
 async function loadIdentity() {
-  /*
-    The dashboard itself is public and loads independently.
-    Identity only controls profile/search access.
-  */
   setLoggedOutUI();
 
   try {
     const response =
       await apiFetch(
-        "/api/me"
+        "/private/me"
       );
 
     if (!response.ok) {
@@ -1195,14 +1183,10 @@ async function loadIdentity() {
       return;
     }
 
-    profilePanel.classList.add(
-      "hidden"
-    );
-
   } catch {
     /*
-      Public dashboard still works even if identity
-      cannot be established.
+      Normal when a public visitor has no Access session.
+      Public corpus information remains visible.
     */
     setLoggedOutUI();
   }
@@ -1247,7 +1231,7 @@ profileForm.addEventListener(
     try {
       const response =
         await apiFetch(
-          "/api/profile",
+          "/private/profile",
           {
             method: "POST",
             headers: {
@@ -1284,7 +1268,7 @@ profileForm.addEventListener(
         "";
 
       searchAccessNote.textContent =
-        "Signed in · search activity is associated with your Bhaxa profile.";
+        "Signed in · you can search the corpus.";
 
       await loadStats();
       await loadDashboard();
@@ -1491,9 +1475,6 @@ form.addEventListener(
       return;
     }
 
-    /*
-      Search is the only gated corpus feature.
-    */
     if (!currentUser) {
       loginPanel.classList.remove(
         "hidden"
@@ -1505,7 +1486,7 @@ form.addEventListener(
       });
 
       status.textContent =
-        "Sign in with Google to search the corpus.";
+        "Log in with Google to search the corpus.";
 
       return;
     }
@@ -1539,7 +1520,7 @@ form.addEventListener(
     try {
       const response =
         await apiFetch(
-          `/api/search` +
+          `/private/search` +
           `?q=${encodeURIComponent(q)}` +
           `&mode=${encodeURIComponent(mode.value)}` +
           `&limit=${encodeURIComponent(limit.value)}`
