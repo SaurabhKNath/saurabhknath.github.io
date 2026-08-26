@@ -1610,12 +1610,8 @@ accountButton.addEventListener(
 
     event.preventDefault();
 
-    const returnUrl =
-      window.location.href;
-
     window.location.href =
-      `${API}/cdn-cgi/access/logout` +
-      `?returnTo=${encodeURIComponent(returnUrl)}`;
+      `${API}/cdn-cgi/access/logout`;
   }
 );
 
