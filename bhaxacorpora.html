@@ -569,6 +569,7 @@
     display:grid;
     grid-template-areas:
       "stats"
+      "growth"
       "search"
       "results"
       "dashboard"
@@ -690,6 +691,130 @@
   }
 
 
+  /* Public corpus growth · three lines in one plot */
+  .growth-section{
+    grid-area:growth;
+    margin:-1.35rem 0 3rem;
+  }
+
+  .growth-heading{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    gap:1rem;
+    margin-bottom:.7rem;
+  }
+
+  .growth-title{
+    color:var(--muted);
+    font-size:.7rem;
+    text-transform:uppercase;
+    letter-spacing:.12em;
+  }
+
+  .growth-note{
+    color:var(--muted);
+    font-size:.68rem;
+  }
+
+  .growth-legend{
+    display:flex;
+    flex-wrap:wrap;
+    gap:.65rem 1.2rem;
+    padding:.72rem 0;
+    border-top:1px solid var(--line);
+    color:var(--muted);
+    font-size:.7rem;
+  }
+
+  .growth-legend-item{
+    display:flex;
+    align-items:center;
+    gap:.42rem;
+  }
+
+  .growth-legend-line{
+    width:18px;
+    height:0;
+    border-top:2px solid var(--fg);
+  }
+
+  .growth-legend-line.sentences{
+    border-top-style:dashed;
+    opacity:.66;
+  }
+
+  .growth-legend-line.words{
+    border-top-style:dotted;
+    opacity:.42;
+  }
+
+  .growth-chart-shell{
+    padding:.15rem 0 .65rem;
+    border-bottom:1px solid var(--line);
+  }
+
+  .growth-svg{
+    display:block;
+    width:100%;
+    height:auto;
+  }
+
+  .growth-grid-line{
+    stroke:var(--line);
+    stroke-width:.7;
+    vector-effect:non-scaling-stroke;
+  }
+
+  .growth-line{
+    fill:none;
+    stroke:var(--fg);
+    stroke-width:1.65;
+    vector-effect:non-scaling-stroke;
+    stroke-linecap:round;
+    stroke-linejoin:round;
+  }
+
+  .growth-line.sentences{
+    stroke-dasharray:7 5;
+    opacity:.66;
+  }
+
+  .growth-line.words{
+    stroke-dasharray:2 5;
+    opacity:.42;
+  }
+
+  .growth-axis{
+    display:flex;
+    justify-content:space-between;
+    margin-top:.2rem;
+    color:var(--muted);
+    font-size:.62rem;
+    font-variant-numeric:tabular-nums;
+  }
+
+  .growth-empty{
+    display:flex;
+    align-items:center;
+    min-height:110px;
+    color:var(--muted);
+    font-size:.72rem;
+  }
+
+  @media(max-width:720px){
+    .growth-section{
+      margin:-.7rem 0 2.4rem;
+    }
+
+    .growth-heading{
+      align-items:flex-start;
+      flex-direction:column;
+      gap:.2rem;
+    }
+  }
+
+
   footer a{
     color:inherit;
     text-decoration:none;
@@ -788,6 +913,41 @@
       <strong id="lastUpdated">—</strong>
     </span>
   </div>
+
+
+  <section id="growthSection" class="growth-section">
+    <div class="growth-heading">
+      <div class="growth-title">
+        Corpus growth · last 24 hours
+      </div>
+      <div id="growthUpdated" class="growth-note"></div>
+    </div>
+
+    <div class="growth-legend">
+      <span class="growth-legend-item">
+        <span class="growth-legend-line"></span>
+        Articles
+      </span>
+
+      <span class="growth-legend-item">
+        <span class="growth-legend-line sentences"></span>
+        Sentences
+      </span>
+
+      <span class="growth-legend-item">
+        <span class="growth-legend-line words"></span>
+        Words
+      </span>
+    </div>
+
+    <div class="growth-chart-shell">
+      <div id="growthChart">
+        <div class="growth-empty">
+          Growth history will appear after the next hourly snapshot.
+        </div>
+      </div>
+    </div>
+  </section>
 
 
   <section id="searchZone">
@@ -1084,6 +1244,13 @@ const newTokens =
   document.getElementById("newTokens");
 
 
+const growthChart =
+  document.getElementById("growthChart");
+
+const growthUpdated =
+  document.getElementById("growthUpdated");
+
+
 document
   .getElementById("keyboardToggle")
   .addEventListener(
@@ -1238,6 +1405,199 @@ function formatTimestamp(value) {
     return value;
   }
 }
+
+
+
+function formatGrowthTime(value) {
+  if (!value) return "";
+
+  try {
+    return new Intl.DateTimeFormat(
+      "en-AU",
+      {
+        hour:"numeric",
+        minute:"2-digit"
+      }
+    ).format(
+      new Date(
+        value.endsWith("Z")
+          ? value
+          : value + "Z"
+      )
+    );
+
+  } catch {
+    return value;
+  }
+}
+
+
+function renderGrowthChart(rows) {
+  if (!growthChart) {
+    return;
+  }
+
+  if (!rows?.length) {
+    growthChart.innerHTML =
+      `<div class="growth-empty">
+        Growth history will appear after the next hourly snapshot.
+      </div>`;
+    return;
+  }
+
+  const width = 1000;
+  const height = 220;
+  const padX = 8;
+  const padY = 15;
+
+  /*
+    Each series is normalized to its own 24-hour range
+    because articles, sentences and words have very
+    different raw magnitudes.
+  */
+  function pointsFor(key) {
+    const values =
+      rows.map(
+        row =>
+          Number(
+            row[key] || 0
+          )
+      );
+
+    let min =
+      Math.min(...values);
+
+    let max =
+      Math.max(...values);
+
+    if (min === max) {
+      min -= 1;
+      max += 1;
+    }
+
+    return values
+      .map(
+        (value,index) => {
+          const x =
+            rows.length === 1
+              ? width / 2
+              : padX +
+                (
+                  index /
+                  (rows.length - 1)
+                ) *
+                (
+                  width -
+                  padX * 2
+                );
+
+          const y =
+            height -
+            padY -
+            (
+              (value - min) /
+              (max - min)
+            ) *
+            (
+              height -
+              padY * 2
+            );
+
+          return (
+            `${x.toFixed(2)},` +
+            `${y.toFixed(2)}`
+          );
+        }
+      )
+      .join(" ");
+  }
+
+  const firstTime =
+    formatGrowthTime(
+      rows[0].recorded_at
+    );
+
+  const lastTime =
+    formatGrowthTime(
+      rows[
+        rows.length - 1
+      ].recorded_at
+    );
+
+  growthChart.innerHTML = `
+    <svg
+      class="growth-svg"
+      viewBox="0 0 ${width} ${height}"
+      role="img"
+      aria-label="Hourly corpus growth during the last 24 hours"
+    >
+      <line
+        class="growth-grid-line"
+        x1="${padX}"
+        y1="${height / 2}"
+        x2="${width - padX}"
+        y2="${height / 2}"
+      ></line>
+
+      <polyline
+        class="growth-line articles"
+        points="${pointsFor("articles")}"
+      ></polyline>
+
+      <polyline
+        class="growth-line sentences"
+        points="${pointsFor("sentences")}"
+      ></polyline>
+
+      <polyline
+        class="growth-line words"
+        points="${pointsFor("words")}"
+      ></polyline>
+    </svg>
+
+    <div class="growth-axis">
+      <span>${escapeHTML(firstTime)}</span>
+      <span>${escapeHTML(lastTime)}</span>
+    </div>
+  `;
+}
+
+
+async function loadGrowth() {
+  try {
+    const response =
+      await fetch(
+        `${API}/api/growth?hours=24`
+      );
+
+    const data =
+      await response.json();
+
+    if (!response.ok) {
+      throw new Error(
+        data.error ||
+        "Growth history unavailable"
+      );
+    }
+
+    const rows =
+      data.history || [];
+
+    renderGrowthChart(rows);
+
+    growthUpdated.textContent =
+      rows.length === 1
+        ? "1 hourly snapshot"
+        : rows.length > 1
+          ? `${rows.length} hourly snapshots`
+          : "";
+
+  } catch {
+    renderGrowthChart([]);
+    growthUpdated.textContent = "";
+  }
+}
+
 
 
 async function loadStats() {
@@ -1468,6 +1828,7 @@ profileForm.addEventListener(
 
 
 loadStats();
+loadGrowth();
 loadDashboard();
 loadIdentity();
 
@@ -1494,6 +1855,10 @@ function renderTokenList(
 
 
 function renderTicker(previews) {
+  if (!tickerTrack) {
+    return;
+  }
+
   const items =
     (previews || [])
       .filter(Boolean);
@@ -1564,8 +1929,10 @@ async function loadDashboard() {
     );
 
   } catch(error) {
-    tickerTrack.innerHTML =
-      `<span class="ticker-item">${escapeHTML(error.message)}</span>`;
+    if (tickerTrack) {
+      tickerTrack.innerHTML =
+        `<span class="ticker-item">${escapeHTML(error.message)}</span>`;
+    }
   }
 }
 
