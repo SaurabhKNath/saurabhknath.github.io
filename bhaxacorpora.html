@@ -569,10 +569,10 @@
     display:grid;
     grid-template-areas:
       "stats"
-      "growth"
       "search"
       "results"
       "dashboard"
+      "growth"
       "footer";
     grid-template-columns:minmax(0,1fr);
     row-gap:0;
@@ -694,7 +694,7 @@
   /* Public corpus growth · three lines in one plot */
   .growth-section{
     grid-area:growth;
-    margin:-1.35rem 0 3rem;
+    margin:2.5rem 0 1rem;
   }
 
   .growth-heading{
@@ -804,7 +804,7 @@
 
   @media(max-width:720px){
     .growth-section{
-      margin:-.7rem 0 2.4rem;
+      margin:2rem 0 .8rem;
     }
 
     .growth-heading{
@@ -913,41 +913,6 @@
       <strong id="lastUpdated">—</strong>
     </span>
   </div>
-
-
-  <section id="growthSection" class="growth-section">
-    <div class="growth-heading">
-      <div class="growth-title">
-        Corpus growth · last 24 hours
-      </div>
-      <div id="growthUpdated" class="growth-note"></div>
-    </div>
-
-    <div class="growth-legend">
-      <span class="growth-legend-item">
-        <span class="growth-legend-line"></span>
-        Articles
-      </span>
-
-      <span class="growth-legend-item">
-        <span class="growth-legend-line sentences"></span>
-        Sentences
-      </span>
-
-      <span class="growth-legend-item">
-        <span class="growth-legend-line words"></span>
-        Words
-      </span>
-    </div>
-
-    <div class="growth-chart-shell">
-      <div id="growthChart">
-        <div class="growth-empty">
-          Growth history will appear after the next hourly snapshot.
-        </div>
-      </div>
-    </div>
-  </section>
 
 
   <section id="searchZone">
@@ -1137,6 +1102,38 @@
 
   </section>
 
+
+
+
+  <section id="growthSection" class="growth-section">
+    <div class="growth-heading">
+      <div class="growth-title">
+        Corpus growth · last 24 hours
+      </div>
+      <div id="growthUpdated" class="growth-note"></div>
+    </div>
+
+    <div class="growth-legend">
+      <span class="growth-legend-item">
+        <span class="growth-legend-line"></span>
+        Articles
+      </span>
+
+      <span class="growth-legend-item">
+        <span class="growth-legend-line sentences"></span>
+        Sentences
+      </span>
+
+      <span class="growth-legend-item">
+        <span class="growth-legend-line words"></span>
+        Words
+      </span>
+    </div>
+
+    <div class="growth-chart-shell">
+      <div id="growthChart"></div>
+    </div>
+  </section>
 
   <footer>
     Created by
@@ -1438,10 +1435,7 @@ function renderGrowthChart(rows) {
   }
 
   if (!rows?.length) {
-    growthChart.innerHTML =
-      `<div class="growth-empty">
-        Growth history will appear after the next hourly snapshot.
-      </div>`;
+    growthChart.innerHTML = "";
     return;
   }
 
