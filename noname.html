@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="as">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ভাষাখেল</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700&family=Noto+Sans+Bengali:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; }
+    html, body { margin: 0; width: 100%; height: 100%; overflow: hidden; }
+    body {
+      background: #faf9f6;
+      color: #202020;
+      font-family: "Manrope", sans-serif;
+      position: relative;
+      overscroll-behavior: none;
+    }
+    button, input { font: inherit; }
+    .hidden { display: none !important; }
+    .page {
+      width: min(100%, 460px);
+      min-height: 0;
+      margin: 0;
+      padding: 24px 12px 30px;
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform-origin: top center;
+      will-change: transform;
+    }
+    .header, .result-header { text-align: center; }
+    .header { margin-bottom: 34px; }
+    .title { margin: 0; font-family: "Noto Sans Bengali", sans-serif; font-size: 31px; line-height: 1.15; font-weight: 700; }
+    .inspired { margin-top: 4px; font-size: 12px; color: #999; }
+    .message { min-height: 24px; margin-bottom: 8px; text-align: center; font-family: "Noto Sans Bengali", sans-serif; font-size: 14px; color: #686868; }
+    .board { width: 100%; max-width: 330px; margin: 0 auto 28px; display: flex; flex-direction: column; gap: 7px; }
+    .board-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 7px; }
+    .tile { aspect-ratio: 1 / 1; display: flex; align-items: center; justify-content: center; background: white; border: 1.5px solid #d9d6d0; border-radius: 9px; font-family: "Noto Sans Bengali", sans-serif; font-size: 21px; font-weight: 700; }
+    .tile.correct { background: #538d4e; border-color: #538d4e; color: white; }
+    .tile.present { background: #b59f3b; border-color: #b59f3b; color: white; }
+    .tile.absent { background: #d8d6d2; border-color: #d8d6d2; color: #555; }
+    .keyboard { width: 100%; max-width: 420px; margin: 0 auto; user-select: none; }
+    .key-row { display: flex; justify-content: center; gap: 4px; margin-bottom: 6px; }
+    .row2 { padding: 0 10px; }
+    .row3 { padding: 0 18px; }
+    .inline-keys { display: contents; }
+    .key { flex: 1; min-width: 0; max-width: 48px; height: 48px; padding: 0 2px; border: 1px solid #d7d4ce; border-radius: 7px; background: #e8e6e1; color: #222; font-family: "Noto Sans Bengali", sans-serif; font-size: 16px; font-weight: 600; cursor: pointer; }
+    .key:active { transform: translateY(1px); }
+    .key.correct { background: #538d4e; border-color: #538d4e; color: white; }
+    .key.present { background: #b59f3b; border-color: #b59f3b; color: white; }
+    .key.absent { opacity: 0.3; }
+    .special { background: #d96f32; border-color: #d96f32; color: white; font-family: "Manrope", sans-serif; font-weight: 700; }
+    .enter { flex: 1.65; max-width: 72px; font-size: 10px; }
+    .backspace { flex: 1.3; max-width: 58px; font-size: 21px; }
+    .test-answer { margin-top: 18px; text-align: center; font-family: "Noto Sans Bengali", sans-serif; font-size: 11px; color: #bbb; }
+    .result-page { min-height: 0; display: flex; flex-direction: column; align-items: center; text-align: center; }
+    .result-header { margin-bottom: 38px; }
+    .result-date { font-size: 13px; color: #999; margin-bottom: 22px; }
+    .result-score { font-size: 23px; font-weight: 700; margin-bottom: 14px; }
+    .emoji-grid { font-family: Arial, sans-serif; font-size: 29px; line-height: 1.5; letter-spacing: 3px; margin-bottom: 34px; }
+    .claim-box { width: 100%; max-width: 310px; margin-bottom: 18px; }
+    .claim-box label { display: block; margin-bottom: 8px; font-size: 12px; color: #777; }
+    .claim-box input { width: 100%; height: 48px; border: 1px solid #d8d5cf; border-radius: 11px; background: white; padding: 0 14px; text-align: center; outline: none; }
+    .claim-box input:focus { border-color: #d96f32; }
+    .share-section { width: 100%; max-width: 330px; }
+    .share-label { margin-bottom: 13px; font-size: 12px; color: #888; }
+    .share-options { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+    .share-option { border: 0; background: transparent; padding: 0; display: flex; flex-direction: column; align-items: center; gap: 7px; color: #555; font-size: 10px; cursor: pointer; }
+    .share-icon { width: 52px; height: 52px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+    .share-icon svg { width: 25px; height: 25px; }
+    .share-option:active .share-icon { transform: scale(0.94); }
+    .whatsapp { background: #25D366; color: white; }
+    .instagram { background: linear-gradient(135deg,#833AB4,#C13584,#E1306C,#F77737); color: white; }
+    .facebook { background: #1877F2; color: white; }
+    .x-icon { background: #111; color: white; }
+    .share-status { min-height: 25px; margin-top: 14px; font-size: 11px; color: #777; line-height: 1.4; }
+    @supports (padding: max(0px)) {
+      .page {
+        padding-bottom: max(18px, env(safe-area-inset-bottom));
+      }
+    }
+
+    @media (max-width: 360px) {
+      .page { padding-left: 8px; padding-right: 8px; }
+      .key { height: 45px; font-size: 15px; }
+      .key-row { gap: 3px; }
+      .row2 { padding: 0 5px; }
+      .row3 { padding: 0 10px; }
+      .tile { font-size: 19px; }
+      .share-icon { width: 48px; height: 48px; }
+    }
+  </style>
+</head>
+<body>
+  <main id="gamePage" class="page">
+    <header class="header">
+      <h1 class="title">ভাষাখেল</h1>
+      <div class="inspired">Inspired by Wordle</div>
+    </header>
+    <div id="message" class="message"></div>
+    <div id="board" class="board"></div>
+    <div class="keyboard">
+      <div id="row1" class="key-row"></div>
+      <div id="row2" class="key-row row2"></div>
+      <div id="row3" class="key-row row3"></div>
+      <div class="key-row">
+        <button id="enter" class="key special enter" type="button">ENTER</button>
+        <span id="row4keys" class="inline-keys"></span>
+        <button id="backspace" class="key special backspace" type="button">⌫</button>
+      </div>
+    </div>
+    <div class="test-answer">Test answer: গা · মো · চা · খ · ন</div>
+  </main>
+
+  <main id="resultPage" class="page hidden">
+    <section class="result-page">
+      <header class="result-header">
+        <h1 class="title">ভাষাখেল</h1>
+        <div class="inspired">Inspired by Wordle</div>
+      </header>
+      <div id="resultDate" class="result-date"></div>
+      <div id="resultScore" class="result-score"></div>
+      <div id="emojiGrid" class="emoji-grid"></div>
+
+      <div class="claim-box">
+        <label for="playerName">Add your name to claim this result</label>
+        <input id="playerName" type="text" maxlength="30" placeholder="Your name">
+      </div>
+
+      <div class="share-section">
+        <div class="share-label">Share your result</div>
+        <div class="share-options">
+          <button class="share-option" onclick="shareWhatsApp()">
+            <div class="share-icon whatsapp"><svg viewBox="0 0 32 32"><path fill="currentColor" d="M16 3C8.82 3 3 8.62 3 15.55c0 2.43.72 4.81 2.08 6.83L3 30l7.87-2a13.4 13.4 0 0 0 5.12 1.02C23.17 29.02 29 23.4 29 16.46 29 9.53 23.17 3 16 3zm0 23.61a10.8 10.8 0 0 1-4.64-1.05l-.33-.16-4.67 1.19 1.25-4.45-.21-.32a10.05 10.05 0 0 1-1.57-5.35c0-5.67 4.56-10.29 10.17-10.29s10.17 4.62 10.17 10.29S21.61 26.61 16 26.61z"/></svg></div>
+            <span>WhatsApp</span>
+          </button>
+          <button class="share-option" onclick="shareInstagram()">
+            <div class="share-icon instagram"><svg viewBox="0 0 32 32"><rect x="5" y="5" width="22" height="22" rx="6" fill="none" stroke="currentColor" stroke-width="2.5"/><circle cx="16" cy="16" r="5" fill="none" stroke="currentColor" stroke-width="2.5"/><circle cx="23" cy="9" r="1.5" fill="currentColor"/></svg></div>
+            <span>Instagram</span>
+          </button>
+          <button class="share-option" onclick="shareFacebook()">
+            <div class="share-icon facebook"><svg viewBox="0 0 32 32"><path fill="currentColor" d="M18.2 28V17.1h3.7l.55-4.25H18.2v-2.7c0-1.23.35-2.07 2.12-2.07h2.27V4.3c-.39-.05-1.74-.16-3.31-.16-3.27 0-5.51 1.95-5.51 5.54v3.09H10v4.25h3.77V28h4.43z"/></svg></div>
+            <span>Facebook</span>
+          </button>
+          <button class="share-option" onclick="shareX()">
+            <div class="share-icon x-icon"><svg viewBox="0 0 32 32"><path fill="currentColor" d="M6 5h5.7l5.35 7.15L23.2 5H26l-7.65 8.9L27 27h-5.7l-5.8-7.75L8.85 27H6l8.2-9.5L6 5zm4.45 2.1L22.3 24.9h2.25L12.7 7.1h-2.25z"/></svg></div>
+            <span>X</span>
+          </button>
+        </div>
+        <div id="shareStatus" class="share-status"></div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const answer = ["গা", "মো", "চা", "খ", "ন"];
+    const keys = [
+      "গা","মো","চা","খ","ন","কি","তা","প",
+      "মা","নু","হ","জ","ক","ল","বা","গি",
+      "ৰি","সা","ট","দে","পা","ৰ","ফু","নী",
+      "ডা","শি","ব","তো"
+    ];
+
+    const maxAttempts = 5;
+    let currentGuess = [];
+    let history = [];
+    let finished = false;
+    const keyState = {};
+    const board = document.getElementById("board");
+    const message = document.getElementById("message");
+
+    function renderBoard() {
+      board.innerHTML = "";
+      for (let rowIndex = 0; rowIndex < maxAttempts; rowIndex++) {
+        const row = document.createElement("div");
+        row.className = "board-row";
+        const played = history[rowIndex];
+        for (let i = 0; i < 5; i++) {
+          const tile = document.createElement("div");
+          tile.className = "tile";
+          if (played) {
+            tile.textContent = played.guess[i];
+            tile.classList.add(played.result[i]);
+          } else if (rowIndex === history.length && !finished) {
+            tile.textContent = currentGuess[i] || "";
+          }
+          row.appendChild(tile);
+        }
+        board.appendChild(row);
+      }
+    }
+
+    function createKey(akshara) {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "key";
+      button.textContent = akshara;
+      button.dataset.akshara = akshara;
+      button.onclick = function () {
+        if (finished || currentGuess.length >= 5) return;
+        currentGuess.push(akshara);
+        message.textContent = "";
+        renderBoard();
+      };
+      return button;
+    }
+
+    function buildKeyboard() {
+      keys.slice(0, 8).forEach(key => document.getElementById("row1").appendChild(createKey(key)));
+      keys.slice(8, 16).forEach(key => document.getElementById("row2").appendChild(createKey(key)));
+      keys.slice(16, 24).forEach(key => document.getElementById("row3").appendChild(createKey(key)));
+      keys.slice(24, 28).forEach(key => document.getElementById("row4keys").appendChild(createKey(key)));
+    }
+
+    function evaluateGuess(guess) {
+      const result = Array(5).fill("absent");
+      const remaining = {};
+      for (let i = 0; i < 5; i++) {
+        if (guess[i] === answer[i]) {
+          result[i] = "correct";
+        } else {
+          const a = answer[i];
+          remaining[a] = (remaining[a] || 0) + 1;
+        }
+      }
+      for (let i = 0; i < 5; i++) {
+        if (result[i] === "correct") continue;
+        const g = guess[i];
+        if (remaining[g] > 0) {
+          result[i] = "present";
+          remaining[g]--;
+        }
+      }
+      return result;
+    }
+
+    function stateRank(state) {
+      if (state === "correct") return 3;
+      if (state === "present") return 2;
+      if (state === "absent") return 1;
+      return 0;
+    }
+
+    function updateKeyboard(guess, result) {
+      guess.forEach(function (unit, index) {
+        const newState = result[index];
+        const oldState = keyState[unit];
+        if (!oldState || stateRank(newState) > stateRank(oldState)) keyState[unit] = newState;
+      });
+      document.querySelectorAll("[data-akshara]").forEach(button => {
+        button.classList.remove("correct", "present", "absent");
+        const state = keyState[button.dataset.akshara];
+        if (state) button.classList.add(state);
+      });
+    }
+
+    function submitGuess() {
+      if (finished) return;
+      if (currentGuess.length !== 5) {
+        message.textContent = "৫টা অক্ষৰ বাছনি কৰক";
+        return;
+      }
+      const result = evaluateGuess(currentGuess);
+      history.push({ guess: [...currentGuess], result });
+      updateKeyboard(currentGuess, result);
+      const won = result.every(state => state === "correct");
+      currentGuess = [];
+      renderBoard();
+      if (won || history.length === maxAttempts) setTimeout(() => showResult(won), 500);
+    }
+
+    function removeAkshara() {
+      if (finished || !currentGuess.length) return;
+      currentGuess.pop();
+      renderBoard();
+    }
+
+    function greenSquare() { return String.fromCodePoint(0x1F7E9); }
+    function yellowSquare() { return String.fromCodePoint(0x1F7E8); }
+    function whiteSquare() { return String.fromCodePoint(0x2B1C); }
+    function emojiFor(state) {
+      if (state === "correct") return greenSquare();
+      if (state === "present") return yellowSquare();
+      return whiteSquare();
+    }
+    function buildEmojiText() { return history.map(entry => entry.result.map(emojiFor).join("")).join("\n"); }
+    function buildEmojiHTML() { return history.map(entry => entry.result.map(emojiFor).join("")).join("<br>"); }
+
+    function getDateLong() {
+      return new Date().toLocaleDateString("en-AU", { day: "numeric", month: "long", year: "numeric" });
+    }
+    function getDateShort() {
+      return new Date().toLocaleDateString("en-AU", { day: "numeric", month: "short", year: "numeric" });
+    }
+
+    function showResult(won) {
+      finished = true;
+      const score = won ? history.length + "/5" : "X/5";
+      document.getElementById("resultDate").textContent = getDateLong();
+      document.getElementById("resultScore").textContent = "BhaxaKhel " + score;
+      document.getElementById("emojiGrid").innerHTML = buildEmojiHTML();
+      document.getElementById("gamePage").classList.add("hidden");
+      document.getElementById("resultPage").classList.remove("hidden");
+      window.scrollTo(0, 0);
+      fitActivePage();
+    }
+
+    function makeShareText() {
+      const name = document.getElementById("playerName").value.trim();
+      const won = history.some(entry => entry.result.every(state => state === "correct"));
+      const score = won ? history.length + "/5" : "X/5";
+      let text = "ভাষাখেল\nInspired by Wordle\n\n" + getDateShort() + "\n\nBhaxaKhel " + score + "\n\n" + buildEmojiText();
+      if (name) text += "\n\n— " + name;
+      text += "\n\nPlay today's ভাষাখেল:\nhttps://bhaxakhel.github.io";
+      return text;
+    }
+
+    async function copyResult() {
+      const text = makeShareText();
+      try {
+        await navigator.clipboard.writeText(text);
+        return true;
+      } catch (error) {
+        const textarea = document.createElement("textarea");
+        textarea.value = text;
+        textarea.style.position = "fixed";
+        textarea.style.opacity = "0";
+        document.body.appendChild(textarea);
+        textarea.focus();
+        textarea.select();
+        const success = document.execCommand("copy");
+        textarea.remove();
+        return success;
+      }
+    }
+
+    async function shareWhatsApp() {
+      const status = document.getElementById("shareStatus");
+      const text = makeShareText();
+      if (navigator.share) {
+        try {
+          await navigator.share({ text });
+          status.textContent = "";
+          return;
+        } catch (error) {
+          if (error.name === "AbortError") return;
+        }
+      }
+      const copied = await copyResult();
+      status.textContent = copied ? "Result copied. Paste it in WhatsApp." : "Copy the result and paste it in WhatsApp.";
+      window.open("https://web.whatsapp.com/", "_blank");
+    }
+
+    async function shareInstagram() {
+      const status = document.getElementById("shareStatus");
+      const copied = await copyResult();
+      if (copied) status.textContent = "Result copied. Paste it on Instagram.";
+      window.open("https://www.instagram.com/", "_blank");
+    }
+
+    function shareFacebook() {
+      const gameURL = "https://bhaxakhel.github.io";
+      window.open("https://www.facebook.com/sharer/sharer.php?u=" + encodeURIComponent(gameURL), "_blank");
+    }
+
+    function shareX() {
+      const text = makeShareText();
+      window.open("https://twitter.com/intent/tweet?text=" + encodeURIComponent(text), "_blank");
+    }
+
+    document.getElementById("enter").addEventListener("click", submitGuess);
+    document.getElementById("backspace").addEventListener("click", removeAkshara);
+
+    buildKeyboard();
+    renderBoard();
+
+    fitActivePage();
+
+    window.addEventListener("resize", fitActivePage);
+    window.addEventListener("orientationchange", fitActivePage);
+
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener("resize", fitActivePage);
+    }
+
+    window.addEventListener("load", fitActivePage);
+    document.fonts?.ready.then(fitActivePage);
+  </script>
+</body>
+</html>
