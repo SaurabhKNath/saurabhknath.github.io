@@ -335,6 +335,7 @@
         <button class="share-btn" id="shareInstagram" type="button" aria-label="Share on Instagram">◎</button>
         <button class="share-btn" id="shareFacebook" type="button" aria-label="Share on Facebook">f</button>
         <button class="share-btn" id="shareX" type="button" aria-label="Share on X">𝕏</button>
+        <button class="share-btn" id="copyResult" type="button" aria-label="Copy result">⧉</button>
       </div>
 
       <div id="shareNote" class="share-note" aria-live="polite"></div>
@@ -648,21 +649,23 @@
     const text = buildShareText();
     const note = document.getElementById("shareNote");
 
-    if (await nativeShare(text)) {
-      note.textContent = "Share sheet opened.";
-      return;
-    }
+    // WhatsApp supports pre-filled text directly through wa.me.
+    // Encode the entire result, not only the game URL.
+    const whatsappURL =
+      "https://wa.me/?text=" + encodeURIComponent(text);
 
-    const copied = await copyText(text);
+    const opened = window.open(
+      whatsappURL,
+      "_blank",
+      "noopener,noreferrer"
+    );
 
-    try {
-      window.open("https://wa.me/", "_blank", "noopener,noreferrer");
+    if (opened) {
+      note.textContent = "WhatsApp opened with your full result.";
+    } else {
+      const copied = await copyText(text);
       note.textContent = copied
-        ? "Result copied. Paste it into WhatsApp."
-        : "WhatsApp opened. Copy the result manually if needed.";
-    } catch (_) {
-      note.textContent = copied
-        ? "Result copied. Open WhatsApp and paste it."
+        ? "Popup blocked. Result copied — paste it into WhatsApp."
         : "Could not open WhatsApp.";
     }
   }
@@ -671,53 +674,70 @@
     const text = buildShareText();
     const note = document.getElementById("shareNote");
 
-    if (await nativeShare(text)) {
-      note.textContent = "Share sheet opened.";
-      return;
-    }
-
+    // Instagram's web interface does not provide a reliable
+    // pre-filled-caption URL. Copy the FULL result first.
     const copied = await copyText(text);
 
-    try {
-      window.open("https://www.instagram.com/", "_blank", "noopener,noreferrer");
-      note.textContent = copied
-        ? "Result copied. Paste it into Instagram."
-        : "Instagram opened. Copy the result manually if needed.";
-    } catch (_) {
-      note.textContent = copied
-        ? "Result copied. Open Instagram and paste it."
-        : "Could not open Instagram.";
-    }
+    window.open(
+      "https://www.instagram.com/",
+      "_blank",
+      "noopener,noreferrer"
+    );
+
+    note.textContent = copied
+      ? "Full result copied. Paste it into Instagram."
+      : "Instagram opened. Copy the result manually if needed.";
   }
 
   async function shareFacebook() {
     const text = buildShareText();
     const note = document.getElementById("shareNote");
 
-    if (await nativeShare(text)) {
-      note.textContent = "Share sheet opened.";
-      return;
-    }
+    // Facebook's sharer accepts the URL being shared, but it does not
+    // reliably accept arbitrary pre-filled post text. Copy the result
+    // so the player can paste it into the post.
+    const copied = await copyText(text);
 
-    await copyText(text);
+    const shareURL =
+      "https://www.facebook.com/sharer/sharer.php?u=" +
+      encodeURIComponent("https://bhaxakhel.github.io");
 
-    const url = encodeURIComponent("https://bhaxakhel.github.io");
-    const fb = "https://www.facebook.com/sharer/sharer.php?u=" + url;
+    window.open(
+      shareURL,
+      "_blank",
+      "noopener,noreferrer"
+    );
 
-    window.open(fb, "_blank", "noopener,noreferrer");
-    note.textContent = "Facebook opened. Your result was also copied.";
+    note.textContent = copied
+      ? "Full result copied. Paste it into your Facebook post."
+      : "Facebook opened. Add the result text manually.";
   }
 
-  async function shareX() {
+  function shareX() {
     const text = buildShareText();
     const note = document.getElementById("shareNote");
 
-    const intent =
+    // X supports pre-filled text via the intent endpoint.
+    const intentURL =
       "https://twitter.com/intent/tweet?text=" +
       encodeURIComponent(text);
 
-    window.open(intent, "_blank", "noopener,noreferrer");
-    note.textContent = "X share window opened.";
+    window.open(
+      intentURL,
+      "_blank",
+      "noopener,noreferrer"
+    );
+
+    note.textContent = "X opened with your full result.";
+  }
+
+  async function copyResult() {
+    const text = buildShareText();
+    const copied = await copyText(text);
+
+    document.getElementById("shareNote").textContent = copied
+      ? "Full result copied."
+      : "Could not copy the result.";
   }
 
   function showResult(won) {
@@ -778,6 +798,7 @@
   document.getElementById("shareInstagram").addEventListener("click", shareInstagram);
   document.getElementById("shareFacebook").addEventListener("click", shareFacebook);
   document.getElementById("shareX").addEventListener("click", shareX);
+  document.getElementById("copyResult").addEventListener("click", copyResult);
 
   document.getElementById("backToGame").addEventListener("click", () => {
     document.getElementById("resultPage").classList.add("hidden");
