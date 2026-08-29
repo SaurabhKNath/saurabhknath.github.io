@@ -97,7 +97,7 @@
       To test another day, temporarily use for example:
       const TEST_DATE = "2026-08-30";
     */
-    const TEST_DATE = "2026-08-30";
+    const TEST_DATE = "2026-08-31";
 
     function getISTISODate(offsetDays = 0) {
       if (TEST_DATE) {
