@@ -1,795 +1,369 @@
 <!DOCTYPE html>
 <html lang="as">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>ভাষাখেল</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>BhaxaKhel Share Card</title>
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Noto+Sans+Bengali:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Noto+Sans+Bengali:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-  <style>
-    * { box-sizing: border-box; }
+<style>
+  * { box-sizing: border-box; }
 
-    html, body {
-      margin: 0;
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-    }
+  body {
+    margin: 0;
+    padding: 28px 16px;
+    background: #faf9f6;
+    color: #202020;
+    font-family: "Manrope", sans-serif;
+  }
 
-    body {
-      background: #faf9f6;
-      color: #202020;
-      font-family: "Manrope", sans-serif;
-      overscroll-behavior: none;
-      touch-action: manipulation;
-    }
+  .wrap {
+    width: min(100%, 420px);
+    margin: 0 auto;
+  }
 
-    button, input { font: inherit; }
-    .as { font-family: "Noto Sans Bengali", sans-serif; }
-    .hidden { display: none !important; }
+  .card {
+    background: #fffdf9;
+    border: 1px solid #ece7df;
+    border-radius: 20px;
+    padding: 30px 24px 26px;
+    text-align: center;
+  }
 
-    .viewport-stage {
-      position: fixed;
-      inset: 0;
-      display: flex;
-      justify-content: center;
-      align-items: flex-start;
-      overflow: hidden;
-      padding: 4px 0;
-    }
+  .title {
+    font-family: "Noto Sans Bengali", sans-serif;
+    font-size: 36px;
+    font-weight: 700;
+    line-height: 1;
+    margin: 0;
+  }
 
-    .page {
-      width: 460px;
-      flex: 0 0 460px;
-      margin: 0;
-      padding: 22px 12px 28px;
-      transform-origin: top center;
-      will-change: transform;
-    }
+  .sub {
+    margin-top: 7px;
+    font-size: 12px;
+    color: #8b877f;
+  }
 
-    .brand {
-      text-align: center;
-      margin-bottom: 8px;
-    }
+  .date {
+    margin-top: 24px;
+    font-size: 13px;
+    color: #8b877f;
+  }
 
-    .brand h1 {
-      font-family: "Noto Sans Bengali", sans-serif;
-      font-size: 34px;
-      line-height: 1.05;
-      margin: 0;
-      font-weight: 700;
-      letter-spacing: -0.5px;
-    }
+  .score {
+    margin-top: 18px;
+    font-size: 32px;
+    font-weight: 700;
+  }
 
-    .brand p {
-      margin: 5px 0 0;
-      font-size: 12px;
-      color: #888;
-    }
+  .grid {
+    margin: 22px auto 0;
+    width: 244px;
+    display: grid;
+    grid-template-columns: repeat(5, 42px);
+    gap: 8px;
+    justify-content: center;
+  }
 
-    .game-date {
-      text-align: center;
-      font-size: 12px;
-      color: #999;
-      margin: 18px 0 10px;
-    }
+  .sq {
+    width: 42px;
+    height: 42px;
+    border-radius: 8px;
+  }
 
-    .hint-box {
-      width: 100%;
-      max-width: 300px;
-      margin: 0 auto 18px;
-      text-align: center;
-    }
+  .green { background: #4f8c65; }
+  .yellow { background: #c39a3b; }
+  .gray { background: #aaa49c; }
 
-    .hint-label {
-      font-family: "Noto Sans Bengali", sans-serif;
-      font-size: 13px;
-      color: #777;
-      margin-bottom: 6px;
-    }
+  .name {
+    margin-top: 22px;
+    font-size: 15px;
+    font-weight: 600;
+  }
 
-    .hint-vowels {
-      display: flex;
-      justify-content: center;
-      gap: 12px;
-      font-family: "Noto Sans Bengali", sans-serif;
-      font-size: 22px;
-      font-weight: 600;
-      letter-spacing: 1px;
-    }
+  .url {
+    margin-top: 7px;
+    font-size: 12px;
+    color: #8b877f;
+  }
 
-    .message {
-      min-height: 22px;
-      text-align: center;
-      font-family: "Noto Sans Bengali", sans-serif;
-      font-size: 13px;
-      color: #666;
-      margin-bottom: 8px;
-    }
+  .controls {
+    margin-top: 18px;
+    display: grid;
+    gap: 10px;
+  }
 
-    .board {
-      width: 100%;
-      max-width: 330px;
-      margin: 0 auto 22px;
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 7px;
-    }
+  input {
+    width: 100%;
+    height: 44px;
+    border: 1px solid #d9d3ca;
+    border-radius: 10px;
+    background: #fff;
+    padding: 0 12px;
+    font: inherit;
+  }
 
-    .tile {
-      aspect-ratio: 1;
-      border: 1.8px solid #d8d4cd;
-      border-radius: 11px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: #fffdfa;
-      font-family: "Noto Sans Bengali", sans-serif;
-      font-size: 27px;
-      font-weight: 600;
-      transition: transform 0.15s ease, background 0.15s ease, border-color 0.15s ease;
-    }
+  button {
+    width: 100%;
+    height: 46px;
+    border: 0;
+    border-radius: 10px;
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+  }
 
-    .tile.filled { border-color: #aaa39a; }
-    .tile.correct { background: #4f8c65; color: white; border-color: #4f8c65; }
-    .tile.present { background: #c39a3b; color: white; border-color: #c39a3b; }
-    .tile.absent { background: #99948d; color: white; border-color: #99948d; }
+  .primary {
+    background: #d96f32;
+    color: white;
+  }
 
-    .keyboard {
-      width: 100%;
-      max-width: 420px;
-      margin: 0 auto 28px;
-      user-select: none;
-    }
+  .secondary {
+    background: white;
+    color: #333;
+    border: 1px solid #d9d3ca;
+  }
 
-    .key-row {
-      display: flex;
-      justify-content: center;
-      gap: 5px;
-      margin-bottom: 6px;
-    }
+  .note {
+    min-height: 18px;
+    margin-top: 10px;
+    text-align: center;
+    font-size: 12px;
+    color: #7b776f;
+  }
 
-    .key-row.indent-1 { padding-left: 16px; padding-right: 4px; }
-    .key-row.indent-2 { padding-left: 9px; padding-right: 9px; }
-
-    .key {
-      min-width: 0;
-      flex: 1 1 0;
-      height: 48px;
-      border: 0;
-      border-radius: 9px;
-      background: #e8e4dd;
-      color: #252525;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: "Noto Sans Bengali", sans-serif;
-      font-size: 18px;
-      font-weight: 600;
-      cursor: pointer;
-      padding: 0 4px;
-    }
-
-    .key.action {
-      flex: 1.35 1 0;
-      font-family: "Manrope", sans-serif;
-      font-size: 12px;
-      background: #d96f32;
-      color: white;
-    }
-
-    .key.correct { background: #4f8c65; color: #fff; }
-    .key.present { background: #c39a3b; color: #fff; }
-    .key.absent { background: #c8c3bc; color: #777; }
-
-    .footer-space {
-      height: 12px;
-    }
-
-    .result-page {
-      min-height: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-    }
-
-    .result-date {
-      margin-top: 20px;
-      color: #999;
-      font-size: 12px;
-    }
-
-    .result-score {
-      margin-top: 20px;
-      font-size: 22px;
-      font-weight: 700;
-    }
-
-    .emoji-grid {
-      white-space: pre;
-      font-size: 25px;
-      line-height: 1.35;
-      margin-top: 18px;
-      letter-spacing: 2px;
-    }
-
-    .claim-wrap {
-      width: 100%;
-      max-width: 300px;
-      margin-top: 22px;
-    }
-
-    .claim-wrap label {
-      display: block;
-      text-align: left;
-      font-size: 12px;
-      color: #777;
-      margin-bottom: 7px;
-    }
-
-    .claim-wrap input {
-      width: 100%;
-      height: 44px;
-      border: 1px solid #d5d0c8;
-      border-radius: 10px;
-      background: #fff;
-      padding: 0 12px;
-      outline: none;
-      font-size: 15px;
-    }
-
-    .share-title {
-      margin: 22px 0 10px;
-      font-size: 12px;
-      color: #777;
-    }
-
-    .share-row {
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    .share-btn {
-      width: 50px;
-      height: 50px;
-      border-radius: 50%;
-      border: 1px solid #ddd7cf;
-      background: #fff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      font-size: 21px;
-    }
-
-    .share-actions {
-      width: 100%;
-      max-width: 300px;
-      display: flex;
-      flex-direction: column;
-      gap: 9px;
-    }
-
-    .share-primary,
-    .share-secondary {
-      width: 100%;
-      height: 46px;
-      border-radius: 10px;
-      cursor: pointer;
-      font-weight: 600;
-    }
-
-    .share-primary {
-      border: 0;
-      background: #d96f32;
-      color: #fff;
-    }
-
-    .share-secondary {
-      border: 1px solid #d8d2ca;
-      background: #fff;
-      color: #333;
-    }
-
-    .share-note {
-      min-height: 20px;
-      margin-top: 11px;
-      font-size: 12px;
-      color: #777;
-    }
-
-    .play-again {
-      margin-top: 16px;
-      border: 0;
-      border-radius: 10px;
-      background: #d96f32;
-      color: white;
-      height: 44px;
-      padding: 0 18px;
-      font-weight: 600;
-      cursor: pointer;
-    }
-  </style>
+  canvas {
+    display: none;
+  }
+</style>
 </head>
-
 <body>
-  <div class="viewport-stage">
-    <main id="gamePage" class="page">
-      <header class="brand">
-        <h1>ভাষাখেল</h1>
-        <p>Inspired by Wordle</p>
-      </header>
 
-      <div id="gameDate" class="game-date"></div>
+<div class="wrap">
 
-      <section class="hint-box" aria-label="Today's vowel hints">
-        <div class="hint-label">আজিৰ স্বৰ-সংকেত</div>
-        <div id="vowelHints" class="hint-vowels"></div>
-      </section>
+  <div id="shareCard" class="card">
+    <h1 class="title">ভাষাখেল</h1>
+    <div class="sub">Inspired by Wordle</div>
 
-      <div id="message" class="message" aria-live="polite"></div>
+    <div id="dateText" class="date">29 Aug 2026</div>
 
-      <section id="board" class="board" aria-label="BhaxaKhel board"></section>
+    <div id="scoreText" class="score">3 / 5</div>
 
-      <section id="keyboard" class="keyboard" aria-label="BhaxaKhel keyboard"></section>
+    <div id="resultGrid" class="grid">
+      <div class="sq gray"></div>
+      <div class="sq yellow"></div>
+      <div class="sq gray"></div>
+      <div class="sq green"></div>
+      <div class="sq gray"></div>
 
-      <div class="footer-space"></div>
-    </main>
+      <div class="sq green"></div>
+      <div class="sq gray"></div>
+      <div class="sq yellow"></div>
+      <div class="sq green"></div>
+      <div class="sq gray"></div>
 
-    <main id="resultPage" class="page result-page hidden">
-      <header class="brand">
-        <h1>ভাষাখেল</h1>
-        <p>Inspired by Wordle</p>
-      </header>
+      <div class="sq green"></div>
+      <div class="sq green"></div>
+      <div class="sq green"></div>
+      <div class="sq green"></div>
+      <div class="sq green"></div>
+    </div>
 
-      <div id="resultDate" class="result-date"></div>
-      <div id="resultScore" class="result-score"></div>
-      <div id="emojiGrid" class="emoji-grid" aria-label="Result grid"></div>
-
-      <div class="claim-wrap">
-        <label for="playerName">Claim this result with your name (optional)</label>
-        <input id="playerName" type="text" maxlength="40" placeholder="Your name">
-      </div>
-
-      <div class="share-title">Share result</div>
-
-      <div class="share-actions">
-        <button class="share-primary" id="shareResult" type="button">Share Result</button>
-        <button class="share-secondary" id="copyResult" type="button">Copy Result</button>
-      </div>
-
-      <div id="shareNote" class="share-note" aria-live="polite"></div>
-
-      <button id="backToGame" class="play-again" type="button">Back to game</button>
-    </main>
+    <div id="cardName" class="name hidden-name"></div>
+    <div class="url">bhaxakhel.github.io</div>
   </div>
 
+  <div class="controls">
+    <input id="nameInput" type="text" maxlength="40" placeholder="Your name (optional)">
+    <button id="sharePNG" class="primary" type="button">Share Result Image</button>
+    <button id="savePNG" class="secondary" type="button">Save PNG</button>
+  </div>
+
+  <div id="note" class="note"></div>
+
+</div>
+
+<canvas id="canvas" width="1080" height="1350"></canvas>
+
 <script>
-  const answer = ["গা", "মো", "চা", "খ", "ন"];
+  const COLORS = {
+    bg: "#faf9f6",
+    card: "#fffdf9",
+    text: "#202020",
+    muted: "#8b877f",
+    green: "#4f8c65",
+    yellow: "#c39a3b",
+    gray: "#aaa49c",
+    orange: "#d96f32"
+  };
 
-  const vowelHints = ["া", "ো"];
-
-  const keys = [
-    "গা","মো","চা","খ","ন","কি","তা","প",
-    "মা","নু","হ","জ","ক","ল","বা","গি",
-    "ৰি","সা","ট","দে","পা","ৰ","ফু","নী",
-    "ডা","শি","ব","তো"
+  const result = [
+    ["gray","yellow","gray","green","gray"],
+    ["green","gray","yellow","green","gray"],
+    ["green","green","green","green","green"]
   ];
 
-  const rows = [
-    keys.slice(0, 8),
-    keys.slice(8, 16),
-    keys.slice(16, 24),
-    keys.slice(24, 28)
-  ];
-
-  const MAX_GUESSES = 5;
-  const WORD_LENGTH = 5;
-
-  let currentGuess = [];
-  let guesses = [];
-  let evaluations = [];
-  let gameOver = false;
-
-  const board = document.getElementById("board");
-  const keyboard = document.getElementById("keyboard");
-  const message = document.getElementById("message");
-
-  function todayString() {
-    return new Intl.DateTimeFormat("en-AU", {
-      day: "numeric",
-      month: "short",
-      year: "numeric"
-    }).format(new Date());
-  }
-
-  function buildBoard() {
-    board.innerHTML = "";
-    for (let i = 0; i < MAX_GUESSES * WORD_LENGTH; i++) {
-      const tile = document.createElement("div");
-      tile.className = "tile";
-      tile.dataset.index = i;
-      board.appendChild(tile);
-    }
-  }
-
-  function buildKeyboard() {
-    keyboard.innerHTML = "";
-
-    rows.forEach((rowKeys, rowIndex) => {
-      const row = document.createElement("div");
-      row.className = "key-row";
-      if (rowIndex === 1) row.classList.add("indent-1");
-      if (rowIndex === 2) row.classList.add("indent-2");
-
-      if (rowIndex < 3) {
-        rowKeys.forEach(k => row.appendChild(makeKey(k)));
-      } else {
-        row.appendChild(makeActionKey("ENTER", "enter"));
-        rowKeys.forEach(k => row.appendChild(makeKey(k)));
-        row.appendChild(makeActionKey("⌫", "backspace"));
-      }
-
-      keyboard.appendChild(row);
-    });
-  }
-
-  function makeKey(label) {
-    const btn = document.createElement("button");
-    btn.type = "button";
-    btn.className = "key";
-    btn.textContent = label;
-    btn.dataset.key = label;
-    btn.addEventListener("click", () => handleKey(label));
-    return btn;
-  }
-
-  function makeActionKey(label, action) {
-    const btn = document.createElement("button");
-    btn.type = "button";
-    btn.className = "key action";
-    btn.textContent = label;
-    btn.dataset.action = action;
-    btn.addEventListener("click", () => {
-      if (action === "enter") submitGuess();
-      if (action === "backspace") backspace();
-    });
-    return btn;
-  }
-
-  function renderBoard() {
-    const tiles = [...board.children];
-
-    for (let r = 0; r < MAX_GUESSES; r++) {
-      for (let c = 0; c < WORD_LENGTH; c++) {
-        const idx = r * WORD_LENGTH + c;
-        const tile = tiles[idx];
-
-        tile.className = "tile";
-        tile.textContent = "";
-
-        if (r < guesses.length) {
-          tile.textContent = guesses[r][c];
-          tile.classList.add(evaluations[r][c]);
-        } else if (r === guesses.length) {
-          const val = currentGuess[c];
-          if (val) {
-            tile.textContent = val;
-            tile.classList.add("filled");
-          }
-        }
-      }
-    }
-  }
-
-  function handleKey(key) {
-    if (gameOver) return;
-    if (currentGuess.length >= WORD_LENGTH) return;
-
-    currentGuess.push(key);
-    message.textContent = "";
-    renderBoard();
-    refitSoon();
-  }
-
-  function backspace() {
-    if (gameOver) return;
-    currentGuess.pop();
-    message.textContent = "";
-    renderBoard();
-    refitSoon();
-  }
-
-  function evaluateGuess(guess, target) {
-    const result = Array(WORD_LENGTH).fill("absent");
-    const used = Array(WORD_LENGTH).fill(false);
-
-    for (let i = 0; i < WORD_LENGTH; i++) {
-      if (guess[i] === target[i]) {
-        result[i] = "correct";
-        used[i] = true;
-      }
-    }
-
-    for (let i = 0; i < WORD_LENGTH; i++) {
-      if (result[i] === "correct") continue;
-
-      for (let j = 0; j < WORD_LENGTH; j++) {
-        if (!used[j] && guess[i] === target[j]) {
-          result[i] = "present";
-          used[j] = true;
-          break;
-        }
-      }
-    }
-
-    return result;
-  }
-
-  function submitGuess() {
-    if (gameOver) return;
-
-    if (currentGuess.length !== WORD_LENGTH) {
-      message.textContent = "৫টা অক্ষৰ বাছনি কৰক";
-      return;
-    }
-
-    const guess = [...currentGuess];
-    const evaluation = evaluateGuess(guess, answer);
-
-    guesses.push(guess);
-    evaluations.push(evaluation);
-    currentGuess = [];
-
-    renderBoard();
-    updateKeyboardStatuses();
-
-    const won = evaluation.every(x => x === "correct");
-
-    if (won) {
-      gameOver = true;
-      message.textContent = "সঠিক!";
-      setTimeout(() => showResult(true), 450);
-      return;
-    }
-
-    if (guesses.length >= MAX_GUESSES) {
-      gameOver = true;
-      message.textContent = "আজিৰ শব্দ শেষ";
-      setTimeout(() => showResult(false), 450);
-    }
-
-    refitSoon();
-  }
-
-  function statusRank(s) {
-    return { absent: 1, present: 2, correct: 3 }[s] || 0;
-  }
-
-  function updateKeyboardStatuses() {
-    const best = {};
-
-    guesses.forEach((guess, r) => {
-      guess.forEach((k, i) => {
-        const status = evaluations[r][i];
-        if (!best[k] || statusRank(status) > statusRank(best[k])) {
-          best[k] = status;
-        }
-      });
-    });
-
-    keyboard.querySelectorAll(".key[data-key]").forEach(btn => {
-      btn.classList.remove("correct", "present", "absent");
-      const status = best[btn.dataset.key];
-      if (status) btn.classList.add(status);
-    });
-  }
-
-  function squareFor(status) {
-    if (status === "correct") return String.fromCodePoint(0x1F7E9);
-    if (status === "present") return String.fromCodePoint(0x1F7E8);
-    return String.fromCodePoint(0x2B1C);
-  }
-
-  function buildEmojiGrid() {
-    return evaluations
-      .map(row => row.map(squareFor).join(""))
-      .join("\n");
-  }
-
-  function scoreText() {
-    const last = evaluations[evaluations.length - 1] || [];
-    const won = last.length && last.every(x => x === "correct");
-    return won ? `BhaxaKhel ${guesses.length}/5` : "BhaxaKhel X/5";
-  }
-
-  function buildShareText() {
-    const name = document.getElementById("playerName").value.trim();
-    const pieces = [
-      "ভাষাখেল",
-      "Inspired by Wordle",
-      "",
-      todayString(),
-      "",
-      scoreText(),
-      "",
-      buildEmojiGrid()
-    ];
-
-    if (name) {
-      pieces.push("", "— " + name);
-    }
-
-    return pieces.join("\n");
-  }
-
-  async function copyText(text) {
-    try {
-      if (navigator.clipboard && window.isSecureContext) {
-        await navigator.clipboard.writeText(text);
-        return true;
-      }
-    } catch (_) {}
-
-    const ta = document.createElement("textarea");
-    ta.value = text;
-    ta.setAttribute("readonly", "");
-    ta.style.position = "fixed";
-    ta.style.opacity = "0";
-    document.body.appendChild(ta);
-    ta.select();
-
-    let ok = false;
-    try {
-      ok = document.execCommand("copy");
-    } catch (_) {}
-
-    ta.remove();
-    return ok;
-  }
-
-  async function nativeShare(text) {
-    if (!navigator.share) return false;
-
-    try {
-      await navigator.share({
-        title: "ভাষাখেল",
-        text: text
-      });
-      return true;
-    } catch (err) {
-      if (err && err.name === "AbortError") return true;
-      return false;
-    }
-  }
-
-  async function shareResult() {
-    const text = buildShareText();
-    const note = document.getElementById("shareNote");
-
-    // Important:
-    // We pass ONLY the full result as plain text.
-    // There is intentionally NO separate `url:` property.
-    // The BhaxaKhel link is already included inside buildShareText().
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          text: text
-        });
-
-        note.textContent = "Share sheet opened.";
-        return;
-      } catch (err) {
-        // If the player simply closed the share sheet, do nothing.
-        if (err && err.name === "AbortError") {
-          note.textContent = "";
-          return;
-        }
-      }
-    }
-
-    // Fallback for browsers/devices without Web Share support.
-    const copied = await copyText(text);
-
-    note.textContent = copied
-      ? "Sharing is not available here. Full result copied."
-      : "This browser does not support sharing or copying.";
-  }
-
-  async function copyResult() {
-    const text = buildShareText();
-    const copied = await copyText(text);
-
-    document.getElementById("shareNote").textContent = copied
-      ? "Full result copied."
-      : "Could not copy the result.";
-  }
-
-  function showResult(won) {
-    document.getElementById("gamePage").classList.add("hidden");
-    document.getElementById("resultPage").classList.remove("hidden");
-
-    document.getElementById("resultDate").textContent = todayString();
-    document.getElementById("resultScore").textContent =
-      won ? `BhaxaKhel ${guesses.length}/5` : "BhaxaKhel X/5";
-    document.getElementById("emojiGrid").textContent = buildEmojiGrid();
-
-    document.getElementById("shareNote").textContent = "";
-    refitSoon();
-  }
-
-  function getViewportSize() {
-    const vv = window.visualViewport;
-    return {
-      width: vv ? vv.width : window.innerWidth,
-      height: vv ? vv.height : window.innerHeight
-    };
-  }
-
-  function getActivePage() {
-    return document.getElementById("gamePage").classList.contains("hidden")
-      ? document.getElementById("resultPage")
-      : document.getElementById("gamePage");
-  }
-
-  function fitActivePage() {
-    const page = getActivePage();
-    if (!page) return;
-
-    page.style.transform = "scale(1)";
-
-    const viewport = getViewportSize();
-    const naturalWidth = 460;
-    const naturalHeight = page.scrollHeight;
-
-    const widthScale = (viewport.width - 8) / naturalWidth;
-    const heightScale = (viewport.height - 8) / naturalHeight;
-
-    const scale = Math.min(1, widthScale, heightScale);
-
-    page.style.transform = "scale(" + scale + ")";
-  }
-
-  function refitSoon() {
-    requestAnimationFrame(() => {
-      requestAnimationFrame(fitActivePage);
-    });
-  }
-
-  document.getElementById("gameDate").textContent = todayString();
-  document.getElementById("vowelHints").textContent = vowelHints.join("   ");
-
-  document.getElementById("shareResult").addEventListener("click", shareResult);
-  document.getElementById("copyResult").addEventListener("click", copyResult);
-
-  document.getElementById("backToGame").addEventListener("click", () => {
-    document.getElementById("resultPage").classList.add("hidden");
-    document.getElementById("gamePage").classList.remove("hidden");
-    refitSoon();
+  const score = "3 / 5";
+  const date = "29 Aug 2026";
+
+  const nameInput = document.getElementById("nameInput");
+  const cardName = document.getElementById("cardName");
+  const canvas = document.getElementById("canvas");
+  const ctx = canvas.getContext("2d");
+  const note = document.getElementById("note");
+
+  nameInput.addEventListener("input", () => {
+    cardName.textContent = nameInput.value.trim();
   });
 
-  buildBoard();
-  buildKeyboard();
-  renderBoard();
-  refitSoon();
+  async function makePNGBlob() {
+    await document.fonts.ready;
 
-  window.addEventListener("load", refitSoon);
-  window.addEventListener("resize", refitSoon);
-  window.addEventListener("orientationchange", refitSoon);
+    const W = canvas.width;
+    const H = canvas.height;
 
-  if (window.visualViewport) {
-    window.visualViewport.addEventListener("resize", refitSoon);
+    ctx.clearRect(0, 0, W, H);
+
+    ctx.fillStyle = COLORS.bg;
+    ctx.fillRect(0, 0, W, H);
+
+    const x = 90;
+    const y = 70;
+    const w = 900;
+    const h = 1210;
+    const r = 38;
+
+    roundRect(ctx, x, y, w, h, r);
+    ctx.fillStyle = COLORS.card;
+    ctx.fill();
+
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+
+    ctx.fillStyle = COLORS.text;
+    ctx.font = '700 86px "Noto Sans Bengali"';
+    ctx.fillText("ভাষাখেল", W / 2, 190);
+
+    ctx.fillStyle = COLORS.muted;
+    ctx.font = '500 30px "Manrope"';
+    ctx.fillText("Inspired by Wordle", W / 2, 265);
+
+    ctx.font = '500 31px "Manrope"';
+    ctx.fillText(date, W / 2, 355);
+
+    ctx.fillStyle = COLORS.text;
+    ctx.font = '700 76px "Manrope"';
+    ctx.fillText(score, W / 2, 475);
+
+    const tile = 112;
+    const gap = 18;
+    const gridWidth = tile * 5 + gap * 4;
+    const startX = (W - gridWidth) / 2;
+    const startY = 580;
+
+    result.forEach((row, rIndex) => {
+      row.forEach((status, cIndex) => {
+        const tx = startX + cIndex * (tile + gap);
+        const ty = startY + rIndex * (tile + gap);
+
+        roundRect(ctx, tx, ty, tile, tile, 18);
+        ctx.fillStyle = COLORS[status];
+        ctx.fill();
+      });
+    });
+
+    const name = nameInput.value.trim();
+    if (name) {
+      ctx.fillStyle = COLORS.text;
+      ctx.font = '600 38px "Manrope"';
+      ctx.fillText(name, W / 2, 1040);
+    }
+
+    ctx.fillStyle = COLORS.muted;
+    ctx.font = '500 30px "Manrope"';
+    ctx.fillText("bhaxakhel.github.io", W / 2, 1130);
+
+    return new Promise(resolve => {
+      canvas.toBlob(resolve, "image/png", 1);
+    });
   }
 
-  if (document.fonts && document.fonts.ready) {
-    document.fonts.ready.then(refitSoon);
+  async function sharePNG() {
+    note.textContent = "";
+
+    const blob = await makePNGBlob();
+    if (!blob) {
+      note.textContent = "Could not create the image.";
+      return;
+    }
+
+    const file = new File(
+      [blob],
+      "bhaxakhel-result.png",
+      { type: "image/png" }
+    );
+
+    if (
+      navigator.share &&
+      navigator.canShare &&
+      navigator.canShare({ files: [file] })
+    ) {
+      try {
+        await navigator.share({
+          files: [file]
+        });
+        return;
+      } catch (err) {
+        if (err && err.name === "AbortError") return;
+      }
+    }
+
+    downloadBlob(blob);
+    note.textContent = "Image sharing is unavailable here, so the PNG was saved instead.";
   }
+
+  async function savePNG() {
+    const blob = await makePNGBlob();
+
+    if (!blob) {
+      note.textContent = "Could not create the image.";
+      return;
+    }
+
+    downloadBlob(blob);
+    note.textContent = "PNG saved.";
+  }
+
+  function downloadBlob(blob) {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "bhaxakhel-result.png";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }
+
+  function roundRect(ctx, x, y, w, h, r) {
+    const radius = Math.min(r, w / 2, h / 2);
+
+    ctx.beginPath();
+    ctx.moveTo(x + radius, y);
+    ctx.arcTo(x + w, y, x + w, y + h, radius);
+    ctx.arcTo(x + w, y + h, x, y + h, radius);
+    ctx.arcTo(x, y + h, x, y, radius);
+    ctx.arcTo(x, y, x + w, y, radius);
+    ctx.closePath();
+  }
+
+  document.getElementById("sharePNG").addEventListener("click", sharePNG);
+  document.getElementById("savePNG").addEventListener("click", savePNG);
 </script>
+
 </body>
 </html>
