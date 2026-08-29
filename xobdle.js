@@ -1,16 +1,4 @@
-/*
-  XOBDLE — DAILY MANUAL VERSION
-
-  EVERY DAY, EDIT ONLY THESE FOUR THINGS:
-  1. puzzleDate
-  2. answer
-  3. keys
-  4. yesterdayAnswer
-
-  puzzleDate MUST be the IST date for which this puzzle is intended.
-*/
-
-const puzzleDate = "2026-08-30";
+const puzzleDate = "2026-08-29";
 
 const answer = ["গা", "মো", "চা", "খ", "ন"];
 
