@@ -1,4 +1,5 @@
 const puzzleDate = "2026-08-29";
+const PUZZLE_VERSION = "2";
 
 const answer = ["গা", "মো", "চা", "খ", "ন"];
 
@@ -9,7 +10,7 @@ const keys = [
   "ডা","শি","ব","তো"
 ];
 
-const yesterdayAnswer = "গামোচা";
+const yesterdayAnswer = "গামোচ";
 
 const keyboardRows = [
   keys.slice(0, 8),
@@ -86,7 +87,7 @@ function formattedISTDate(offsetDays = 0) {
 }
 
 function todayStorageKey() {
-  return `xobdle-${getISTISODate(0)}`;
+  return `xobdle-${getISTISODate(0)}-v${PUZZLE_VERSION}`;
 }
 
 function getSiteState() {
