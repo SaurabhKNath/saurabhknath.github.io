@@ -9,24 +9,40 @@
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700&family=Noto+Sans+Bengali:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
     * { box-sizing: border-box; }
-    html, body { margin: 0; width: 100%; height: 100%; overflow: hidden; }
+    html, body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+
     body {
       background: #faf9f6;
       color: #202020;
       font-family: "Manrope", sans-serif;
-      position: relative;
       overscroll-behavior: none;
     }
+
     button, input { font: inherit; }
+
     .hidden { display: none !important; }
+
+    .viewport-stage {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      overflow: hidden;
+      padding: 4px 0;
+    }
+
     .page {
-      width: min(100%, 460px);
+      width: 460px;
+      flex: 0 0 460px;
       min-height: 0;
       margin: 0;
       padding: 24px 12px 30px;
-      position: absolute;
-      top: 0;
-      left: 50%;
       transform-origin: top center;
       will-change: transform;
     }
@@ -76,24 +92,11 @@
     .facebook { background: #1877F2; color: white; }
     .x-icon { background: #111; color: white; }
     .share-status { min-height: 25px; margin-top: 14px; font-size: 11px; color: #777; line-height: 1.4; }
-    @supports (padding: max(0px)) {
-      .page {
-        padding-bottom: max(18px, env(safe-area-inset-bottom));
-      }
-    }
-
-    @media (max-width: 360px) {
-      .page { padding-left: 8px; padding-right: 8px; }
-      .key { height: 45px; font-size: 15px; }
-      .key-row { gap: 3px; }
-      .row2 { padding: 0 5px; }
-      .row3 { padding: 0 10px; }
-      .tile { font-size: 19px; }
-      .share-icon { width: 48px; height: 48px; }
-    }
+    
   </style>
 </head>
 <body>
+  <div class="viewport-stage" id="viewportStage">
   <main id="gamePage" class="page">
     <header class="header">
       <h1 class="title">ভাষাখেল</h1>
@@ -153,6 +156,7 @@
       </div>
     </section>
   </main>
+  </div>
 
   <script>
     const answer = ["গা", "মো", "চা", "খ", "ন"];
@@ -304,7 +308,7 @@
       document.getElementById("gamePage").classList.add("hidden");
       document.getElementById("resultPage").classList.remove("hidden");
       window.scrollTo(0, 0);
-      fitActivePage();
+      refitSoon();
     }
 
     function makeShareText() {
@@ -376,17 +380,19 @@
     buildKeyboard();
     renderBoard();
 
-    fitActivePage();
+    refitSoon();
 
-    window.addEventListener("resize", fitActivePage);
-    window.addEventListener("orientationchange", fitActivePage);
+    window.addEventListener("load", refitSoon);
+    window.addEventListener("resize", refitSoon);
+    window.addEventListener("orientationchange", refitSoon);
 
     if (window.visualViewport) {
-      window.visualViewport.addEventListener("resize", fitActivePage);
+      window.visualViewport.addEventListener("resize", refitSoon);
     }
 
-    window.addEventListener("load", fitActivePage);
-    document.fonts?.ready.then(fitActivePage);
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(refitSoon);
+    }
   </script>
 </body>
 </html>
