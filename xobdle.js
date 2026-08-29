@@ -1,5 +1,4 @@
 const puzzleDate = "2026-08-29";
-const PUZZLE_VERSION = "2";
 
 const answer = ["গা", "মো", "চা", "খ", "ন"];
 
@@ -10,7 +9,7 @@ const keys = [
   "ডা","শি","ব","তো"
 ];
 
-const yesterdayAnswer = "গামোচ";
+const yesterdayAnswer = "গামোচা";
 
 const keyboardRows = [
   keys.slice(0, 8),
@@ -87,24 +86,22 @@ function formattedISTDate(offsetDays = 0) {
 }
 
 function todayStorageKey() {
-  return `xobdle-${getISTISODate(0)}-v${PUZZLE_VERSION}`;
+  return `xobdle-${getISTISODate(0)}`;
 }
 
 function getSiteState() {
   const now = getISTNowParts();
   const today = isoDateFromParts(now);
 
-  // Midnight through 6:59 AM IST: no puzzle is open.
-  if (now.hour < 7) return "closed";
-
-  // 7 AM onward: if today's dated puzzle has not been uploaded,
-  // show the cooking screen.
+  // After midnight IST, yesterday's puzzle is no longer active.
+  // Until today's puzzleDate is uploaded, show the cooking screen.
   if (puzzleDate !== today) return "cooking";
 
+  // As soon as puzzleDate matches today's IST date, the puzzle is live.
   return "live";
 }
 
-function showStatusPage(type) {
+function showStatusPage() {
   document.getElementById("gamePage").classList.add("hidden");
   document.getElementById("resultPage").classList.add("hidden");
   document.getElementById("statusPage").classList.remove("hidden");
@@ -112,13 +109,9 @@ function showStatusPage(type) {
   const message = document.getElementById("statusMessage");
   const sub = document.getElementById("statusSubmessage");
 
-  if (type === "closed") {
-    message.textContent = "Today’s Xobdle is over.";
-    sub.textContent = "A new Xobdle will be available from 7 AM IST.";
-  } else {
-    message.textContent = "Today’s Xobdle is being cooked. 🍳";
-    sub.textContent = "Come back soon!";
-  }
+  message.textContent = "Today’s Xobdle is being cooked. 🍳";
+  sub.innerHTML =
+    'Come back soon.<br><a href="mailto:xobdlesupport@gmail.com">xobdlesupport@gmail.com</a>';
 
   refitSoon();
 }
@@ -726,22 +719,30 @@ if (siteState === "live") {
   if (restoredToday && gameStartedAt && !gameOver) startGameTimer();
   if (!localStorage.getItem("xobdleInstructionsSeen")) openInstructions();
 } else {
-  showStatusPage(siteState);
+  showStatusPage();
 }
 
-// Re-check around date/hour changes while the page remains open.
+// Re-check the site while the page remains open.
+// If the cooking page is showing, reload every 60 seconds so a newly
+// uploaded daily JS can become available without the visitor refreshing.
 window.setInterval(() => {
   const state = getSiteState();
+
   if (state !== "live") {
     if (timerInterval) {
       clearInterval(timerInterval);
       timerInterval = null;
     }
-    showStatusPage(state);
+
+    showStatusPage();
+
+    if (!document.getElementById("statusPage").classList.contains("hidden")) {
+      location.reload();
+    }
   } else if (!document.getElementById("statusPage").classList.contains("hidden")) {
     location.reload();
   }
-}, 30000);
+}, 60000);
 
 refitSoon();
 window.addEventListener("load", refitSoon);
