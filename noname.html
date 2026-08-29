@@ -268,6 +268,35 @@
       font-size: 21px;
     }
 
+    .share-actions {
+      width: 100%;
+      max-width: 300px;
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+    }
+
+    .share-primary,
+    .share-secondary {
+      width: 100%;
+      height: 46px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .share-primary {
+      border: 0;
+      background: #d96f32;
+      color: #fff;
+    }
+
+    .share-secondary {
+      border: 1px solid #d8d2ca;
+      background: #fff;
+      color: #333;
+    }
+
     .share-note {
       min-height: 20px;
       margin-top: 11px;
@@ -330,12 +359,9 @@
 
       <div class="share-title">Share result</div>
 
-      <div class="share-row">
-        <button class="share-btn" id="shareWhatsApp" type="button" aria-label="Share on WhatsApp">💬</button>
-        <button class="share-btn" id="shareInstagram" type="button" aria-label="Share on Instagram">◎</button>
-        <button class="share-btn" id="shareFacebook" type="button" aria-label="Share on Facebook">f</button>
-        <button class="share-btn" id="shareX" type="button" aria-label="Share on X">𝕏</button>
-        <button class="share-btn" id="copyResult" type="button" aria-label="Copy result">⧉</button>
+      <div class="share-actions">
+        <button class="share-primary" id="shareResult" type="button">Share Result</button>
+        <button class="share-secondary" id="copyResult" type="button">Copy Result</button>
       </div>
 
       <div id="shareNote" class="share-note" aria-live="polite"></div>
@@ -645,90 +671,37 @@
     }
   }
 
-  async function shareWhatsApp() {
+  async function shareResult() {
     const text = buildShareText();
     const note = document.getElementById("shareNote");
 
-    // WhatsApp supports pre-filled text directly through wa.me.
-    // Encode the entire result, not only the game URL.
-    const whatsappURL =
-      "https://wa.me/?text=" + encodeURIComponent(text);
+    // Important:
+    // We pass ONLY the full result as plain text.
+    // There is intentionally NO separate `url:` property.
+    // The BhaxaKhel link is already included inside buildShareText().
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          text: text
+        });
 
-    const opened = window.open(
-      whatsappURL,
-      "_blank",
-      "noopener,noreferrer"
-    );
-
-    if (opened) {
-      note.textContent = "WhatsApp opened with your full result.";
-    } else {
-      const copied = await copyText(text);
-      note.textContent = copied
-        ? "Popup blocked. Result copied — paste it into WhatsApp."
-        : "Could not open WhatsApp.";
+        note.textContent = "Share sheet opened.";
+        return;
+      } catch (err) {
+        // If the player simply closed the share sheet, do nothing.
+        if (err && err.name === "AbortError") {
+          note.textContent = "";
+          return;
+        }
+      }
     }
-  }
 
-  async function shareInstagram() {
-    const text = buildShareText();
-    const note = document.getElementById("shareNote");
-
-    // Instagram's web interface does not provide a reliable
-    // pre-filled-caption URL. Copy the FULL result first.
+    // Fallback for browsers/devices without Web Share support.
     const copied = await copyText(text);
 
-    window.open(
-      "https://www.instagram.com/",
-      "_blank",
-      "noopener,noreferrer"
-    );
-
     note.textContent = copied
-      ? "Full result copied. Paste it into Instagram."
-      : "Instagram opened. Copy the result manually if needed.";
-  }
-
-  async function shareFacebook() {
-    const text = buildShareText();
-    const note = document.getElementById("shareNote");
-
-    // Facebook's sharer accepts the URL being shared, but it does not
-    // reliably accept arbitrary pre-filled post text. Copy the result
-    // so the player can paste it into the post.
-    const copied = await copyText(text);
-
-    const shareURL =
-      "https://www.facebook.com/sharer/sharer.php?u=" +
-      encodeURIComponent("https://bhaxakhel.github.io");
-
-    window.open(
-      shareURL,
-      "_blank",
-      "noopener,noreferrer"
-    );
-
-    note.textContent = copied
-      ? "Full result copied. Paste it into your Facebook post."
-      : "Facebook opened. Add the result text manually.";
-  }
-
-  function shareX() {
-    const text = buildShareText();
-    const note = document.getElementById("shareNote");
-
-    // X supports pre-filled text via the intent endpoint.
-    const intentURL =
-      "https://twitter.com/intent/tweet?text=" +
-      encodeURIComponent(text);
-
-    window.open(
-      intentURL,
-      "_blank",
-      "noopener,noreferrer"
-    );
-
-    note.textContent = "X opened with your full result.";
+      ? "Sharing is not available here. Full result copied."
+      : "This browser does not support sharing or copying.";
   }
 
   async function copyResult() {
@@ -794,10 +767,7 @@
   document.getElementById("gameDate").textContent = todayString();
   document.getElementById("vowelHints").textContent = vowelHints.join("   ");
 
-  document.getElementById("shareWhatsApp").addEventListener("click", shareWhatsApp);
-  document.getElementById("shareInstagram").addEventListener("click", shareInstagram);
-  document.getElementById("shareFacebook").addEventListener("click", shareFacebook);
-  document.getElementById("shareX").addEventListener("click", shareX);
+  document.getElementById("shareResult").addEventListener("click", shareResult);
   document.getElementById("copyResult").addEventListener("click", copyResult);
 
   document.getElementById("backToGame").addEventListener("click", () => {
