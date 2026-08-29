@@ -1,3 +1,6 @@
+// Prevent the board/result from flashing while today's saved state is checked.
+document.documentElement.style.visibility = "hidden";
+
 const puzzleDate = "2026-08-29";
 
 const answer = ["গা", "মো", "চা", "খ", "ন"];
@@ -161,7 +164,7 @@ function restoreTodayState() {
   renderBoard();
   updateKeyboardStatuses();
 
-  if (state.completed) window.setTimeout(showResult, 120);
+  if (state.completed) showResult();
   return true;
 }
 
@@ -716,11 +719,24 @@ const siteState = getSiteState();
 
 if (siteState === "live") {
   const restoredToday = restoreTodayState();
-  if (restoredToday && gameStartedAt && !gameOver) startGameTimer();
-  if (!localStorage.getItem("xobdleInstructionsSeen")) openInstructions();
+
+  if (restoredToday) {
+    if (gameStartedAt && !gameOver) startGameTimer();
+  } else {
+    document.getElementById("statusPage").classList.add("hidden");
+    document.getElementById("resultPage").classList.add("hidden");
+    document.getElementById("gamePage").classList.remove("hidden");
+  }
+
+  if (!gameOver && !localStorage.getItem("xobdleInstructionsSeen")) {
+    openInstructions();
+  }
 } else {
   showStatusPage();
 }
+
+// Reveal only after the correct startup page has been selected.
+document.documentElement.style.visibility = "visible";
 
 // Re-check the site while the page remains open.
 // If the cooking page is showing, reload every 60 seconds so a newly
