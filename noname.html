@@ -16,6 +16,7 @@
 
     html,
     body {
+      background: #ffffff;
       margin: 0;
       width: 100%;
       height: 100%;
@@ -90,6 +91,16 @@
       color: #8b877f;
     }
 
+    .game-timer {
+      margin-top: 4px;
+      text-align: center;
+      font-family: "Poppins", sans-serif;
+      font-size: 12px;
+      font-weight: 600;
+      color: #8b877f;
+      font-variant-numeric: tabular-nums;
+    }
+
     .hint-box {
       width: 100%;
       max-width: 300px;
@@ -130,8 +141,7 @@
       grid-template-columns: repeat(5, 1fr);
       gap: 7px;
     }
-
-    .tile {
+.tile {
       aspect-ratio: 1;
       border: 1.8px solid #d8d4cd;
       border-radius: 11px;
@@ -229,21 +239,6 @@
     .key.absent {
       background: #c8c3bc;
       color: #777;
-    }
-
-    .visitor-count {
-      margin: -14px auto 0;
-      text-align: center;
-      font-family: "Poppins", sans-serif;
-      font-size: 11px;
-      font-weight: 500;
-      color: #aaa49c;
-      letter-spacing: 0.1px;
-    }
-
-    .visitor-count strong {
-      color: #7f7a73;
-      font-weight: 600;
     }
 
 
@@ -366,7 +361,7 @@
       width: 100%;
       max-width: 390px;
       margin: 0 auto;
-      background: #fffdf9;
+      background: #ffffff;
       border: 1px solid #ece7df;
       border-radius: 20px;
       padding: 28px 22px 25px;
@@ -430,7 +425,53 @@
       font-weight: 700;
     }
 
-    .result-actions {
+    .loss-result-message {
+      display: none;
+      margin: 22px auto 0;
+      max-width: 330px;
+      text-align: center;
+      font-family: "Poppins", sans-serif;
+      font-size: 13px;
+      line-height: 1.55;
+      font-weight: 500;
+      color: #202020;
+    }
+
+    .loss-result-message.show {
+      display: block;
+    }
+
+    .loss-result-message strong {
+      font-weight: 700;
+    }
+
+    .loss-result-message .instagram {
+      color: #d96f32;
+      font-weight: 600;
+    }
+
+    .result-time {
+      margin-top: 25px;
+      font-family: "Poppins", sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      color: #202020;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .result-social {
+      margin-top: 7px;
+      font-family: "Poppins", sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      color: #8b877f;
+    }
+
+    .result-social strong {
+      color: #d96f32;
+      font-weight: 600;
+    }
+.result-actions {
       width: 100%;
       max-width: 390px;
       margin: 14px auto 0;
@@ -465,19 +506,139 @@
       color: #77726b;
     }
 
-    .back-button {
-      margin-top: 8px;
-      border: 0;
-      background: transparent;
-      color: #8b877f;
-      font-size: 12px;
-      cursor: pointer;
-    }
-
     canvas {
       display: none;
     }
+  
+    .timer-emoji {
+      display: inline-block;
+      font-size: 1.65em;
+      line-height: 1;
+      margin-right: 7px;
+      vertical-align: -0.14em;
+    }
+
+    .timer-value {
+      vertical-align: middle;
+    }
+
+  
+    #gameTimer {
+      margin-top: 10px;
+    }
+
+  
+    .xobdle-logo a {
+      color: inherit;
+      text-decoration: none;
+      font: inherit;
+      letter-spacing: inherit;
+      line-height: inherit;
+      cursor: pointer;
+    }
+
+    .xobdle-logo a:visited,
+    .xobdle-logo a:hover,
+    .xobdle-logo a:active {
+      color: inherit;
+      text-decoration: none;
+    }
+
+  
+    .key.action.backspace-key {
+      font-size: 11px;
+    }
+
+  
+    .answer-button {
+      position: absolute;
+      top: 19px;
+      right: 58px;
+      width: 34px;
+      height: 34px;
+      border: 1px solid #dedad4;
+      border-radius: 50%;
+      background: #ffffff;
+      color: #77726b;
+      font-family: "Poppins", sans-serif;
+      font-size: 18px;
+      font-weight: 500;
+      line-height: 1;
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      padding: 0;
+    }
+
+    .yesterday-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+      background: rgba(255, 255, 255, 0.92);
+    }
+
+    .yesterday-overlay.hidden {
+      display: none;
+    }
+
+    .yesterday-card {
+      position: relative;
+      width: min(300px, 88vw);
+      background: #ffffff;
+      border: 1px solid #e6e1da;
+      border-radius: 18px;
+      padding: 27px 22px 24px;
+      text-align: center;
+    }
+
+    .yesterday-close {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      width: 30px;
+      height: 30px;
+      border: 0;
+      border-radius: 50%;
+      background: #f2efea;
+      color: #55514c;
+      font-family: "Poppins", sans-serif;
+      font-size: 18px;
+      line-height: 1;
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+      padding: 0;
+    }
+
+    .yesterday-title {
+      font-family: "Poppins", sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      color: #202020;
+    }
+
+    .yesterday-date {
+      margin-top: 5px;
+      font-family: "Poppins", sans-serif;
+      font-size: 10px;
+      color: #aaa49c;
+    }
+
+    .yesterday-answer {
+      margin-top: 15px;
+      font-family: "Noto Sans Bengali", sans-serif;
+      font-size: 27px;
+      font-weight: 600;
+      color: #202020;
+    }
+
   </style>
+  <script data-goatcounter="https://xobdle.goatcounter.com/count"
+          async src="https://gc.zgo.at/count.js"></script>
 </head>
 
 <body>
@@ -485,23 +646,22 @@
 
     <!-- GAME PAGE -->
     <main id="gamePage" class="page">
+      <button id="yesterdayBtn" class="answer-button" type="button" aria-label="Yesterday’s answer">🕘</button>
       <button id="helpBtn" class="help-button" type="button" aria-label="How to play">?</button>
 
       <header class="brand">
-        <h1 class="xobdle-logo">Xobdle<span>.in</span></h1>
+        <h1 class="xobdle-logo"><a href="" aria-label="Reload Xobdle">Xobdle<span>.in</span></a></h1>
       </header>
 
       <div id="gameDate" class="game-date"></div>
+      <div id="gameTimer" class="game-timer"><span class="timer-emoji">⏳</span><span class="timer-value">00:00</span></div>
+      
 
       <div id="message" class="message" aria-live="polite"></div>
 
       <section id="board" class="board" aria-label="Xobdle board"></section>
 
       <section id="keyboard" class="keyboard" aria-label="Xobdle keyboard"></section>
-
-      <div class="visitor-count">
-        Visitors: <strong id="visitorCount">—</strong>
-      </div>
     </main>
 
     <!-- RESULT PAGE -->
@@ -513,6 +673,17 @@
 
         <div id="resultGrid" class="result-grid"></div>
 
+        <div id="lossResultMessage" class="loss-result-message">
+          <strong>Oops! No luck today!</strong><br>
+          Today’s answer will be revealed tomorrow on Xobdle.in and Instagram
+          <span class="instagram">@xobdle</span>.
+        </div>
+
+        <div id="resultTime" class="result-time">Done in 00:00 today!</div>
+
+        <div class="result-social">
+          Tag us on Instagram · <strong>@xobdle</strong>
+        </div>
       </section>
 
       <div class="result-actions">
@@ -521,10 +692,18 @@
       </div>
 
       <div id="shareNote" class="share-note" aria-live="polite"></div>
-
-      <button id="backBtn" class="back-button" type="button">Back</button>
     </main>
 
+
+
+    <div id="yesterdayOverlay" class="yesterday-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="yesterdayTitle">
+      <div class="yesterday-card">
+        <button id="yesterdayClose" class="yesterday-close" type="button" aria-label="Close">×</button>
+        <div id="yesterdayTitle" class="yesterday-title">Yesterday’s answer</div>
+        <div id="yesterdayDate" class="yesterday-date"></div>
+        <div id="yesterdayAnswer" class="yesterday-answer">গামোচা</div>
+      </div>
+    </div>
 
     <div id="instructionsOverlay" class="instructions-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="instructionsTitle">
       <div class="instructions-card">
@@ -590,6 +769,89 @@
     let evaluations = [];
     let gameOver = false;
 
+    let gameStartedAt = null;
+    let gameFinishedAt = null;
+    let elapsedSeconds = 0;
+    let timerInterval = null;
+
+    function getISTDateParts(offsetDays = 0) {
+      const now = new Date();
+      const istMs = now.getTime() + (5.5 * 60 * 60 * 1000);
+      const istDate = new Date(istMs);
+
+      if (offsetDays !== 0) {
+        istDate.setUTCDate(istDate.getUTCDate() + offsetDays);
+      }
+
+      return {
+        year: istDate.getUTCFullYear(),
+        month: istDate.getUTCMonth() + 1,
+        day: istDate.getUTCDate()
+      };
+    }
+
+    function todayStorageKey() {
+      const { year, month, day } = getISTDateParts();
+      const yyyy = String(year);
+      const mm = String(month).padStart(2, "0");
+      const dd = String(day).padStart(2, "0");
+
+      return `xobdle-${yyyy}-${mm}-${dd}`;
+    }
+
+    function saveTodayState() {
+      const state = {
+        completed: gameOver,
+        guesses,
+        evaluations,
+        currentGuess,
+        elapsedSeconds,
+        startedAt: gameStartedAt,
+        finishedAt: gameFinishedAt
+      };
+
+      try {
+        localStorage.setItem(todayStorageKey(), JSON.stringify(state));
+      } catch (error) {
+        console.warn("Could not save today's Xobdle state:", error);
+      }
+    }
+
+    function loadTodayState() {
+      try {
+        const raw = localStorage.getItem(todayStorageKey());
+        return raw ? JSON.parse(raw) : null;
+      } catch (error) {
+        console.warn("Could not load today's Xobdle state:", error);
+        return null;
+      }
+    }
+
+    function restoreTodayState() {
+      const state = loadTodayState();
+      if (!state) return false;
+
+      guesses = Array.isArray(state.guesses) ? state.guesses : [];
+      evaluations = Array.isArray(state.evaluations) ? state.evaluations : [];
+      currentGuess = Array.isArray(state.currentGuess) ? state.currentGuess : [];
+      elapsedSeconds = Number(state.elapsedSeconds || 0);
+      gameStartedAt = state.startedAt || null;
+
+      if (state.completed) {
+        gameOver = true;
+        gameFinishedAt = state.finishedAt || Date.now();
+      }
+
+      renderBoard();
+      updateKeyboardStatuses();
+
+      if (state.completed) {
+        window.setTimeout(showResult, 120);
+      }
+
+      return true;
+    }
+
     const board = document.getElementById("board");
     const keyboard = document.getElementById("keyboard");
     const message = document.getElementById("message");
@@ -599,7 +861,7 @@
 
     const COLORS = {
       background: "#ffffff",
-      card: "#fffdf9",
+      card: "#ffffff",
       text: "#202020",
       muted: "#8b877f",
       green: "#4f8c65",
@@ -610,21 +872,37 @@
     };
 
 
-    function updateVisitorCount() {
-      const counter = document.getElementById("visitorCount");
-      if (!counter) return;
 
-      let count = Number(localStorage.getItem("xobdleVisitorCount") || "0");
+    const yesterdayOverlay = document.getElementById("yesterdayOverlay");
+    const yesterdayBtn = document.getElementById("yesterdayBtn");
+    const yesterdayClose = document.getElementById("yesterdayClose");
 
-      if (!sessionStorage.getItem("xobdleVisitCounted")) {
-        count += 1;
-        localStorage.setItem("xobdleVisitorCount", String(count));
-        sessionStorage.setItem("xobdleVisitCounted", "1");
-      }
+    function formattedYesterdayDate() {
+      const { year, month, day } = getISTDateParts(-1);
 
-      counter.textContent = count.toLocaleString("en-IN");
+      return new Intl.DateTimeFormat("en-AU", {
+        day: "numeric",
+        month: "short",
+        year: "numeric",
+        timeZone: "Asia/Kolkata"
+      }).format(new Date(Date.UTC(year, month - 1, day, 12, 0, 0)));
     }
 
+    document.getElementById("yesterdayDate").textContent = formattedYesterdayDate();
+
+    yesterdayBtn.addEventListener("click", () => {
+      yesterdayOverlay.classList.remove("hidden");
+    });
+
+    yesterdayClose.addEventListener("click", () => {
+      yesterdayOverlay.classList.add("hidden");
+    });
+
+    yesterdayOverlay.addEventListener("click", (event) => {
+      if (event.target === yesterdayOverlay) {
+        yesterdayOverlay.classList.add("hidden");
+      }
+    });
 
     const instructionsOverlay = document.getElementById("instructionsOverlay");
     const helpBtn = document.getElementById("helpBtn");
@@ -651,11 +929,14 @@
     });
 
     function formattedDate() {
+      const { year, month, day } = getISTDateParts();
+
       return new Intl.DateTimeFormat("en-AU", {
         day: "numeric",
         month: "short",
-        year: "numeric"
-      }).format(new Date());
+        year: "numeric",
+        timeZone: "Asia/Kolkata"
+      }).format(new Date(Date.UTC(year, month - 1, day, 12, 0, 0)));
     }
 
     function buildBoard() {
@@ -664,6 +945,8 @@
       for (let i = 0; i < MAX_GUESSES * WORD_LENGTH; i++) {
         const tile = document.createElement("div");
         tile.className = "tile";
+        tile.dataset.row = Math.floor(i / WORD_LENGTH);
+        tile.dataset.col = i % WORD_LENGTH;
         board.appendChild(tile);
       }
     }
@@ -706,7 +989,9 @@
         if (rowIndex < 3) {
           rowKeys.forEach(key => row.appendChild(makeKey(key)));
         } else {
-          row.appendChild(makeActionKey("⌫", "backspace"));
+          const backspaceKey = makeActionKey("⌫", "backspace");
+          backspaceKey.classList.add("backspace-key");
+          row.appendChild(backspaceKey);
           rowKeys.forEach(key => row.appendChild(makeKey(key)));
           row.appendChild(makeActionKey("ENTER", "enter"));
         }
@@ -745,9 +1030,15 @@
       if (gameOver) return;
       if (currentGuess.length >= WORD_LENGTH) return;
 
+      if (!gameStartedAt) {
+        gameStartedAt = Date.now();
+        startGameTimer();
+      }
+
       currentGuess.push(key);
       message.textContent = "";
       renderBoard();
+      saveTodayState();
       refitSoon();
     }
 
@@ -757,6 +1048,7 @@
       currentGuess.pop();
       message.textContent = "";
       renderBoard();
+      saveTodayState();
       refitSoon();
     }
 
@@ -790,7 +1082,7 @@
       if (gameOver) return;
 
       if (currentGuess.length !== WORD_LENGTH) {
-        message.textContent = "৫টা অক্ষৰ বাছনি কৰক";
+        message.textContent = "";
         return;
       }
 
@@ -801,6 +1093,7 @@
       evaluations.push(evaluation);
       currentGuess = [];
 
+      saveTodayState();
       renderBoard();
       updateKeyboardStatuses();
 
@@ -808,15 +1101,33 @@
 
       if (won) {
         gameOver = true;
-        message.textContent = "সঠিক!";
-        setTimeout(showResult, 450);
+        stopGameTimer();
+        message.textContent = "";
+        saveTodayState();
+
+        // Let the completed word celebrate, but do not leave the game page.
+        window.setTimeout(() => {
+          animateWinningRow(guesses.length - 1);
+        }, 120);
+
+        // Keep the solved board visible briefly after the jump,
+        // then open the result/share screen automatically.
+        window.setTimeout(() => {
+          showResult();
+        }, 3000);
+
         return;
       }
 
       if (guesses.length >= MAX_GUESSES) {
         gameOver = true;
-        message.textContent = "আজিৰ শব্দ শেষ";
-        setTimeout(showResult, 450);
+        stopGameTimer();
+        message.textContent = "";
+        saveTodayState();
+
+        // Keep the final failed board visible for 5 seconds,
+        // then open the result/share screen automatically.
+        setTimeout(showResult, 5000);
       }
 
       refitSoon();
@@ -853,6 +1164,103 @@
         }
       });
     }
+    function animateWinningRow(rowIndex) {
+      const tiles = Array.from(
+        board.querySelectorAll(`.tile[data-row="${rowIndex}"]`)
+      );
+
+      tiles.forEach((tile, index) => {
+        window.setTimeout(() => {
+          tile.style.transformOrigin = "center center";
+
+          tile.animate(
+            [
+              { transform: "perspective(500px) rotateX(0deg)" },
+              { transform: "perspective(500px) rotateX(90deg)", offset: 0.5 },
+              { transform: "perspective(500px) rotateX(0deg)" }
+            ],
+            {
+              duration: 500,
+              easing: "ease-in-out"
+            }
+          );
+        }, index * 500);
+      });
+    }
+
+    function formatElapsed(totalSeconds) {
+      const minutes = Math.floor(totalSeconds / 60);
+      const seconds = totalSeconds % 60;
+
+      return (
+        String(minutes).padStart(2, "0") +
+        ":" +
+        String(seconds).padStart(2, "0")
+      );
+    }
+
+    function formatElapsedWords(totalSeconds) {
+      const minutes = Math.floor(totalSeconds / 60);
+      const seconds = totalSeconds % 60;
+
+      const secondLabel = seconds === 1 ? "second" : "seconds";
+
+      if (minutes === 0) {
+        return seconds + " " + secondLabel;
+      }
+
+      const minuteLabel = minutes === 1 ? "minute" : "minutes";
+
+      if (seconds === 0) {
+        return minutes + " " + minuteLabel;
+      }
+
+      return (
+        minutes + " " + minuteLabel +
+        " " +
+        seconds + " " + secondLabel
+      );
+    }
+
+    function updateTimerDisplay() {
+      if (gameStartedAt && !gameFinishedAt) {
+        elapsedSeconds = Math.max(
+          0,
+          Math.floor((Date.now() - gameStartedAt) / 1000)
+        );
+      }
+
+      const timer = document.getElementById("gameTimer");
+      if (timer) {
+        timer.innerHTML = '<span class="timer-emoji">⏳</span><span class="timer-value">' + formatElapsed(elapsedSeconds) + '</span>';
+      }
+    }
+
+    function startGameTimer() {
+      if (!gameStartedAt || timerInterval || gameOver) return;
+
+      updateTimerDisplay();
+
+      timerInterval = window.setInterval(() => {
+        updateTimerDisplay();
+      }, 1000);
+    }
+
+    function stopGameTimer() {
+      if (gameFinishedAt) return;
+
+      gameFinishedAt = Date.now();
+      elapsedSeconds = gameStartedAt
+        ? Math.max(0, Math.floor((gameFinishedAt - gameStartedAt) / 1000))
+        : 0;
+
+      if (timerInterval) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+      }
+
+      updateTimerDisplay();
+    }
 
     function resultStatusAt(rowIndex, colIndex) {
       if (rowIndex >= evaluations.length) return "empty";
@@ -879,6 +1287,28 @@
       document.getElementById("resultPage").classList.remove("hidden");
 
       document.getElementById("resultDate").textContent = formattedDate();
+
+      const wonGame = guesses.some(
+        guess => guess.every((akshara, index) => akshara === answer[index])
+      );
+
+      document
+        .getElementById("lossResultMessage")
+        .classList.toggle("show", !wonGame);
+
+      const resultTime = document.getElementById("resultTime");
+      const resultSocial = document.querySelector(".result-social");
+
+      if (wonGame) {
+        resultTime.textContent =
+          "Done in " + formatElapsedWords(elapsedSeconds) + " today!";
+        resultTime.style.display = "";
+        resultSocial.style.display = "";
+      } else {
+        resultTime.textContent = "";
+        resultTime.style.display = "none";
+        resultSocial.style.display = "none";
+      }
 
       renderResultGrid();
 
@@ -978,6 +1408,41 @@
           }
         }
       }
+
+      // Completion time below the result grid.
+      ctx.textAlign = "center";
+      ctx.fillStyle = COLORS.text;
+      ctx.font = '600 34px "Poppins", sans-serif';
+      ctx.fillText(
+        "Done in " + formatElapsedWords(elapsedSeconds) + " today!",
+        W / 2,
+        1100
+      );
+
+      // Instagram tag prompt below the completion time.
+      const socialLead = "Tag us on Instagram · ";
+      const socialHandle = "@xobdle";
+
+      ctx.font = '500 27px "Poppins", sans-serif';
+      const leadWidth = ctx.measureText(socialLead).width;
+
+      ctx.font = '600 27px "Poppins", sans-serif';
+      const handleWidth = ctx.measureText(socialHandle).width;
+
+      const socialWidth = leadWidth + handleWidth;
+      const socialX = (W - socialWidth) / 2;
+      const socialY = 1160;
+
+      ctx.textAlign = "left";
+      ctx.fillStyle = COLORS.muted;
+      ctx.font = '500 27px "Poppins", sans-serif';
+      ctx.fillText(socialLead, socialX, socialY);
+
+      ctx.fillStyle = COLORS.orange;
+      ctx.font = '600 27px "Poppins", sans-serif';
+      ctx.fillText(socialHandle, socialX + leadWidth, socialY);
+
+      ctx.textAlign = "center";
 
 
       return new Promise(resolve => {
@@ -1104,17 +1569,17 @@
 
     document.getElementById("shareBtn").addEventListener("click", sharePNG);
     document.getElementById("saveBtn").addEventListener("click", savePNG);
-
-    document.getElementById("backBtn").addEventListener("click", () => {
-      document.getElementById("resultPage").classList.add("hidden");
-      document.getElementById("gamePage").classList.remove("hidden");
-      refitSoon();
-    });
-
-    buildBoard();
+buildBoard();
     buildKeyboard();
     renderBoard();
-    updateVisitorCount();
+
+    const restoredToday = restoreTodayState();
+
+    updateTimerDisplay();
+
+    if (restoredToday && gameStartedAt && !gameOver) {
+      startGameTimer();
+    }
 
     if (!localStorage.getItem("xobdleInstructionsSeen")) {
       openInstructions();
