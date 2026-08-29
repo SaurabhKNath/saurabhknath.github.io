@@ -636,6 +636,47 @@
       color: #202020;
     }
 
+  
+    .status-page {
+      text-align: center;
+    }
+
+    .status-card {
+      width: 100%;
+      max-width: 390px;
+      margin: 70px auto 0;
+      background: #ffffff;
+      padding: 30px 24px;
+      text-align: center;
+    }
+
+    .status-title {
+      margin: 0;
+      font-size: 38px;
+      line-height: 1;
+      font-weight: 700;
+      letter-spacing: -1px;
+    }
+
+    .status-message {
+      margin: 34px auto 0;
+      max-width: 310px;
+      font-family: "Poppins", sans-serif;
+      font-size: 17px;
+      line-height: 1.55;
+      font-weight: 600;
+      color: #202020;
+    }
+
+    .status-submessage {
+      margin: 10px auto 0;
+      max-width: 310px;
+      font-family: "Poppins", sans-serif;
+      font-size: 12px;
+      line-height: 1.5;
+      color: #8b877f;
+    }
+
   </style>
   <script data-goatcounter="https://xobdle.goatcounter.com/count"
           async src="https://gc.zgo.at/count.js"></script>
@@ -662,6 +703,19 @@
       <section id="board" class="board" aria-label="Xobdle board"></section>
 
       <section id="keyboard" class="keyboard" aria-label="Xobdle keyboard"></section>
+    </main>
+
+
+    <!-- CLOSED / COOKING PAGE -->
+    <main id="statusPage" class="page status-page hidden">
+      <header class="brand">
+        <h1 class="xobdle-logo">Xobdle<span>.in</span></h1>
+      </header>
+
+      <section class="status-card">
+        <div id="statusMessage" class="status-message"></div>
+        <div id="statusSubmessage" class="status-submessage"></div>
+      </section>
     </main>
 
     <!-- RESULT PAGE -->
