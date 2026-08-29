@@ -1,14 +1,17 @@
 <!DOCTYPE html>
 <html lang="as">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>ভাষাখেল</title>
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700&family=Noto+Sans+Bengali:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Noto+Sans+Bengali:wght@400;500;600;700&display=swap" rel="stylesheet">
+
   <style>
     * { box-sizing: border-box; }
+
     html, body {
       margin: 0;
       width: 100%;
@@ -21,10 +24,11 @@
       color: #202020;
       font-family: "Manrope", sans-serif;
       overscroll-behavior: none;
+      touch-action: manipulation;
     }
 
     button, input { font: inherit; }
-
+    .as { font-family: "Noto Sans Bengali", sans-serif; }
     .hidden { display: none !important; }
 
     .viewport-stage {
@@ -40,359 +44,763 @@
     .page {
       width: 460px;
       flex: 0 0 460px;
-      min-height: 0;
       margin: 0;
-      padding: 24px 12px 30px;
+      padding: 22px 12px 28px;
       transform-origin: top center;
       will-change: transform;
     }
-    .header, .result-header { text-align: center; }
-    .header { margin-bottom: 34px; }
-    .title { margin: 0; font-family: "Noto Sans Bengali", sans-serif; font-size: 31px; line-height: 1.15; font-weight: 700; }
-    .inspired { margin-top: 4px; font-size: 12px; color: #999; }
-    .message { min-height: 24px; margin-bottom: 8px; text-align: center; font-family: "Noto Sans Bengali", sans-serif; font-size: 14px; color: #686868; }
-    .board { width: 100%; max-width: 330px; margin: 0 auto 28px; display: flex; flex-direction: column; gap: 7px; }
-    .board-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 7px; }
-    .tile { aspect-ratio: 1 / 1; display: flex; align-items: center; justify-content: center; background: white; border: 1.5px solid #d9d6d0; border-radius: 9px; font-family: "Noto Sans Bengali", sans-serif; font-size: 21px; font-weight: 700; }
-    .tile.correct { background: #538d4e; border-color: #538d4e; color: white; }
-    .tile.present { background: #b59f3b; border-color: #b59f3b; color: white; }
-    .tile.absent { background: #d8d6d2; border-color: #d8d6d2; color: #555; }
-    .keyboard { width: 100%; max-width: 420px; margin: 0 auto; user-select: none; }
-    .key-row { display: flex; justify-content: center; gap: 4px; margin-bottom: 6px; }
-    .row2 { padding: 0 10px; }
-    .row3 { padding: 0 18px; }
-    .inline-keys { display: contents; }
-    .key { flex: 1; min-width: 0; max-width: 48px; height: 48px; padding: 0 2px; border: 1px solid #d7d4ce; border-radius: 7px; background: #e8e6e1; color: #222; font-family: "Noto Sans Bengali", sans-serif; font-size: 16px; font-weight: 600; cursor: pointer; }
-    .key:active { transform: translateY(1px); }
-    .key.correct { background: #538d4e; border-color: #538d4e; color: white; }
-    .key.present { background: #b59f3b; border-color: #b59f3b; color: white; }
-    .key.absent { opacity: 0.3; }
-    .special { background: #d96f32; border-color: #d96f32; color: white; font-family: "Manrope", sans-serif; font-weight: 700; }
-    .enter { flex: 1.65; max-width: 72px; font-size: 10px; }
-    .backspace { flex: 1.3; max-width: 58px; font-size: 21px; }
-    .test-answer { margin-top: 18px; text-align: center; font-family: "Noto Sans Bengali", sans-serif; font-size: 11px; color: #bbb; }
-    .result-page { min-height: 0; display: flex; flex-direction: column; align-items: center; text-align: center; }
-    .result-header { margin-bottom: 38px; }
-    .result-date { font-size: 13px; color: #999; margin-bottom: 22px; }
-    .result-score { font-size: 23px; font-weight: 700; margin-bottom: 14px; }
-    .emoji-grid { font-family: Arial, sans-serif; font-size: 29px; line-height: 1.5; letter-spacing: 3px; margin-bottom: 34px; }
-    .claim-box { width: 100%; max-width: 310px; margin-bottom: 18px; }
-    .claim-box label { display: block; margin-bottom: 8px; font-size: 12px; color: #777; }
-    .claim-box input { width: 100%; height: 48px; border: 1px solid #d8d5cf; border-radius: 11px; background: white; padding: 0 14px; text-align: center; outline: none; }
-    .claim-box input:focus { border-color: #d96f32; }
-    .share-section { width: 100%; max-width: 330px; }
-    .share-label { margin-bottom: 13px; font-size: 12px; color: #888; }
-    .share-options { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
-    .share-option { border: 0; background: transparent; padding: 0; display: flex; flex-direction: column; align-items: center; gap: 7px; color: #555; font-size: 10px; cursor: pointer; }
-    .share-icon { width: 52px; height: 52px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
-    .share-icon svg { width: 25px; height: 25px; }
-    .share-option:active .share-icon { transform: scale(0.94); }
-    .whatsapp { background: #25D366; color: white; }
-    .instagram { background: linear-gradient(135deg,#833AB4,#C13584,#E1306C,#F77737); color: white; }
-    .facebook { background: #1877F2; color: white; }
-    .x-icon { background: #111; color: white; }
-    .share-status { min-height: 25px; margin-top: 14px; font-size: 11px; color: #777; line-height: 1.4; }
-    
+
+    .brand {
+      text-align: center;
+      margin-bottom: 8px;
+    }
+
+    .brand h1 {
+      font-family: "Noto Sans Bengali", sans-serif;
+      font-size: 34px;
+      line-height: 1.05;
+      margin: 0;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+    }
+
+    .brand p {
+      margin: 5px 0 0;
+      font-size: 12px;
+      color: #888;
+    }
+
+    .game-date {
+      text-align: center;
+      font-size: 12px;
+      color: #999;
+      margin: 18px 0 10px;
+    }
+
+    .hint-box {
+      width: 100%;
+      max-width: 300px;
+      margin: 0 auto 18px;
+      text-align: center;
+    }
+
+    .hint-label {
+      font-family: "Noto Sans Bengali", sans-serif;
+      font-size: 13px;
+      color: #777;
+      margin-bottom: 6px;
+    }
+
+    .hint-vowels {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      font-family: "Noto Sans Bengali", sans-serif;
+      font-size: 22px;
+      font-weight: 600;
+      letter-spacing: 1px;
+    }
+
+    .message {
+      min-height: 22px;
+      text-align: center;
+      font-family: "Noto Sans Bengali", sans-serif;
+      font-size: 13px;
+      color: #666;
+      margin-bottom: 8px;
+    }
+
+    .board {
+      width: 100%;
+      max-width: 330px;
+      margin: 0 auto 22px;
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 7px;
+    }
+
+    .tile {
+      aspect-ratio: 1;
+      border: 1.8px solid #d8d4cd;
+      border-radius: 11px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #fffdfa;
+      font-family: "Noto Sans Bengali", sans-serif;
+      font-size: 27px;
+      font-weight: 600;
+      transition: transform 0.15s ease, background 0.15s ease, border-color 0.15s ease;
+    }
+
+    .tile.filled { border-color: #aaa39a; }
+    .tile.correct { background: #4f8c65; color: white; border-color: #4f8c65; }
+    .tile.present { background: #c39a3b; color: white; border-color: #c39a3b; }
+    .tile.absent { background: #99948d; color: white; border-color: #99948d; }
+
+    .keyboard {
+      width: 100%;
+      max-width: 420px;
+      margin: 0 auto 28px;
+      user-select: none;
+    }
+
+    .key-row {
+      display: flex;
+      justify-content: center;
+      gap: 5px;
+      margin-bottom: 6px;
+    }
+
+    .key-row.indent-1 { padding-left: 16px; padding-right: 4px; }
+    .key-row.indent-2 { padding-left: 9px; padding-right: 9px; }
+
+    .key {
+      min-width: 0;
+      flex: 1 1 0;
+      height: 48px;
+      border: 0;
+      border-radius: 9px;
+      background: #e8e4dd;
+      color: #252525;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: "Noto Sans Bengali", sans-serif;
+      font-size: 18px;
+      font-weight: 600;
+      cursor: pointer;
+      padding: 0 4px;
+    }
+
+    .key.action {
+      flex: 1.35 1 0;
+      font-family: "Manrope", sans-serif;
+      font-size: 12px;
+      background: #d96f32;
+      color: white;
+    }
+
+    .key.correct { background: #4f8c65; color: #fff; }
+    .key.present { background: #c39a3b; color: #fff; }
+    .key.absent { background: #c8c3bc; color: #777; }
+
+    .footer-space {
+      height: 12px;
+    }
+
+    .result-page {
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    .result-date {
+      margin-top: 20px;
+      color: #999;
+      font-size: 12px;
+    }
+
+    .result-score {
+      margin-top: 20px;
+      font-size: 22px;
+      font-weight: 700;
+    }
+
+    .emoji-grid {
+      white-space: pre;
+      font-size: 25px;
+      line-height: 1.35;
+      margin-top: 18px;
+      letter-spacing: 2px;
+    }
+
+    .claim-wrap {
+      width: 100%;
+      max-width: 300px;
+      margin-top: 22px;
+    }
+
+    .claim-wrap label {
+      display: block;
+      text-align: left;
+      font-size: 12px;
+      color: #777;
+      margin-bottom: 7px;
+    }
+
+    .claim-wrap input {
+      width: 100%;
+      height: 44px;
+      border: 1px solid #d5d0c8;
+      border-radius: 10px;
+      background: #fff;
+      padding: 0 12px;
+      outline: none;
+      font-size: 15px;
+    }
+
+    .share-title {
+      margin: 22px 0 10px;
+      font-size: 12px;
+      color: #777;
+    }
+
+    .share-row {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .share-btn {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      border: 1px solid #ddd7cf;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 21px;
+    }
+
+    .share-note {
+      min-height: 20px;
+      margin-top: 11px;
+      font-size: 12px;
+      color: #777;
+    }
+
+    .play-again {
+      margin-top: 16px;
+      border: 0;
+      border-radius: 10px;
+      background: #d96f32;
+      color: white;
+      height: 44px;
+      padding: 0 18px;
+      font-weight: 600;
+      cursor: pointer;
+    }
   </style>
 </head>
-<body>
-  <div class="viewport-stage" id="viewportStage">
-  <main id="gamePage" class="page">
-    <header class="header">
-      <h1 class="title">ভাষাখেল</h1>
-      <div class="inspired">Inspired by Wordle</div>
-    </header>
-    <div id="message" class="message"></div>
-    <div id="board" class="board"></div>
-    <div class="keyboard">
-      <div id="row1" class="key-row"></div>
-      <div id="row2" class="key-row row2"></div>
-      <div id="row3" class="key-row row3"></div>
-      <div class="key-row">
-        <button id="enter" class="key special enter" type="button">ENTER</button>
-        <span id="row4keys" class="inline-keys"></span>
-        <button id="backspace" class="key special backspace" type="button">⌫</button>
-      </div>
-    </div>
-    <div class="test-answer">Test answer: গা · মো · চা · খ · ন</div>
-  </main>
 
-  <main id="resultPage" class="page hidden">
-    <section class="result-page">
-      <header class="result-header">
-        <h1 class="title">ভাষাখেল</h1>
-        <div class="inspired">Inspired by Wordle</div>
+<body>
+  <div class="viewport-stage">
+    <main id="gamePage" class="page">
+      <header class="brand">
+        <h1>ভাষাখেল</h1>
+        <p>Inspired by Wordle</p>
       </header>
+
+      <div id="gameDate" class="game-date"></div>
+
+      <section class="hint-box" aria-label="Today's vowel hints">
+        <div class="hint-label">আজিৰ স্বৰ-সংকেত</div>
+        <div id="vowelHints" class="hint-vowels"></div>
+      </section>
+
+      <div id="message" class="message" aria-live="polite"></div>
+
+      <section id="board" class="board" aria-label="BhaxaKhel board"></section>
+
+      <section id="keyboard" class="keyboard" aria-label="BhaxaKhel keyboard"></section>
+
+      <div class="footer-space"></div>
+    </main>
+
+    <main id="resultPage" class="page result-page hidden">
+      <header class="brand">
+        <h1>ভাষাখেল</h1>
+        <p>Inspired by Wordle</p>
+      </header>
+
       <div id="resultDate" class="result-date"></div>
       <div id="resultScore" class="result-score"></div>
-      <div id="emojiGrid" class="emoji-grid"></div>
+      <div id="emojiGrid" class="emoji-grid" aria-label="Result grid"></div>
 
-      <div class="claim-box">
-        <label for="playerName">Add your name to claim this result</label>
-        <input id="playerName" type="text" maxlength="30" placeholder="Your name">
+      <div class="claim-wrap">
+        <label for="playerName">Claim this result with your name (optional)</label>
+        <input id="playerName" type="text" maxlength="40" placeholder="Your name">
       </div>
 
-      <div class="share-section">
-        <div class="share-label">Share your result</div>
-        <div class="share-options">
-          <button class="share-option" onclick="shareWhatsApp()">
-            <div class="share-icon whatsapp"><svg viewBox="0 0 32 32"><path fill="currentColor" d="M16 3C8.82 3 3 8.62 3 15.55c0 2.43.72 4.81 2.08 6.83L3 30l7.87-2a13.4 13.4 0 0 0 5.12 1.02C23.17 29.02 29 23.4 29 16.46 29 9.53 23.17 3 16 3zm0 23.61a10.8 10.8 0 0 1-4.64-1.05l-.33-.16-4.67 1.19 1.25-4.45-.21-.32a10.05 10.05 0 0 1-1.57-5.35c0-5.67 4.56-10.29 10.17-10.29s10.17 4.62 10.17 10.29S21.61 26.61 16 26.61z"/></svg></div>
-            <span>WhatsApp</span>
-          </button>
-          <button class="share-option" onclick="shareInstagram()">
-            <div class="share-icon instagram"><svg viewBox="0 0 32 32"><rect x="5" y="5" width="22" height="22" rx="6" fill="none" stroke="currentColor" stroke-width="2.5"/><circle cx="16" cy="16" r="5" fill="none" stroke="currentColor" stroke-width="2.5"/><circle cx="23" cy="9" r="1.5" fill="currentColor"/></svg></div>
-            <span>Instagram</span>
-          </button>
-          <button class="share-option" onclick="shareFacebook()">
-            <div class="share-icon facebook"><svg viewBox="0 0 32 32"><path fill="currentColor" d="M18.2 28V17.1h3.7l.55-4.25H18.2v-2.7c0-1.23.35-2.07 2.12-2.07h2.27V4.3c-.39-.05-1.74-.16-3.31-.16-3.27 0-5.51 1.95-5.51 5.54v3.09H10v4.25h3.77V28h4.43z"/></svg></div>
-            <span>Facebook</span>
-          </button>
-          <button class="share-option" onclick="shareX()">
-            <div class="share-icon x-icon"><svg viewBox="0 0 32 32"><path fill="currentColor" d="M6 5h5.7l5.35 7.15L23.2 5H26l-7.65 8.9L27 27h-5.7l-5.8-7.75L8.85 27H6l8.2-9.5L6 5zm4.45 2.1L22.3 24.9h2.25L12.7 7.1h-2.25z"/></svg></div>
-            <span>X</span>
-          </button>
-        </div>
-        <div id="shareStatus" class="share-status"></div>
+      <div class="share-title">Share result</div>
+
+      <div class="share-row">
+        <button class="share-btn" id="shareWhatsApp" type="button" aria-label="Share on WhatsApp">💬</button>
+        <button class="share-btn" id="shareInstagram" type="button" aria-label="Share on Instagram">◎</button>
+        <button class="share-btn" id="shareFacebook" type="button" aria-label="Share on Facebook">f</button>
+        <button class="share-btn" id="shareX" type="button" aria-label="Share on X">𝕏</button>
       </div>
-    </section>
-  </main>
+
+      <div id="shareNote" class="share-note" aria-live="polite"></div>
+
+      <button id="backToGame" class="play-again" type="button">Back to game</button>
+    </main>
   </div>
 
-  <script>
-    const answer = ["গা", "মো", "চা", "খ", "ন"];
-    const keys = [
-      "গা","মো","চা","খ","ন","কি","তা","প",
-      "মা","নু","হ","জ","ক","ল","বা","গি",
-      "ৰি","সা","ট","দে","পা","ৰ","ফু","নী",
-      "ডা","শি","ব","তো"
-    ];
+<script>
+  const answer = ["গা", "মো", "চা", "খ", "ন"];
 
-    const maxAttempts = 5;
-    let currentGuess = [];
-    let history = [];
-    let finished = false;
-    const keyState = {};
-    const board = document.getElementById("board");
-    const message = document.getElementById("message");
+  const vowelHints = ["া", "ো"];
 
-    function renderBoard() {
-      board.innerHTML = "";
-      for (let rowIndex = 0; rowIndex < maxAttempts; rowIndex++) {
-        const row = document.createElement("div");
-        row.className = "board-row";
-        const played = history[rowIndex];
-        for (let i = 0; i < 5; i++) {
-          const tile = document.createElement("div");
-          tile.className = "tile";
-          if (played) {
-            tile.textContent = played.guess[i];
-            tile.classList.add(played.result[i]);
-          } else if (rowIndex === history.length && !finished) {
-            tile.textContent = currentGuess[i] || "";
+  const keys = [
+    "গা","মো","চা","খ","ন","কি","তা","প",
+    "মা","নু","হ","জ","ক","ল","বা","গি",
+    "ৰি","সা","ট","দে","পা","ৰ","ফু","নী",
+    "ডা","শি","ব","তো"
+  ];
+
+  const rows = [
+    keys.slice(0, 8),
+    keys.slice(8, 16),
+    keys.slice(16, 24),
+    keys.slice(24, 28)
+  ];
+
+  const MAX_GUESSES = 5;
+  const WORD_LENGTH = 5;
+
+  let currentGuess = [];
+  let guesses = [];
+  let evaluations = [];
+  let gameOver = false;
+
+  const board = document.getElementById("board");
+  const keyboard = document.getElementById("keyboard");
+  const message = document.getElementById("message");
+
+  function todayString() {
+    return new Intl.DateTimeFormat("en-AU", {
+      day: "numeric",
+      month: "short",
+      year: "numeric"
+    }).format(new Date());
+  }
+
+  function buildBoard() {
+    board.innerHTML = "";
+    for (let i = 0; i < MAX_GUESSES * WORD_LENGTH; i++) {
+      const tile = document.createElement("div");
+      tile.className = "tile";
+      tile.dataset.index = i;
+      board.appendChild(tile);
+    }
+  }
+
+  function buildKeyboard() {
+    keyboard.innerHTML = "";
+
+    rows.forEach((rowKeys, rowIndex) => {
+      const row = document.createElement("div");
+      row.className = "key-row";
+      if (rowIndex === 1) row.classList.add("indent-1");
+      if (rowIndex === 2) row.classList.add("indent-2");
+
+      if (rowIndex < 3) {
+        rowKeys.forEach(k => row.appendChild(makeKey(k)));
+      } else {
+        row.appendChild(makeActionKey("ENTER", "enter"));
+        rowKeys.forEach(k => row.appendChild(makeKey(k)));
+        row.appendChild(makeActionKey("⌫", "backspace"));
+      }
+
+      keyboard.appendChild(row);
+    });
+  }
+
+  function makeKey(label) {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "key";
+    btn.textContent = label;
+    btn.dataset.key = label;
+    btn.addEventListener("click", () => handleKey(label));
+    return btn;
+  }
+
+  function makeActionKey(label, action) {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "key action";
+    btn.textContent = label;
+    btn.dataset.action = action;
+    btn.addEventListener("click", () => {
+      if (action === "enter") submitGuess();
+      if (action === "backspace") backspace();
+    });
+    return btn;
+  }
+
+  function renderBoard() {
+    const tiles = [...board.children];
+
+    for (let r = 0; r < MAX_GUESSES; r++) {
+      for (let c = 0; c < WORD_LENGTH; c++) {
+        const idx = r * WORD_LENGTH + c;
+        const tile = tiles[idx];
+
+        tile.className = "tile";
+        tile.textContent = "";
+
+        if (r < guesses.length) {
+          tile.textContent = guesses[r][c];
+          tile.classList.add(evaluations[r][c]);
+        } else if (r === guesses.length) {
+          const val = currentGuess[c];
+          if (val) {
+            tile.textContent = val;
+            tile.classList.add("filled");
           }
-          row.appendChild(tile);
-        }
-        board.appendChild(row);
-      }
-    }
-
-    function createKey(akshara) {
-      const button = document.createElement("button");
-      button.type = "button";
-      button.className = "key";
-      button.textContent = akshara;
-      button.dataset.akshara = akshara;
-      button.onclick = function () {
-        if (finished || currentGuess.length >= 5) return;
-        currentGuess.push(akshara);
-        message.textContent = "";
-        renderBoard();
-      };
-      return button;
-    }
-
-    function buildKeyboard() {
-      keys.slice(0, 8).forEach(key => document.getElementById("row1").appendChild(createKey(key)));
-      keys.slice(8, 16).forEach(key => document.getElementById("row2").appendChild(createKey(key)));
-      keys.slice(16, 24).forEach(key => document.getElementById("row3").appendChild(createKey(key)));
-      keys.slice(24, 28).forEach(key => document.getElementById("row4keys").appendChild(createKey(key)));
-    }
-
-    function evaluateGuess(guess) {
-      const result = Array(5).fill("absent");
-      const remaining = {};
-      for (let i = 0; i < 5; i++) {
-        if (guess[i] === answer[i]) {
-          result[i] = "correct";
-        } else {
-          const a = answer[i];
-          remaining[a] = (remaining[a] || 0) + 1;
         }
       }
-      for (let i = 0; i < 5; i++) {
-        if (result[i] === "correct") continue;
-        const g = guess[i];
-        if (remaining[g] > 0) {
-          result[i] = "present";
-          remaining[g]--;
-        }
-      }
-      return result;
     }
+  }
 
-    function stateRank(state) {
-      if (state === "correct") return 3;
-      if (state === "present") return 2;
-      if (state === "absent") return 1;
-      return 0;
-    }
+  function handleKey(key) {
+    if (gameOver) return;
+    if (currentGuess.length >= WORD_LENGTH) return;
 
-    function updateKeyboard(guess, result) {
-      guess.forEach(function (unit, index) {
-        const newState = result[index];
-        const oldState = keyState[unit];
-        if (!oldState || stateRank(newState) > stateRank(oldState)) keyState[unit] = newState;
-      });
-      document.querySelectorAll("[data-akshara]").forEach(button => {
-        button.classList.remove("correct", "present", "absent");
-        const state = keyState[button.dataset.akshara];
-        if (state) button.classList.add(state);
-      });
-    }
-
-    function submitGuess() {
-      if (finished) return;
-      if (currentGuess.length !== 5) {
-        message.textContent = "৫টা অক্ষৰ বাছনি কৰক";
-        return;
-      }
-      const result = evaluateGuess(currentGuess);
-      history.push({ guess: [...currentGuess], result });
-      updateKeyboard(currentGuess, result);
-      const won = result.every(state => state === "correct");
-      currentGuess = [];
-      renderBoard();
-      if (won || history.length === maxAttempts) setTimeout(() => showResult(won), 500);
-    }
-
-    function removeAkshara() {
-      if (finished || !currentGuess.length) return;
-      currentGuess.pop();
-      renderBoard();
-    }
-
-    function greenSquare() { return String.fromCodePoint(0x1F7E9); }
-    function yellowSquare() { return String.fromCodePoint(0x1F7E8); }
-    function whiteSquare() { return String.fromCodePoint(0x2B1C); }
-    function emojiFor(state) {
-      if (state === "correct") return greenSquare();
-      if (state === "present") return yellowSquare();
-      return whiteSquare();
-    }
-    function buildEmojiText() { return history.map(entry => entry.result.map(emojiFor).join("")).join("\n"); }
-    function buildEmojiHTML() { return history.map(entry => entry.result.map(emojiFor).join("")).join("<br>"); }
-
-    function getDateLong() {
-      return new Date().toLocaleDateString("en-AU", { day: "numeric", month: "long", year: "numeric" });
-    }
-    function getDateShort() {
-      return new Date().toLocaleDateString("en-AU", { day: "numeric", month: "short", year: "numeric" });
-    }
-
-    function showResult(won) {
-      finished = true;
-      const score = won ? history.length + "/5" : "X/5";
-      document.getElementById("resultDate").textContent = getDateLong();
-      document.getElementById("resultScore").textContent = "BhaxaKhel " + score;
-      document.getElementById("emojiGrid").innerHTML = buildEmojiHTML();
-      document.getElementById("gamePage").classList.add("hidden");
-      document.getElementById("resultPage").classList.remove("hidden");
-      window.scrollTo(0, 0);
-      refitSoon();
-    }
-
-    function makeShareText() {
-      const name = document.getElementById("playerName").value.trim();
-      const won = history.some(entry => entry.result.every(state => state === "correct"));
-      const score = won ? history.length + "/5" : "X/5";
-      let text = "ভাষাখেল\nInspired by Wordle\n\n" + getDateShort() + "\n\nBhaxaKhel " + score + "\n\n" + buildEmojiText();
-      if (name) text += "\n\n— " + name;
-      text += "\n\nPlay today's ভাষাখেল:\nhttps://bhaxakhel.github.io";
-      return text;
-    }
-
-    async function copyResult() {
-      const text = makeShareText();
-      try {
-        await navigator.clipboard.writeText(text);
-        return true;
-      } catch (error) {
-        const textarea = document.createElement("textarea");
-        textarea.value = text;
-        textarea.style.position = "fixed";
-        textarea.style.opacity = "0";
-        document.body.appendChild(textarea);
-        textarea.focus();
-        textarea.select();
-        const success = document.execCommand("copy");
-        textarea.remove();
-        return success;
-      }
-    }
-
-    async function shareWhatsApp() {
-      const status = document.getElementById("shareStatus");
-      const text = makeShareText();
-      if (navigator.share) {
-        try {
-          await navigator.share({ text });
-          status.textContent = "";
-          return;
-        } catch (error) {
-          if (error.name === "AbortError") return;
-        }
-      }
-      const copied = await copyResult();
-      status.textContent = copied ? "Result copied. Paste it in WhatsApp." : "Copy the result and paste it in WhatsApp.";
-      window.open("https://web.whatsapp.com/", "_blank");
-    }
-
-    async function shareInstagram() {
-      const status = document.getElementById("shareStatus");
-      const copied = await copyResult();
-      if (copied) status.textContent = "Result copied. Paste it on Instagram.";
-      window.open("https://www.instagram.com/", "_blank");
-    }
-
-    function shareFacebook() {
-      const gameURL = "https://bhaxakhel.github.io";
-      window.open("https://www.facebook.com/sharer/sharer.php?u=" + encodeURIComponent(gameURL), "_blank");
-    }
-
-    function shareX() {
-      const text = makeShareText();
-      window.open("https://twitter.com/intent/tweet?text=" + encodeURIComponent(text), "_blank");
-    }
-
-    document.getElementById("enter").addEventListener("click", submitGuess);
-    document.getElementById("backspace").addEventListener("click", removeAkshara);
-
-    buildKeyboard();
+    currentGuess.push(key);
+    message.textContent = "";
     renderBoard();
+    refitSoon();
+  }
+
+  function backspace() {
+    if (gameOver) return;
+    currentGuess.pop();
+    message.textContent = "";
+    renderBoard();
+    refitSoon();
+  }
+
+  function evaluateGuess(guess, target) {
+    const result = Array(WORD_LENGTH).fill("absent");
+    const used = Array(WORD_LENGTH).fill(false);
+
+    for (let i = 0; i < WORD_LENGTH; i++) {
+      if (guess[i] === target[i]) {
+        result[i] = "correct";
+        used[i] = true;
+      }
+    }
+
+    for (let i = 0; i < WORD_LENGTH; i++) {
+      if (result[i] === "correct") continue;
+
+      for (let j = 0; j < WORD_LENGTH; j++) {
+        if (!used[j] && guess[i] === target[j]) {
+          result[i] = "present";
+          used[j] = true;
+          break;
+        }
+      }
+    }
+
+    return result;
+  }
+
+  function submitGuess() {
+    if (gameOver) return;
+
+    if (currentGuess.length !== WORD_LENGTH) {
+      message.textContent = "৫টা অক্ষৰ বাছনি কৰক";
+      return;
+    }
+
+    const guess = [...currentGuess];
+    const evaluation = evaluateGuess(guess, answer);
+
+    guesses.push(guess);
+    evaluations.push(evaluation);
+    currentGuess = [];
+
+    renderBoard();
+    updateKeyboardStatuses();
+
+    const won = evaluation.every(x => x === "correct");
+
+    if (won) {
+      gameOver = true;
+      message.textContent = "সঠিক!";
+      setTimeout(() => showResult(true), 450);
+      return;
+    }
+
+    if (guesses.length >= MAX_GUESSES) {
+      gameOver = true;
+      message.textContent = "আজিৰ শব্দ শেষ";
+      setTimeout(() => showResult(false), 450);
+    }
 
     refitSoon();
+  }
 
-    window.addEventListener("load", refitSoon);
-    window.addEventListener("resize", refitSoon);
-    window.addEventListener("orientationchange", refitSoon);
+  function statusRank(s) {
+    return { absent: 1, present: 2, correct: 3 }[s] || 0;
+  }
 
-    if (window.visualViewport) {
-      window.visualViewport.addEventListener("resize", refitSoon);
+  function updateKeyboardStatuses() {
+    const best = {};
+
+    guesses.forEach((guess, r) => {
+      guess.forEach((k, i) => {
+        const status = evaluations[r][i];
+        if (!best[k] || statusRank(status) > statusRank(best[k])) {
+          best[k] = status;
+        }
+      });
+    });
+
+    keyboard.querySelectorAll(".key[data-key]").forEach(btn => {
+      btn.classList.remove("correct", "present", "absent");
+      const status = best[btn.dataset.key];
+      if (status) btn.classList.add(status);
+    });
+  }
+
+  function squareFor(status) {
+    if (status === "correct") return String.fromCodePoint(0x1F7E9);
+    if (status === "present") return String.fromCodePoint(0x1F7E8);
+    return String.fromCodePoint(0x2B1C);
+  }
+
+  function buildEmojiGrid() {
+    return evaluations
+      .map(row => row.map(squareFor).join(""))
+      .join("\n");
+  }
+
+  function scoreText() {
+    const last = evaluations[evaluations.length - 1] || [];
+    const won = last.length && last.every(x => x === "correct");
+    return won ? `BhaxaKhel ${guesses.length}/5` : "BhaxaKhel X/5";
+  }
+
+  function buildShareText() {
+    const name = document.getElementById("playerName").value.trim();
+    const pieces = [
+      "ভাষাখেল",
+      "Inspired by Wordle",
+      "",
+      todayString(),
+      "",
+      scoreText(),
+      "",
+      buildEmojiGrid()
+    ];
+
+    if (name) {
+      pieces.push("", "— " + name);
     }
 
-    if (document.fonts && document.fonts.ready) {
-      document.fonts.ready.then(refitSoon);
+    pieces.push("", "Play today's ভাষাখেল:", "https://bhaxakhel.github.io");
+
+    return pieces.join("\n");
+  }
+
+  async function copyText(text) {
+    try {
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(text);
+        return true;
+      }
+    } catch (_) {}
+
+    const ta = document.createElement("textarea");
+    ta.value = text;
+    ta.setAttribute("readonly", "");
+    ta.style.position = "fixed";
+    ta.style.opacity = "0";
+    document.body.appendChild(ta);
+    ta.select();
+
+    let ok = false;
+    try {
+      ok = document.execCommand("copy");
+    } catch (_) {}
+
+    ta.remove();
+    return ok;
+  }
+
+  async function nativeShare(text) {
+    if (!navigator.share) return false;
+
+    try {
+      await navigator.share({
+        title: "ভাষাখেল",
+        text: text
+      });
+      return true;
+    } catch (err) {
+      if (err && err.name === "AbortError") return true;
+      return false;
     }
-  </script>
+  }
+
+  async function shareWhatsApp() {
+    const text = buildShareText();
+    const note = document.getElementById("shareNote");
+
+    if (await nativeShare(text)) {
+      note.textContent = "Share sheet opened.";
+      return;
+    }
+
+    const copied = await copyText(text);
+
+    try {
+      window.open("https://wa.me/", "_blank", "noopener,noreferrer");
+      note.textContent = copied
+        ? "Result copied. Paste it into WhatsApp."
+        : "WhatsApp opened. Copy the result manually if needed.";
+    } catch (_) {
+      note.textContent = copied
+        ? "Result copied. Open WhatsApp and paste it."
+        : "Could not open WhatsApp.";
+    }
+  }
+
+  async function shareInstagram() {
+    const text = buildShareText();
+    const note = document.getElementById("shareNote");
+
+    if (await nativeShare(text)) {
+      note.textContent = "Share sheet opened.";
+      return;
+    }
+
+    const copied = await copyText(text);
+
+    try {
+      window.open("https://www.instagram.com/", "_blank", "noopener,noreferrer");
+      note.textContent = copied
+        ? "Result copied. Paste it into Instagram."
+        : "Instagram opened. Copy the result manually if needed.";
+    } catch (_) {
+      note.textContent = copied
+        ? "Result copied. Open Instagram and paste it."
+        : "Could not open Instagram.";
+    }
+  }
+
+  async function shareFacebook() {
+    const text = buildShareText();
+    const note = document.getElementById("shareNote");
+
+    if (await nativeShare(text)) {
+      note.textContent = "Share sheet opened.";
+      return;
+    }
+
+    await copyText(text);
+
+    const url = encodeURIComponent("https://bhaxakhel.github.io");
+    const fb = "https://www.facebook.com/sharer/sharer.php?u=" + url;
+
+    window.open(fb, "_blank", "noopener,noreferrer");
+    note.textContent = "Facebook opened. Your result was also copied.";
+  }
+
+  async function shareX() {
+    const text = buildShareText();
+    const note = document.getElementById("shareNote");
+
+    const intent =
+      "https://twitter.com/intent/tweet?text=" +
+      encodeURIComponent(text);
+
+    window.open(intent, "_blank", "noopener,noreferrer");
+    note.textContent = "X share window opened.";
+  }
+
+  function showResult(won) {
+    document.getElementById("gamePage").classList.add("hidden");
+    document.getElementById("resultPage").classList.remove("hidden");
+
+    document.getElementById("resultDate").textContent = todayString();
+    document.getElementById("resultScore").textContent =
+      won ? `BhaxaKhel ${guesses.length}/5` : "BhaxaKhel X/5";
+    document.getElementById("emojiGrid").textContent = buildEmojiGrid();
+
+    document.getElementById("shareNote").textContent = "";
+    refitSoon();
+  }
+
+  function getViewportSize() {
+    const vv = window.visualViewport;
+    return {
+      width: vv ? vv.width : window.innerWidth,
+      height: vv ? vv.height : window.innerHeight
+    };
+  }
+
+  function getActivePage() {
+    return document.getElementById("gamePage").classList.contains("hidden")
+      ? document.getElementById("resultPage")
+      : document.getElementById("gamePage");
+  }
+
+  function fitActivePage() {
+    const page = getActivePage();
+    if (!page) return;
+
+    page.style.transform = "scale(1)";
+
+    const viewport = getViewportSize();
+    const naturalWidth = 460;
+    const naturalHeight = page.scrollHeight;
+
+    const widthScale = (viewport.width - 8) / naturalWidth;
+    const heightScale = (viewport.height - 8) / naturalHeight;
+
+    const scale = Math.min(1, widthScale, heightScale);
+
+    page.style.transform = "scale(" + scale + ")";
+  }
+
+  function refitSoon() {
+    requestAnimationFrame(() => {
+      requestAnimationFrame(fitActivePage);
+    });
+  }
+
+  document.getElementById("gameDate").textContent = todayString();
+  document.getElementById("vowelHints").textContent = vowelHints.join("   ");
+
+  document.getElementById("shareWhatsApp").addEventListener("click", shareWhatsApp);
+  document.getElementById("shareInstagram").addEventListener("click", shareInstagram);
+  document.getElementById("shareFacebook").addEventListener("click", shareFacebook);
+  document.getElementById("shareX").addEventListener("click", shareX);
+
+  document.getElementById("backToGame").addEventListener("click", () => {
+    document.getElementById("resultPage").classList.add("hidden");
+    document.getElementById("gamePage").classList.remove("hidden");
+    refitSoon();
+  });
+
+  buildBoard();
+  buildKeyboard();
+  renderBoard();
+  refitSoon();
+
+  window.addEventListener("load", refitSoon);
+  window.addEventListener("resize", refitSoon);
+  window.addEventListener("orientationchange", refitSoon);
+
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener("resize", refitSoon);
+  }
+
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(refitSoon);
+  }
+</script>
 </body>
 </html>
