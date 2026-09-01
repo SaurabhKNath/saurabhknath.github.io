@@ -147,6 +147,46 @@
       font-size:clamp(1.1rem,2vw,1.35rem);
       color:#405453;max-width:720px;margin:0 0 30px;
     }
+
+    /* Current availability */
+    .availability-status{
+      display:flex;
+      align-items:center;
+      gap:9px;
+      margin:0 0 20px;
+      font-size:clamp(.88rem,1.15vw,1rem);
+      font-weight:500;
+      color:#333;
+      line-height:1.4;
+    }
+
+    .availability-dot{
+      position:relative;
+      width:9px;
+      height:9px;
+      flex:0 0 9px;
+      border-radius:50%;
+      background:#22c55e;
+      box-shadow:0 0 0 0 rgba(34,197,94,.38);
+      animation:availabilityPulse 1.8s ease-out infinite;
+    }
+
+    @keyframes availabilityPulse{
+      0%{
+        box-shadow:0 0 0 0 rgba(34,197,94,.42);
+      }
+      70%{
+        box-shadow:0 0 0 7px rgba(34,197,94,0);
+      }
+      100%{
+        box-shadow:0 0 0 0 rgba(34,197,94,0);
+      }
+    }
+
+    .availability-status + .tag-row{
+      margin-top:0;
+    }
+
     .tag-row{display:flex;flex-wrap:wrap;gap:9px;margin:26px 0 32px}
     .tag{
       border:1px solid var(--line);border-radius:999px;padding:8px 12px;
@@ -522,6 +562,7 @@
     @media (prefers-reduced-motion:reduce){
       html{scroll-behavior:auto}
       *,*::before,*::after{transition:none!important}
+      .availability-dot{animation:none!important}
     }
   
     .footer-bottom-sentence{
@@ -705,6 +746,13 @@
       .hero h1{
         font-size:clamp(2.8rem,14vw,4.4rem);
         line-height:.92;
+      }
+
+
+      .availability-status{
+        font-size:.86rem;
+        gap:8px;
+        margin-bottom:18px;
       }
 
       .tag-row{
@@ -1106,6 +1154,11 @@
         <div>
           <div class="assamese">   স্বাগতম <span class="namaste namaste-mono" aria-hidden="true">🙏</span></div>
           <h1>Saurabh<br>Kumar Nath</h1>
+
+          <div class="availability-status" aria-label="Current availability">
+            <span class="availability-dot" aria-hidden="true"></span>
+            <span>Open to postdoctoral &amp; teaching positions from January 2027</span>
+          </div>
 
           <div class="tag-row" aria-label="Research areas">
             <span class="tag">Sociophonetics</span>
